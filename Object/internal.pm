@@ -1,4 +1,4 @@
-# $Id: internal.pm,v 1.2 2005/06/18 20:35:38 nanardon Exp $
+# $Id: internal.pm,v 1.3 2005/06/18 22:54:23 nanardon Exp $
 
 #- Olivier Thauvin <olivier.thauvin@aerov.jussieu.fr>
 
@@ -89,7 +89,7 @@ sub check_subdir {
         $ptr = $ptr->{_father};
     }
     if ($rc) {
-        printf(STDERR "Avoid loop $ptr->{_dir} => %s\n",
+        printf(STDERR "Avoid loop $ptr->{dir} => %s\n",
             $self->current_path());
         return 0;
     }
