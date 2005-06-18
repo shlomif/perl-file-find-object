@@ -1,0 +1,13 @@
+#!/usr/bin/perl
+
+# $Id: tree,v 1.1 2005/06/18 18:21:35 nanardon Exp $
+
+use strict;
+use warnings;
+use File::Find::Object;
+
+my $tree = File::Find::Object->new({}, @ARGV);
+
+while (my $r = $tree->next()) {
+    print $r ."\n";
+}

@@ -1,0 +1,19 @@
+# $Id: Makefile.PL,v 1.1 2005/06/18 18:21:35 nanardon Exp $
+
+use ExtUtils::MakeMaker;
+
+sub MY::postamble {
+    <<MAKECHANGELOG;
+.PHONY: ChangeLog
+
+ChangeLog:
+	cvs2cl -W 400 -I ChangeLog --accum -U ../common/username
+	rm -f *.bak
+
+MAKECHANGELOG
+}
+
+WriteMakefile(
+    NAME	 => 'File::Find::Object',
+    VERSION_FROM => 'File/Find/Object.pm',
+);
