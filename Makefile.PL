@@ -1,4 +1,4 @@
-# $Id: Makefile.PL,v 1.1 2005/06/18 18:21:35 nanardon Exp $
+# $Id: Makefile.PL,v 1.2 2005/06/18 18:23:56 nanardon Exp $
 
 use ExtUtils::MakeMaker;
 
@@ -15,5 +15,5 @@ MAKECHANGELOG
 
 WriteMakefile(
     NAME	 => 'File::Find::Object',
-    VERSION_FROM => 'File/Find/Object.pm',
+    VERSION_FROM => 'Object.pm',
 );
