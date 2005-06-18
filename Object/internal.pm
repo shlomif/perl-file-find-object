@@ -1,4 +1,4 @@
-# $Id: internal.pm,v 1.1 2005/06/18 18:22:49 nanardon Exp $
+# $Id: internal.pm,v 1.2 2005/06/18 20:35:38 nanardon Exp $
 
 #- Olivier Thauvin <olivier.thauvin@aerov.jussieu.fr>
 
@@ -79,7 +79,6 @@ sub check_subdir {
     my @st = stat($self->current_path());
     !-d _ and return 0;
     -l $self->current_path() && !$self->{_top}->{followlink} and return 0;
-    $st[0] < 0 && $self->{_top}->{nonet} and return 0;
     $st[0] != $self->{dev} && $self->{_top}->{nocrossfs} and return 0;
     my $ptr = $self; my $rc;
     while($ptr->{_father}) {

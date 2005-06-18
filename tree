@@ -1,12 +1,22 @@
 #!/usr/bin/perl
 
-# $Id: tree,v 1.1 2005/06/18 18:21:35 nanardon Exp $
+# $Id: tree,v 1.2 2005/06/18 20:35:38 nanardon Exp $
 
 use strict;
 use warnings;
 use File::Find::Object;
+use Getopt::Long;
 
-my $tree = File::Find::Object->new({}, @ARGV);
+my %options;
+
+GetOptions(
+    'd' => \$options{depth},
+    'n' => \$options{nonet},
+    'f' => \$options{nocrossfs},
+    'l' => \$options{followlink},
+);
+
+my $tree = File::Find::Object->new({ %options }, @ARGV);
 
 while (my $r = $tree->next()) {
     print $r ."\n";

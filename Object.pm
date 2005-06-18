@@ -1,4 +1,4 @@
-# $Id: Object.pm,v 1.1 2005/06/18 18:21:35 nanardon Exp $
+# $Id: Object.pm,v 1.2 2005/06/18 20:35:38 nanardon Exp $
 
 #- Olivier Thauvin <olivier.thauvin@aerov.jussieu.fr>
 
@@ -35,7 +35,6 @@ sub new {
         depth => $options->{depth},
         nocrossfs => $options->{nocrossfs},
         followlink => $options->{followlink},
-        nonet => $options->{nonet},
         filter => $options->{filter},
         callback => $options->{callback},
     };
@@ -53,12 +52,17 @@ sub next {
     my ($self) = @_;
     while (1) {
         my $current = $self->{_current} || $self;
-        $current->_process_current and return $current->current_path;
+        $current->_process_current and return $self->{item} = $current->current_path;
         $current = $self->{_current} || $self;
         if(!$current->movenext) {
-            $current->me_die and return undef;
+            $current->me_die and return $self->{item} = undef;
         }
     }
+}
+
+sub item {
+    my ($self) = @_;
+    $self->{item}
 }
 
 sub movenext {
@@ -137,3 +141,90 @@ sub current_path {
 }
 
 1
+
+__END__
+
+=head1 NAME
+
+File::Find::Object - A File::Find object oriented
+
+=head1 SYNOPSIS
+
+    use File::Find::Object;
+    my $tree = File::Find::Object->new({}, @dir);
+
+    while (my $r = $tree->next()) {
+        print $r ."\n";
+    }
+
+=head1 DESCRIPTION
+
+File::Find::Object does same job the File::Find but instead this one, works
+like an object and with an iterator. As File::Find is not object oriented you
+can't perform multiple search in same application. The second problem of
+File::Find is its file processing, after starting its main loop, you can't
+easilly wait another event an so get next result.
+
+With File::Find::Object you get next file by calling next() functions, but
+setting a callback is still possible.
+
+=head1 FUNCTIONS
+
+=head2 new
+
+    my $ffo = File::Find::Object->new( { options }, @files);
+
+Create a new File::Find::Object object. @files is the list of directory
+- or files - the object should explore.
+
+=head3 options
+
+=over 4
+
+=item depth
+
+Boolean, return the directory content before the directory itself
+
+=item nocrossfs
+
+Boolean, don't continue on filesystem different than the parent
+
+=item followlink
+
+Boolean, follow symlink when they point to a directory.
+
+You can safelly set this options, File::Find::Object does not follow the link
+if detect a loop.
+
+=item filter
+
+Function, should point to a function returning TRUE or FALSE. This function is
+call with the filename to filter, if the function return FALSE, the file is
+skiped.
+
+=item callback
+
+Function, should point to a function calle each time a new file is return. The
+function is called with the current filename as argument.
+
+=back
+
+=head2 next
+
+Return the next file find by the File::Find::Object, it return undef at end.
+
+=head2 item
+
+Return the current filename found by the File::Find::Object object, aka the
+latest value return by next().
+
+=head1 BUGS
+
+Currently works only on UNIX as it use '/' as separator.
+
+=head1 SEE ALSO
+
+L<File::Find>
+
+=cut
+
