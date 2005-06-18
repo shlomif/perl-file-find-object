@@ -1,0 +1,8 @@
+Makefile.PL
+MANIFEST			This list of files
+META.yml
+Object.pm
+Object/.internal.pm.swp
+Object/internal.pm
+t/01ffo.t
+tree
