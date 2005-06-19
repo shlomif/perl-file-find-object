@@ -1,4 +1,4 @@
-# $Id: internal.pm,v 1.3 2005/06/18 22:54:23 nanardon Exp $
+# $Id: internal.pm,v 1.4 2005/06/19 14:24:00 nanardon Exp $
 
 #- Olivier Thauvin <olivier.thauvin@aerov.jussieu.fr>
 
@@ -27,10 +27,11 @@ use vars qw(@ISA);
 
 sub new {
     my ($class, $from) = @_;
-    my $self = $class->SUPER::new();
-    $self->{_father} = $from;
-    $self->{_top} = $from->{_top} || $from;
-    $self->{dir} = $from->current_path;
+    my $self = {
+        _father => $from,
+        _top => $from->{_top},
+        dir => $from->current_path,
+    };
 
     bless($self, $class);
 
