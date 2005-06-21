@@ -1,4 +1,4 @@
-# $Id: Object.pm,v 1.2 2005/06/18 20:35:38 nanardon Exp $
+# $Id: Object.pm,v 1.3 2005/06/21 22:32:51 nanardon Exp $
 
 #- Olivier Thauvin <olivier.thauvin@aerov.jussieu.fr>
 
@@ -159,7 +159,7 @@ File::Find::Object - A File::Find object oriented
 
 =head1 DESCRIPTION
 
-File::Find::Object does same job the File::Find but instead this one, works
+File::Find::Object does same job the File::Find but unlike him, works
 like an object and with an iterator. As File::Find is not object oriented you
 can't perform multiple search in same application. The second problem of
 File::Find is its file processing, after starting its main loop, you can't
