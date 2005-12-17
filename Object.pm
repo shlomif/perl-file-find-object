@@ -1,4 +1,4 @@
-# $Id: Object.pm,v 1.3 2005/06/21 22:32:51 nanardon Exp $
+# $Id$
 
 #- Olivier Thauvin <olivier.thauvin@aerov.jussieu.fr>
 

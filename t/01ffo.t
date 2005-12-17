@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-# $Id: 01ffo.t,v 1.1 2005/06/18 18:21:35 nanardon Exp $
+# $Id$
 
 use strict;
 use warnings;
