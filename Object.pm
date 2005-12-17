@@ -1,4 +1,4 @@
-# $Id: Object.pm,v 1.3 2005/06/21 22:32:51 nanardon Exp $
+# $Id$
 
 #- Olivier Thauvin <olivier.thauvin@aerov.jussieu.fr>
 
@@ -22,7 +22,7 @@ use strict;
 use warnings;
 use File::Find::Object::internal;
 
-our $VERSION = '0.0.1';
+our $VERSION = '0.0.2';
 
 sub new {
     my ($class, $options, @files) = @_;
