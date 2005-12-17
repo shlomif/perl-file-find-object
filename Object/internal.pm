@@ -1,4 +1,4 @@
-# $Id: internal.pm,v 1.4 2005/06/19 14:24:00 nanardon Exp $
+# $Id$
 
 #- Olivier Thauvin <olivier.thauvin@aerov.jussieu.fr>
 
