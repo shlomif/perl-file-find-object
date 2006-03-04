@@ -146,7 +146,7 @@ __END__
 
 =head1 NAME
 
-File::Find::Object - A File::Find object oriented
+File::Find::Object - An object oriented File::Find replacement
 
 =head1 SYNOPSIS
 
@@ -159,14 +159,14 @@ File::Find::Object - A File::Find object oriented
 
 =head1 DESCRIPTION
 
-File::Find::Object does same job the File::Find but unlike him, works
-like an object and with an iterator. As File::Find is not object oriented you
-can't perform multiple search in same application. The second problem of
-File::Find is its file processing, after starting its main loop, you can't
-easilly wait another event an so get next result.
+File::Find::Object does same job as File::Find but works like an object and 
+with an iterator. As File::Find is not object oriented, one cannot perform
+multiple searches in the same application. The second problem of File::Find 
+is its file processing: after starting its main loop, one cannot easilly wait 
+for another event an so get the next result.
 
-With File::Find::Object you get next file by calling next() functions, but
-setting a callback is still possible.
+With File::Find::Object you can get the next file by calling the next() 
+function, but setting a callback is still possible.
 
 =head1 FUNCTIONS
 
@@ -174,7 +174,7 @@ setting a callback is still possible.
 
     my $ffo = File::Find::Object->new( { options }, @files);
 
-Create a new File::Find::Object object. @files is the list of directory
+Create a new File::Find::Object object. @files is the list of directories
 - or files - the object should explore.
 
 =head3 options
@@ -183,44 +183,46 @@ Create a new File::Find::Object object. @files is the list of directory
 
 =item depth
 
-Boolean, return the directory content before the directory itself
+Boolean - returns the directory content before the directory itself.
 
 =item nocrossfs
 
-Boolean, don't continue on filesystem different than the parent
+Boolean - doesn't continue on filesystems different than the parent.
 
 =item followlink
 
-Boolean, follow symlink when they point to a directory.
+Boolean - follow symlinks when they point to a directory.
 
-You can safelly set this options, File::Find::Object does not follow the link
-if detect a loop.
+You can safely set this option to true as File::Find::Object does not follow 
+the link if it detects a loop.
 
 =item filter
 
-Function, should point to a function returning TRUE or FALSE. This function is
-call with the filename to filter, if the function return FALSE, the file is
-skiped.
+Function reference - should point to a function returning TRUE or FALSE. This 
+function is called with the filename to filter, if the function return FALSE, 
+the file is skipped.
 
 =item callback
 
-Function, should point to a function calle each time a new file is return. The
-function is called with the current filename as argument.
+Function reference - should point to a function, which would be called each 
+time a new file is returned. The function is called with the current filename 
+as an argument.
 
 =back
 
 =head2 next
 
-Return the next file find by the File::Find::Object, it return undef at end.
+Returns the next file found by the File::Find::Object. It returns undef once
+the scan is completed.
 
 =head2 item
 
-Return the current filename found by the File::Find::Object object, aka the
-latest value return by next().
+Returns the current filename found by the File::Find::Object object, i.e: the
+last value returned by next().
 
 =head1 BUGS
 
-Currently works only on UNIX as it use '/' as separator.
+Currently works only on UNIX as it uses '/' as a path separator.
 
 =head1 SEE ALSO
 
