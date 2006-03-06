@@ -1,0 +1,34 @@
+File::Find::Object is an object-oriented and iterative replacment for 
+File::Find. I.e: it is a module for traversing a directory tree, and finding
+all the files contained within it programatically.
+
+INSTALLATION
+
+To install this module type the following:
+
+    perl Makefile.PL
+    make
+    make test
+    make install
+
+after you install all of its dependencies.
+
+Alternatively use the CPAN.pm module:
+
+    # perl -MCPAN -e 'install HTML::Widgets::NavMenu'
+
+Or the new CPANPLUS.pm module
+
+    # perl -MCPANPLUS -e 'install HTML::Widgets::NavMenu'
+
+DEPENDENCIES
+
+This module has no dependencies except for a Perl version that
+supports the "use warnings" pragma.
+
+COPYRIGHT AND LICENSE
+
+Copyright (C) 2005, 2006 by Olivier Thauvin
+
+[ TODO : add license ]
+
