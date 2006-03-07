@@ -2,4 +2,6 @@
 0.0.3 - [TODO : Put Date]
     - Fixed some language problems in the POD.
     - Added the Changes file.
+    - Changed the license to dual GPL/Clarified Artistic
+    - Placed the .pm files inside lib.
 
