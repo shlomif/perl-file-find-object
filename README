@@ -30,5 +30,6 @@ COPYRIGHT AND LICENSE
 
 Copyright (C) 2005, 2006 by Olivier Thauvin
 
-[ TODO : add license ]
-
+This package is free software; you can redistribute it and/or modify it under 
+the same terms as Parrot, i.e., under the terms of the "Clarified Artistic 
+License" or the "GNU General Public License".
