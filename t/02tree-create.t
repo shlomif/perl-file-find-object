@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 7;
+use Test::More tests => 12;
 
 BEGIN
 {
@@ -42,4 +42,19 @@ use File::Find::Object::TreeCreate;
     ok (!$t->exist("./BKLASDJASFDJODIJASDOJASODJ.wok"), 
         "Checking the exist() method");
 
+    # TEST
+    ok ($t->is_file("./MANIFEST"), "Checking the is_file method");
+
+    # TEST
+    ok (! $t->is_file ("./t"), "Checking the is_file method - 2");
+
+    # TEST
+    ok (! $t->is_dir("./MANIFEST"), "Checking the is_dir method - false");
+
+    # TEST
+    ok ($t->is_dir ("./t"), "Checking the is_dir method - true");
+    
+    # TEST
+    ok ($t->contains("./t/sample-data/h.txt", "Hello."),
+        "Checking the contain method");
 }

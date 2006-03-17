@@ -48,5 +48,31 @@ sub exist
     return (-e $self->get_path(@_));
 }
 
+sub is_file
+{
+    my $self = shift;
+    return (-f $self->get_path(@_));
+}
+
+sub is_dir
+{
+    my $self = shift;
+    return (-d $self->get_path(@_));
+}
+
+sub contains 
+{
+    my ($self, $path, $expected) = @_;
+    open my $in, "<", $self->get_path($path) or
+        return 0;
+    my $data;
+    {
+        local $/;
+        $data = <$in>;
+    }
+    close($in);
+    return ($data eq $expected);
+}
+
 1;
 
