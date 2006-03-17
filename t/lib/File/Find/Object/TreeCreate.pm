@@ -42,5 +42,11 @@ sub get_path
     }
 }
 
+sub exist
+{
+    my $self = shift;
+    return (-e $self->get_path(@_));
+}
+
 1;
 

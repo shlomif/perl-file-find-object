@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 5;
+use Test::More tests => 7;
 
 BEGIN
 {
@@ -30,4 +30,16 @@ use File::Find::Object::TreeCreate;
 
     # TEST
     is ($t->get_path("./one/two/three/four/"), File::Spec->catdir(File::Spec->curdir(), "one", "two", "three", "four"));
+}
+
+{
+    my $t = File::Find::Object::TreeCreate->new();
+
+    # TEST
+    ok ($t->exist("./MANIFEST"), "Checking the exist() method");
+
+    # TEST
+    ok (!$t->exist("./BKLASDJASFDJODIJASDOJASODJ.wok"), 
+        "Checking the exist() method");
+
 }
