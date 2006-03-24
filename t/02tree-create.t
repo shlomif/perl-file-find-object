@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 13;
+use Test::More tests => 21;
 
 BEGIN
 {
@@ -77,5 +77,81 @@ use File::Find::Object::TreeCreate;
             );
         # Cleanup
         rmtree ($t->get_path("./t/sample-data/ls-test"));
+    }
+
+    {
+        my $tree =
+        {
+            'name' => "tree-test-1/",
+            'subs' =>
+            [
+                {
+                    'name' => "b.doc",
+                    'contents' => "This file was spotted in the wild.",
+                },            
+                {
+                    'name' => "a/",
+                },
+                {
+                    'name' => "foo/",
+                    'subs' =>
+                    [
+                        {
+                            'name' => "yet/",
+                        },
+                    ],
+                },
+            ],
+        };
+
+        $t->create_tree("./t/sample-data/", $tree);
+
+        # TEST
+        is_deeply ($t->ls("./t/sample-data/tree-test-1"),
+            ["a", "b.doc", "foo"],
+            "Testing the contents of the root tree"
+        );
+
+        # TEST
+        ok ($t->is_dir("./t/sample-data/tree-test-1/a"), 
+            "a is a dir"
+        );
+
+        # TEST
+        is_deeply ($t->ls("./t/sample-data/tree-test-1/a"),
+            [],
+            "Testing the contents of a"
+        );
+
+        # TEST
+        is_deeply ($t->ls("./t/sample-data/tree-test-1/foo"),
+            ["yet"],
+            "Testing the contents of foo"
+        );
+
+        # TEST
+        ok ($t->is_dir("./t/sample-data/tree-test-1/foo/yet"),
+            "Testing that foo/yet is a dir"
+        );
+
+        # TEST
+        is_deeply ($t->ls("./t/sample-data/tree-test-1/foo/yet"),
+            [],
+            "Testing that foo/yet is a dir"
+        );
+
+        # TEST
+        ok ($t->is_file("./t/sample-data/tree-test-1/b.doc"),
+            "Checking that b.doc is a file"
+        );
+
+        # TEST
+        is ($t->cat("./t/sample-data/tree-test-1/b.doc"),
+            "This file was spotted in the wild.",
+            "Checking for contents of b.doc"
+        );
+
+        # Cleanup
+        rmtree ($t->get_path("./t/sample-data/tree-test-1"));
     }
 }

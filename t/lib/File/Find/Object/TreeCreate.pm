@@ -86,5 +86,37 @@ sub ls
     closedir($dir);    
     return \@files;
 }
+
+sub create_tree
+{
+    my ($self, $unix_init_path, $tree) = @_;
+    my $real_init_path = $self->get_path($unix_init_path);
+    return $self->_real_create_tree($real_init_path, $tree);
+}
+
+sub _real_create_tree
+{
+    my ($self, $init_path, $tree) = @_;
+    my $name = $tree->{'name'};
+    if ($name =~ s{/$}{})
+    {
+        my $dir_name = File::Spec->catfile($init_path, $name);
+        mkdir($dir_name);
+        if (exists($tree->{'subs'}))
+        {
+            foreach my $sub (@{$tree->{'subs'}})
+            {
+                $self->_real_create_tree($dir_name, $sub);
+            }
+        }
+    }
+    else
+    {
+        open my $out, ">", File::Spec->catfile($init_path, $name);
+        print {$out} +(exists($tree->{'contents'}) ? $tree->{'contents'} : "");
+        close($out);
+    }
+    return 0;
+}
 1;
 
