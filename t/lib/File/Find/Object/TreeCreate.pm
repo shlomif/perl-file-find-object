@@ -60,10 +60,10 @@ sub is_dir
     return (-d $self->get_path(@_));
 }
 
-sub contains 
+sub cat
 {
-    my ($self, $path, $expected) = @_;
-    open my $in, "<", $self->get_path($path) or
+    my $self = shift;
+    open my $in, "<", $self->get_path(@_) or
         return 0;
     my $data;
     {
@@ -71,8 +71,20 @@ sub contains
         $data = <$in>;
     }
     close($in);
-    return ($data eq $expected);
+    return $data;
 }
 
+sub ls
+{
+    my $self = shift;
+    opendir my $dir, $self->get_path(@_) or
+        return undef;
+    my @files = 
+        sort { $a cmp $b } 
+        grep { !(($_ eq ".") || ($_ eq "..")) }
+        readdir($dir);
+    closedir($dir);    
+    return \@files;
+}
 1;
 

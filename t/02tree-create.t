@@ -3,13 +3,15 @@
 use strict;
 use warnings;
 
-use Test::More tests => 12;
+use Test::More tests => 13;
 
 BEGIN
 {
     use File::Spec;
     use lib File::Spec->catdir(File::Spec->curdir(), "t", "lib");
 }
+
+use File::Path;
 
 use File::Find::Object::TreeCreate;
 
@@ -55,6 +57,25 @@ use File::Find::Object::TreeCreate;
     ok ($t->is_dir ("./t"), "Checking the is_dir method - true");
     
     # TEST
-    ok ($t->contains("./t/sample-data/h.txt", "Hello."),
-        "Checking the contain method");
+    is ($t->cat("./t/sample-data/h.txt"), "Hello.",
+        "Checking the cat method");
+
+    {
+        mkdir ($t->get_path("./t/sample-data/ls-test"));
+        mkdir ($t->get_path("./t/sample-data/ls-test/a"));
+        open O, ">", $t->get_path("./t/sample-data/ls-test/b.txt");
+        print O "Yowza";
+        close(O);
+        mkdir ($t->get_path("./t/sample-data/ls-test/c"));
+        open O, ">", $t->get_path("./t/sample-data/ls-test/h.xls");
+        print O "FooBardom!\n";
+        close(O);
+        # TEST
+        is_deeply ($t->ls("./t/sample-data/ls-test"),
+            ["a","b.txt","c","h.xls"],
+            "Testing the ls method",
+            );
+        # Cleanup
+        rmtree ($t->get_path("./t/sample-data/ls-test"));
+    }
 }
