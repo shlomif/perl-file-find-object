@@ -25,7 +25,7 @@ sub get_path
 
     my @components;
 
-    if ($path =~ s{^./}{})
+    if ($path =~ s{^\./}{})
     {
         push @components, File::Spec->curdir();
     }

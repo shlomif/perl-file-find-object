@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 21;
+use Test::More tests => 22;
 
 BEGIN
 {
@@ -154,4 +154,11 @@ use File::Find::Object::TreeCreate;
         # Cleanup
         rmtree ($t->get_path("./t/sample-data/tree-test-1"));
     }
+    {
+        # TEST
+        is ($t->get_path("s/hello"), File::Spec->catfile("s", "hello"),
+            "Bug that eliminated ^[AnyChar]/ instead of ^\\./"
+        );
+    }
 }
+
