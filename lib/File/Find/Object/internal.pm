@@ -13,6 +13,8 @@ use File::Find::Object;
 use vars qw(@ISA);
 @ISA = qw(File::Find::Object);
 
+use File::Spec;
+
 sub new {
     my ($class, $from) = @_;
     my $self = {
@@ -32,7 +34,10 @@ sub new {
 
 sub open_dir {
     my ($self) = @_;
-    opendir($self->{_handle}, $self->{dir}) or return undef;
+    opendir(my $handle, $self->{dir}) or return undef;
+    $self->{_files} =
+        [ sort { $a cmp $b } File::Spec->no_upwards(readdir($handle)) ];
+    closedir($handle);
     my @st = stat($self->{dir});
     $self->{inode} = $st[1];
     $self->{dev} = $st[0];
@@ -87,8 +92,7 @@ sub check_subdir {
 
 sub movenext {
     my ($self) = @_;
-    my $h = $self->{_handle};
-    if ($self->{currentfile} = readdir($h)) {
+    if ($self->{currentfile} = shift(@{$self->{_files}})) {
         $self->{_action} = {};
         return 1;
     } else {
