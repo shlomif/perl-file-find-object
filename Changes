@@ -2,6 +2,13 @@
 0.0.3 - [TODO : Put Date]
     - Fixed some language problems in the POD.
     - Added the Changes file.
-    - Changed the license to dual GPL/Clarified Artistic
+    - Changed the license to GPL/Artistic/Artistic-2.0
     - Placed the .pm files inside lib.
+    - Added the TreeCreate module under t/lib (with appropriate tests) to test 
+    the main module.
+    - Made the default test order lexicographical, and predictable. In the 
+    process, eliminated keeping the directory handles, and possibly the fact 
+    that they are kept open.
+    - Fixed a bug where circular references prevente the module from being
+    destroyed.
 
