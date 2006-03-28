@@ -19,7 +19,7 @@ sub new {
     my ($class, $from) = @_;
     my $self = {
         _father => $from,
-        _top => $from->{_top},
+        _top => $from->_top,
         dir => $from->current_path,
     };
 
@@ -52,13 +52,13 @@ sub me_die {
 
 sub become_default {
     my ($self) = @_;
-    $self->{_top}->{_current} = $self;
+    $self->_top->{_current} = $self;
     0
 }
 
 sub set_current {
     my ($self, $current) = @_;
-    $self->{_top}->{_current} = $current;
+    $self->_top->{_current} = $current;
 }
 
 sub current_path {
@@ -72,8 +72,8 @@ sub check_subdir {
     my ($self) = @_;
     my @st = stat($self->current_path());
     !-d _ and return 0;
-    -l $self->current_path() && !$self->{_top}->{followlink} and return 0;
-    $st[0] != $self->{dev} && $self->{_top}->{nocrossfs} and return 0;
+    -l $self->current_path() && !$self->_top->{followlink} and return 0;
+    $st[0] != $self->{dev} && $self->_top->{nocrossfs} and return 0;
     my $ptr = $self; my $rc;
     while($ptr->{_father}) {
         if($ptr->{inode} == $st[1] && $ptr->{dev} == $st[0]) {

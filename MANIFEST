@@ -8,6 +8,7 @@ README
 t/01ffo.t
 t/02tree-create.t
 t/03traverse.t
+t/04destroy.t
 t/lib/File/Find/Object/TreeCreate.pm
 tree
 t/sample-data/h.txt

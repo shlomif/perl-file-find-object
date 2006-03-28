@@ -27,8 +27,20 @@ sub new {
         filter => $options->{filter},
         callback => $options->{callback},
     };
-    $tree->{_top} = $tree;
     bless($tree, $class);
+}
+
+sub _top
+{
+    my $self = shift;
+    if (defined($self->{_top}))
+    {
+        return $self->{_top};
+    }
+    else
+    {
+        return $self;
+    }
 }
 
 sub DESTROY {
@@ -87,14 +99,14 @@ sub _process_current {
     $self->isdot and return 0;
     $self->filter or return 0;  
 
-    foreach ($self->{_top}->{depth} ? qw/b a/ : qw/a b/) {
+    foreach ($self->_top->{depth} ? qw/b a/ : qw/a b/) {
         if ($self->{_action}{$_}) {
             next;
         }
         $self->{_action}{$_} = 1;
         if($_ eq 'a') {
-            if ($self->{_top}->{callback}) {
-                $self->{_top}->{callback}->($self->current_path());
+            if ($self->_top->{callback}) {
+                $self->_top->{callback}->($self->current_path());
             }
             return 1;
         }
@@ -115,8 +127,8 @@ sub isdot {
 
 sub filter {
     my ($self) = @_;
-    return defined($self->{_top}->{filter}) ?
-        $self->{_top}->{filter}->($self->current_path()) :
+    return defined($self->_top->{filter}) ?
+        $self->_top->{filter}->($self->current_path()) :
         1;
 }
 
