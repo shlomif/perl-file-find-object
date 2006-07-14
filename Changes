@@ -9,6 +9,6 @@
     - Made the default test order lexicographical, and predictable. In the 
     process, eliminated keeping the directory handles, and possibly the fact 
     that they are kept open.
-    - Fixed a bug where circular references prevente the module from being
+    - Fixed a bug where circular references prevented the module from being
     destroyed.
 
