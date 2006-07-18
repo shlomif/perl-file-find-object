@@ -122,7 +122,11 @@ sub _process_current {
 }
 
 sub isdot {
-    0;
+    my ($self) = @_;
+    if ($self->{currentfile} eq '..' || $self->{currentfile} eq '.') {
+        return 1;
+    }
+    return 0;
 }
 
 sub filter {
@@ -139,6 +143,18 @@ sub check_subdir {
 sub current_path {
     my ($self) = @_;
     $self->{currentfile};
+}
+
+sub open_dir {
+    my ($self) = @_;
+    opendir(my $handle, $self->{dir}) or return undef;
+    $self->{_files} =
+        [ sort { $a cmp $b } File::Spec->no_upwards(readdir($handle)) ];
+    closedir($handle);
+    my @st = stat($self->{dir});
+    $self->{inode} = $st[1];
+    $self->{dev} = $st[0];
+    return 1;
 }
 
 1
