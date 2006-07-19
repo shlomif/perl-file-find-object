@@ -37,7 +37,7 @@ sub new {
 sub me_die {
     my ($self) = @_;
     $self->_father()->become_default;
-    0
+    return 0;
 }
 
 sub become_default {
@@ -60,9 +60,18 @@ sub current_path {
 sub check_subdir {
     my ($self) = @_;
     my @st = stat($self->current_path());
-    !-d _ and return 0;
-    -l $self->current_path() && !$self->_top->{followlink} and return 0;
-    $st[0] != $self->_father->{dev} && $self->_top->{nocrossfs} and return 0;
+    if (!-d _)
+    {
+        return 0;
+    }
+    if (-l $self->current_path() && !$self->_top->{followlink})
+    {
+        return 0;
+    }
+    if ($st[0] != $self->_father->{dev} && $self->_top->{nocrossfs})
+    {
+        return 0;
+    }
     my $ptr = $self; my $rc;
     while($ptr->_father) {
         if($ptr->_father->{inode} == $st[1] && $ptr->_father->{dev} == $st[0]) {
@@ -76,7 +85,7 @@ sub check_subdir {
             $self->current_path());
         return 0;
     }
-    1
+    return 1;
 }
 
 1;
