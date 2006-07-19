@@ -55,7 +55,7 @@ sub next {
         my $current = $self->{_current} || $self;
         $current->_process_current and return $self->{item} = $current->current_path;
         $current = $self->{_current} || $self;
-        if(!$current->movenext) {
+        if(!$self->movenext) {
             $current->me_die and return $self->{item} = undef;
         }
     }
@@ -66,14 +66,40 @@ sub item {
     $self->{item}
 }
 
-sub movenext {
-    my ($self) = @_;
+sub _movenext_with_current
+{
+    my $self = shift;
+    if ($self->{_current}->{currentfile} = shift(@{$self->{_current}->{_father}->{_files}})) {
+        $self->{_current}->{_action} = {};
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+sub _movenext_wo_current
+{
+    my $self = shift;
+
     $self->{ind} > @{$self->{files}} and return;
     $self->{ind}++;
     $self->{currentfile} = ${$self->{files}}[$self->{ind}];
     $self->{_action} = {};
     1;
 }
+
+sub movenext {
+    my ($self) = @_;
+    if (defined($self->{_current}))
+    {
+        return $self->_movenext_with_current();
+    }
+    else
+    {
+        return $self->_movenext_wo_current();
+    }
+}
+
 
 sub me_die {
     my ($self) = @_;
@@ -142,7 +168,7 @@ sub check_subdir {
 
 sub current_path {
     my ($self) = @_;
-    $self->{currentfile};
+    return $self->{currentfile};
 }
 
 sub open_dir {

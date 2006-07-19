@@ -81,15 +81,4 @@ sub check_subdir {
     1
 }
 
-sub movenext {
-    my ($self) = @_;
-    if ($self->{currentfile} = shift(@{$self->{_father}->{_files}})) {
-        $self->{_action} = {};
-        return 1;
-    } else {
-        return 0;
-    }
-}
-
-
 1
