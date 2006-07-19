@@ -8,7 +8,6 @@ package File::Find::Object::internal;
 
 use strict;
 use warnings;
-use File::Find::Object;
 
 use vars qw(@ISA);
 @ISA = qw(File::Find::Object);
@@ -16,18 +15,18 @@ use vars qw(@ISA);
 use File::Spec;
 
 sub new {
-    my ($class, $from) = @_;
+    my ($class, $from, $index) = @_;
     my $self = {
-        _father => $from,
         _top => $from->_top,
         dir => $from->current_path,
+        idx => $index,
     };
 
     bless($self, $class);
 
     $from->{dir} = $self->{dir};
 
-    return $self->{_father}->open_dir ? $self : undef;
+    return $self->_father->open_dir ? $self : undef;
 }
 
 #sub DESTROY {
@@ -37,24 +36,23 @@ sub new {
 
 sub me_die {
     my ($self) = @_;
-    $self->{_father}->become_default;
+    $self->_father()->become_default;
     0
 }
 
 sub become_default {
     my ($self) = @_;
-    $self->_top->{_current} = $self;
-    0
+    while (scalar(@{$self->_top->_dir_stack()}) != $self->{idx} + 1)
+    {
+        pop(@{$self->_top->_dir_stack()});
+    }
+    return 0;
 }
 
-sub set_current {
-    my ($self, $current) = @_;
-    $self->_top->{_current} = $current;
-}
 
 sub current_path {
     my ($self) = @_;
-    my $p = $self->{_father}->{dir};
+    my $p = $self->_father->{dir};
     $p =~ s!/+$!!; #!
     $p .= '/' . $self->{currentfile};
 }
@@ -64,21 +62,21 @@ sub check_subdir {
     my @st = stat($self->current_path());
     !-d _ and return 0;
     -l $self->current_path() && !$self->_top->{followlink} and return 0;
-    $st[0] != $self->{_father}->{dev} && $self->_top->{nocrossfs} and return 0;
+    $st[0] != $self->_father->{dev} && $self->_top->{nocrossfs} and return 0;
     my $ptr = $self; my $rc;
-    while($ptr->{_father}) {
-        if($ptr->{_father}->{inode} == $st[1] && $ptr->{_father}->{dev} == $st[0]) {
+    while($ptr->_father) {
+        if($ptr->_father->{inode} == $st[1] && $ptr->_father->{dev} == $st[0]) {
             $rc = 1;
             last;
         }
-        $ptr = $ptr->{_father};
+        $ptr = $ptr->_father;
     }
     if ($rc) {
-        printf(STDERR "Avoid loop $ptr->{_father}->{dir} => %s\n",
+        printf(STDERR "Avoid loop " . $ptr->_father->{dir} . " => %s\n",
             $self->current_path());
         return 0;
     }
     1
 }
 
-1
+1;

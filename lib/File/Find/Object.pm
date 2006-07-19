@@ -9,6 +9,7 @@ package File::Find::Object;
 
 use strict;
 use warnings;
+
 use File::Find::Object::internal;
 
 our $VERSION = '0.0.3';
@@ -16,8 +17,6 @@ our $VERSION = '0.0.3';
 sub new {
     my ($class, $options, @files) = @_;
     my $tree = {
-        _father => undef,
-        _current => undef,
         files => [ @files ],
         ind => -1,
         
@@ -26,8 +25,19 @@ sub new {
         followlink => $options->{followlink},
         filter => $options->{filter},
         callback => $options->{callback},
+        _dir_stack => [],
     };
     bless($tree, $class);
+}
+
+sub _dir_stack
+{
+    my $self = shift;
+    if (@_)
+    {
+        $self->{_dir_stack} = shift;
+    }
+    return $self->{_dir_stack};
 }
 
 sub _top
@@ -49,12 +59,18 @@ sub DESTROY {
 #    printf STDERR "destroy `%s'\n", $self->{dir} || "--";
 }
 
+sub _current
+{
+    my $self = shift;
+    return $self->_dir_stack()->[-1] || $self;
+}
+
 sub next {
     my ($self) = @_;
     while (1) {
-        my $current = $self->{_current} || $self;
+        my $current = $self->_current();
         $current->_process_current and return $self->{item} = $current->current_path;
-        $current = $self->{_current} || $self;
+        $current = $self->_current();
         if(!$self->movenext) {
             $current->me_die and return $self->{item} = undef;
         }
@@ -66,11 +82,37 @@ sub item {
     $self->{item}
 }
 
+sub _top_father
+{
+    my $self = shift;
+    return ($self->_dir_stack->[-2] || $self);
+}
+
+sub _father
+{
+    my $self = shift;
+    if (!defined($self->{idx}))
+    {
+        return undef;
+    }
+    elsif ($self->{idx} >= 1)
+    {
+        return $self->_top->_dir_stack()->[$self->{idx}-1];
+    }
+    else
+    {
+        return $self->_top();
+    }
+}
+
 sub _movenext_with_current
 {
     my $self = shift;
-    if ($self->{_current}->{currentfile} = shift(@{$self->{_current}->{_father}->{_files}})) {
-        $self->{_current}->{_action} = {};
+    if ($self->_current->{currentfile} = 
+        shift(@{$self->_current->_father->{_files}})
+       )
+    {
+        $self->_current->{_action} = {};
         return 1;
     } else {
         return 0;
@@ -90,7 +132,7 @@ sub _movenext_wo_current
 
 sub movenext {
     my ($self) = @_;
-    if (defined($self->{_current}))
+    if (@{$self->_dir_stack()})
     {
         return $self->_movenext_with_current();
     }
@@ -108,12 +150,7 @@ sub me_die {
 
 sub become_default {
     my ($self) = @_;
-    $self->{_current} = undef;
-}
-
-sub set_current {
-    my ($self, $current) = @_;
-    $self->{_current} = $current;
+    @{$self->_dir_stack()} = ();
 }
 
 # Return true if there is somthing next
@@ -139,8 +176,7 @@ sub _process_current {
             
         if ($_ eq 'b') {
             $self->check_subdir or next;
-            my $newtree = File::Find::Object::internal->new($self) or next;
-            $self->set_current($newtree);
+            push @{$self->_top->_dir_stack()}, File::Find::Object::internal->new($self, scalar(@{$self->_top->_dir_stack()}));
             return 0;
         }
     }
@@ -182,8 +218,6 @@ sub open_dir {
     $self->{dev} = $st[0];
     return 1;
 }
-
-1
 
 __END__
 
