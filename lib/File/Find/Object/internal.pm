@@ -29,7 +29,7 @@ sub new {
 
     $from->{dir} = $self->{dir};
 
-    return $self->_father->open_dir ? $self : undef;
+    return $top->_father($self)->open_dir ? $self : undef;
 }
 
 #sub DESTROY {

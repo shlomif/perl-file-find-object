@@ -86,18 +86,19 @@ sub item {
 
 sub _father
 {
-    my $self = shift;
-    if (!defined($self->{idx}))
+    my ($self, $current) = @_;
+
+    if (!defined($current->{idx}))
     {
         return undef;
     }
-    elsif ($self->{idx} >= 1)
+    elsif ($current->{idx} >= 1)
     {
-        return $self->_top->_dir_stack()->[$self->{idx}-1];
+        return $self->_dir_stack()->[$current->{idx}-1];
     }
     else
     {
-        return $self->_top();
+        return $self;
     }
 }
 
@@ -105,7 +106,7 @@ sub _movenext_with_current
 {
     my $self = shift;
     if ($self->_current->{currentfile} = 
-        shift(@{$self->_current->_father->{_files}})
+        shift(@{$self->_father($self->_current)->{_files}})
        )
     {
         $self->_current->{_action} = {};
@@ -150,7 +151,7 @@ sub me_die {
         return 1;
     }
 
-    $self->become_default($current->_father());
+    $self->become_default($self->_father($current));
     return 0;
 }
 
@@ -235,20 +236,20 @@ sub check_subdir
     {
         return 0;
     }
-    if ($st[0] != $current->_father->{dev} && $current->_top->{nocrossfs})
+    if ($st[0] != $self->_father($current)->{dev} && $current->_top->{nocrossfs})
     {
         return 0;
     }
     my $ptr = $current; my $rc;
-    while($ptr->_father) {
-        if($ptr->_father->{inode} == $st[1] && $ptr->_father->{dev} == $st[0]) {
+    while($self->_father($ptr)) {
+        if($self->_father($ptr)->{inode} == $st[1] && $self->_father($ptr) == $st[0]) {
             $rc = 1;
             last;
         }
-        $ptr = $ptr->_father;
+        $ptr = $self->_father($ptr);
     }
     if ($rc) {
-        printf(STDERR "Avoid loop " . $ptr->_father->{dir} . " => %s\n",
+        printf(STDERR "Avoid loop " . $self->_father($ptr)->{dir} . " => %s\n",
             $self->current_path($current));
         return 0;
     }
@@ -263,7 +264,7 @@ sub current_path {
         return $self->{currentfile};
     }
 
-    my $p = $current->_father->{dir};
+    my $p = $self->_father($current)->{dir};
     $p =~ s!/+$!!; #!
     $p .= '/' . $current->{currentfile};
 
