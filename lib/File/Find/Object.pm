@@ -83,7 +83,7 @@ sub next {
     my ($self) = @_;
     while (1) {
         my $current = $self->_current();
-        $current->_process_current and return $self->{item} = $self->current_path($current);
+        $self->_process_current($current) and return $self->{item} = $self->current_path($current);
         $current = $self->_current();
         if(!$self->movenext) {
             $self->me_die($current) and return $self->{item} = undef;
@@ -188,32 +188,32 @@ sub become_default
 
 # Return true if there is somthing next
 sub _process_current {
-    my ($self) = @_;
+    my ($self, $current) = @_;
    
-    $self->_curr_file() or return 0;
+    $current->_curr_file() or return 0;
 
-    $self->_top->isdot($self) and return 0;
-    $self->_top->filter($self) or return 0;  
+    $self->isdot($current) and return 0;
+    $self->filter($current) or return 0;  
 
-    foreach ($self->_top->{depth} ? qw/b a/ : qw/a b/) {
-        if ($self->{_action}{$_}) {
+    foreach ($self->{depth} ? qw/b a/ : qw/a b/) {
+        if ($current->{_action}{$_}) {
             next;
         }
-        $self->{_action}{$_} = 1;
+        $current->{_action}{$_} = 1;
         if($_ eq 'a') {
-            if ($self->_top->{callback}) {
-                $self->_top->{callback}->($self->_top->current_path($self));
+            if ($self->{callback}) {
+                $self->{callback}->($self->current_path($current));
             }
             return 1;
         }
             
         if ($_ eq 'b') {
-            $self->_top->check_subdir($self) or next;
-            push @{$self->_top->_dir_stack()}, File::Find::Object::internal->new($self, scalar(@{$self->_top->_dir_stack()}));
+            $self->check_subdir($current) or next;
+            push @{$self->_dir_stack()}, File::Find::Object::internal->new($current, scalar(@{$self->_dir_stack()}));
             return 0;
         }
     }
-    0
+    return 0;
 }
 
 sub isdot
