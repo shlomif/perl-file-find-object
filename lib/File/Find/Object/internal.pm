@@ -15,12 +15,9 @@ use vars qw(@ISA);
 use File::Spec;
 
 sub new {
-    my ($class, $from, $index) = @_;
-
-    my $top = $from->_top;
+    my ($class, $top, $from, $index) = @_;
 
     my $self = {
-        _top => $top,
         dir => $top->current_path($from),
         idx => $index,
     };

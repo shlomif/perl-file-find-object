@@ -54,19 +54,6 @@ sub _curr_file
     return $self->{_curr_file};
 }
 
-sub _top
-{
-    my $self = shift;
-    if (defined($self->{_top}))
-    {
-        return $self->{_top};
-    }
-    else
-    {
-        return $self;
-    }
-}
-
 sub DESTROY {
     my ($self) = @_;
 #    print STDERR join(" ", caller)."\n";
@@ -209,7 +196,12 @@ sub _process_current {
             
         if ($_ eq 'b') {
             $self->check_subdir($current) or next;
-            push @{$self->_dir_stack()}, File::Find::Object::internal->new($current, scalar(@{$self->_dir_stack()}));
+            push @{$self->_dir_stack()}, 
+                File::Find::Object::internal->new(
+                    $self,
+                    $current, 
+                    scalar(@{$self->_dir_stack()})
+                );
             return 0;
         }
     }
@@ -245,11 +237,11 @@ sub check_subdir
     {
         return 0;
     }
-    if (-l $self->current_path($current) && !$current->_top->{followlink})
+    if (-l $self->current_path($current) && !$self->{followlink})
     {
         return 0;
     }
-    if ($st[0] != $self->_father($current)->{dev} && $current->_top->{nocrossfs})
+    if ($st[0] != $self->_father($current)->{dev} && $self->{nocrossfs})
     {
         return 0;
     }
