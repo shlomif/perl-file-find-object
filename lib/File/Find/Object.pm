@@ -10,6 +10,8 @@ package File::Find::Object;
 use strict;
 use warnings;
 
+use Carp;
+
 use File::Find::Object::internal;
 
 our $VERSION = '0.0.3';
@@ -72,7 +74,7 @@ sub next {
         $current->_process_current and return $self->{item} = $self->current_path($current);
         $current = $self->_current();
         if(!$self->movenext) {
-            $current->me_die and return $self->{item} = undef;
+            $self->me_die($current) and return $self->{item} = undef;
         }
     }
 }
@@ -142,10 +144,20 @@ sub movenext {
     }
 }
 
-
 sub me_die {
-    my ($self) = @_;
-    1;
+    if (@_ != 2)
+    {
+        confess "Hello";
+    }
+    my ($self, $current) = @_;
+
+    if ($self eq $current)
+    {
+        return 1;
+    }
+
+    $self->become_default($current->_father());
+    return 0;
 }
 
 sub become_default
