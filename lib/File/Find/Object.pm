@@ -42,6 +42,18 @@ sub _dir_stack
     return $self->{_dir_stack};
 }
 
+sub _curr_file
+{
+    my $self = shift;
+
+    if (@_)
+    {
+        $self->{_curr_file} = shift;
+    }
+
+    return $self->{_curr_file};
+}
+
 sub _top
 {
     my $self = shift;
@@ -105,9 +117,9 @@ sub _father
 sub _movenext_with_current
 {
     my $self = shift;
-    if ($self->_current->{currentfile} = 
-        shift(@{$self->_father($self->_current)->{_files}})
-       )
+    if ($self->_current->_curr_file(
+            shift(@{$self->_father($self->_current)->{_files}})
+       ))
     {
         $self->_current->{_action} = {};
         return 1;
@@ -122,7 +134,7 @@ sub _movenext_wo_current
 
     $self->{ind} > @{$self->{files}} and return;
     $self->{ind}++;
-    $self->{currentfile} = ${$self->{files}}[$self->{ind}];
+    $self->_curr_file(${$self->{files}}[$self->{ind}]);
     $self->{_action} = {};
     1;
 }
@@ -178,7 +190,7 @@ sub become_default
 sub _process_current {
     my ($self) = @_;
    
-    $self->{currentfile} or return 0;
+    $self->_curr_file() or return 0;
 
     $self->_top->isdot($self) and return 0;
     $self->_top->filter($self) or return 0;  
@@ -208,7 +220,7 @@ sub isdot
 {
     my ($self, $current) = @_;
 
-    my $file = $current->{currentfile};
+    my $file = $current->_curr_file();
 
     return ($file eq ".." || $file eq ".");
 }
@@ -262,12 +274,12 @@ sub current_path {
 
     if ($self eq $current)
     {
-        return $self->{currentfile};
+        return $self->_curr_file;
     }
 
     my $p = $self->_father($current)->{dir};
     $p =~ s!/+$!!; #!
-    $p .= '/' . $current->{currentfile};
+    $p .= '/' . $current->_curr_file;
 
     return $p;
 }
