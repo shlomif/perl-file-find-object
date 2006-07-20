@@ -181,7 +181,7 @@ sub _process_current {
     $self->{currentfile} or return 0;
 
     $self->isdot and return 0;
-    $self->filter or return 0;  
+    $self->_top->filter($self) or return 0;  
 
     foreach ($self->_top->{depth} ? qw/b a/ : qw/a b/) {
         if ($self->{_action}{$_}) {
@@ -213,9 +213,9 @@ sub isdot {
 }
 
 sub filter {
-    my ($self) = @_;
-    return defined($self->_top->{filter}) ?
-        $self->_top->{filter}->($self->_top->current_path($self)) :
+    my ($self, $current) = @_;
+    return defined($self->{filter}) ?
+        $self->{filter}->($self->current_path($current)) :
         1;
 }
 
