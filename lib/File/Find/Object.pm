@@ -180,7 +180,7 @@ sub _process_current {
    
     $self->{currentfile} or return 0;
 
-    $self->isdot and return 0;
+    $self->_top->isdot($self) and return 0;
     $self->_top->filter($self) or return 0;  
 
     foreach ($self->_top->{depth} ? qw/b a/ : qw/a b/) {
@@ -204,12 +204,13 @@ sub _process_current {
     0
 }
 
-sub isdot {
-    my ($self) = @_;
-    if ($self->{currentfile} eq '..' || $self->{currentfile} eq '.') {
-        return 1;
-    }
-    return 0;
+sub isdot
+{
+    my ($self, $current) = @_;
+
+    my $file = $current->{currentfile};
+
+    return ($file eq ".." || $file eq ".");
 }
 
 sub filter {
