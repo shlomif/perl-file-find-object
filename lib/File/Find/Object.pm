@@ -84,12 +84,6 @@ sub item {
     $self->{item}
 }
 
-sub _top_father
-{
-    my $self = shift;
-    return ($self->_dir_stack->[-2] || $self);
-}
-
 sub _father
 {
     my $self = shift;
