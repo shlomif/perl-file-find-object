@@ -18,7 +18,7 @@ sub new {
     my ($class, $from, $index) = @_;
     my $self = {
         _top => $from->_top,
-        dir => $from->current_path,
+        dir => $from->_top->current_path($from),
         idx => $index,
     };
 
@@ -49,12 +49,5 @@ sub become_default {
     return 0;
 }
 
-
-sub current_path {
-    my ($self) = @_;
-    my $p = $self->_father->{dir};
-    $p =~ s!/+$!!; #!
-    $p .= '/' . $self->{currentfile};
-}
 
 1;

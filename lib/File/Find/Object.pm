@@ -69,7 +69,7 @@ sub next {
     my ($self) = @_;
     while (1) {
         my $current = $self->_current();
-        $current->_process_current and return $self->{item} = $current->current_path;
+        $current->_process_current and return $self->{item} = $self->current_path($current);
         $current = $self->_current();
         if(!$self->movenext) {
             $current->me_die and return $self->{item} = undef;
@@ -169,7 +169,7 @@ sub _process_current {
         $self->{_action}{$_} = 1;
         if($_ eq 'a') {
             if ($self->_top->{callback}) {
-                $self->_top->{callback}->($self->current_path());
+                $self->_top->{callback}->($self->_top->current_path($self));
             }
             return 1;
         }
@@ -194,7 +194,7 @@ sub isdot {
 sub filter {
     my ($self) = @_;
     return defined($self->_top->{filter}) ?
-        $self->_top->{filter}->($self->current_path()) :
+        $self->_top->{filter}->($self->_top->current_path($self)) :
         1;
 }
 
@@ -206,12 +206,12 @@ sub check_subdir
     {
         return 1;
     }
-    my @st = stat($current->current_path());
+    my @st = stat($self->current_path($current));
     if (!-d _)
     {
         return 0;
     }
-    if (-l $current->current_path() && !$current->_top->{followlink})
+    if (-l $self->current_path($current) && !$current->_top->{followlink})
     {
         return 0;
     }
@@ -229,15 +229,25 @@ sub check_subdir
     }
     if ($rc) {
         printf(STDERR "Avoid loop " . $ptr->_father->{dir} . " => %s\n",
-            $current->current_path());
+            $self->current_path($current));
         return 0;
     }
     return 1;
 }
 
 sub current_path {
-    my ($self) = @_;
-    return $self->{currentfile};
+    my ($self, $current) = @_;
+
+    if ($self eq $current)
+    {
+        return $self->{currentfile};
+    }
+
+    my $p = $current->_father->{dir};
+    $p =~ s!/+$!!; #!
+    $p .= '/' . $current->{currentfile};
+
+    return $p;
 }
 
 sub open_dir {
