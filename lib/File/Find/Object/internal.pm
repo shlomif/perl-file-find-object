@@ -16,9 +16,12 @@ use File::Spec;
 
 sub new {
     my ($class, $from, $index) = @_;
+
+    my $top = $from->_top;
+
     my $self = {
-        _top => $from->_top,
-        dir => $from->_top->current_path($from),
+        _top => $top,
+        dir => $top->current_path($from),
         idx => $index,
     };
 
@@ -34,11 +37,6 @@ sub new {
 #}
 
 
-sub me_die {
-    my ($self) = @_;
-    $self->_top->become_default($self->_father());
-    return 0;
-}
 
 
 
