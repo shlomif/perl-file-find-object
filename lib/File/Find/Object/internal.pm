@@ -32,12 +32,4 @@ sub new {
     return $top->_father($self)->open_dir ? $self : undef;
 }
 
-#sub DESTROY {
-#    my ($self) = @_;
-#}
-
-
-
-
-
 1;
