@@ -148,9 +148,23 @@ sub me_die {
     1;
 }
 
-sub become_default {
-    my ($self) = @_;
-    @{$self->_dir_stack()} = ();
+sub become_default
+{
+    my ($self, $current) = @_;
+
+    if ($self eq $current)
+    {
+        @{$self->_dir_stack()} = ();
+    }
+    else
+    {
+        while (scalar(@{$self->_dir_stack()}) != $current->{idx} + 1)
+        {
+            pop(@{$self->_dir_stack()});
+        }
+    }
+
+    return 0;
 }
 
 # Return true if there is somthing next

@@ -36,18 +36,10 @@ sub new {
 
 sub me_die {
     my ($self) = @_;
-    $self->_father()->become_default;
+    $self->_top->become_default($self->_father());
     return 0;
 }
 
-sub become_default {
-    my ($self) = @_;
-    while (scalar(@{$self->_top->_dir_stack()}) != $self->{idx} + 1)
-    {
-        pop(@{$self->_top->_dir_stack()});
-    }
-    return 0;
-}
 
 
 1;
