@@ -175,7 +175,7 @@ sub _process_current {
         }
             
         if ($_ eq 'b') {
-            $self->check_subdir or next;
+            $self->_top->check_subdir($self) or next;
             push @{$self->_top->_dir_stack()}, File::Find::Object::internal->new($self, scalar(@{$self->_top->_dir_stack()}));
             return 0;
         }
@@ -198,8 +198,41 @@ sub filter {
         1;
 }
 
-sub check_subdir {
-    1;
+sub check_subdir 
+{
+    my ($self, $current) = @_;
+
+    if ($self eq $current)
+    {
+        return 1;
+    }
+    my @st = stat($current->current_path());
+    if (!-d _)
+    {
+        return 0;
+    }
+    if (-l $current->current_path() && !$current->_top->{followlink})
+    {
+        return 0;
+    }
+    if ($st[0] != $current->_father->{dev} && $current->_top->{nocrossfs})
+    {
+        return 0;
+    }
+    my $ptr = $current; my $rc;
+    while($ptr->_father) {
+        if($ptr->_father->{inode} == $st[1] && $ptr->_father->{dev} == $st[0]) {
+            $rc = 1;
+            last;
+        }
+        $ptr = $ptr->_father;
+    }
+    if ($rc) {
+        printf(STDERR "Avoid loop " . $ptr->_father->{dir} . " => %s\n",
+            $current->current_path());
+        return 0;
+    }
+    return 1;
 }
 
 sub current_path {

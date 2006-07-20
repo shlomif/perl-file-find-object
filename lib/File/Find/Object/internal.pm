@@ -57,35 +57,4 @@ sub current_path {
     $p .= '/' . $self->{currentfile};
 }
 
-sub check_subdir {
-    my ($self) = @_;
-    my @st = stat($self->current_path());
-    if (!-d _)
-    {
-        return 0;
-    }
-    if (-l $self->current_path() && !$self->_top->{followlink})
-    {
-        return 0;
-    }
-    if ($st[0] != $self->_father->{dev} && $self->_top->{nocrossfs})
-    {
-        return 0;
-    }
-    my $ptr = $self; my $rc;
-    while($ptr->_father) {
-        if($ptr->_father->{inode} == $st[1] && $ptr->_father->{dev} == $st[0]) {
-            $rc = 1;
-            last;
-        }
-        $ptr = $ptr->_father;
-    }
-    if ($rc) {
-        printf(STDERR "Avoid loop " . $ptr->_father->{dir} . " => %s\n",
-            $self->current_path());
-        return 0;
-    }
-    return 1;
-}
-
 1;
