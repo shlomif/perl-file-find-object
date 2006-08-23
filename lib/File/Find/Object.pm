@@ -5,7 +5,7 @@
 # This program is free software, distributed under the same terms as 
 # Parrot.
 
-package File::Find::Object::internal;
+package File::Find::Object::PathComponent;
 
 use strict;
 use warnings;
@@ -228,7 +228,7 @@ sub _process_current {
         if ($_ eq 'b') {
             $self->check_subdir($current) or next;
             push @{$self->_dir_stack()}, 
-                File::Find::Object::internal->new(
+                File::Find::Object::PathComponent->new(
                     $self,
                     $current, 
                     scalar(@{$self->_dir_stack()})
