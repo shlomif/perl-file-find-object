@@ -9,10 +9,18 @@ package File::Find::Object::internal;
 use strict;
 use warnings;
 
-use vars qw(@ISA);
-@ISA = qw(File::Find::Object);
-
 use File::Spec;
+sub _curr_file
+{
+    my $self = shift;
+
+    if (@_)
+    {
+        $self->{_curr_file} = shift;
+    }
+
+    return $self->{_curr_file};
+}
 
 sub new {
     my ($class, $top, $from, $index) = @_;
@@ -26,7 +34,8 @@ sub new {
 
     $from->{dir} = $self->{dir};
 
-    return $top->_father($self)->open_dir ? $self : undef;
+    return $top->open_dir($top->_father($self)) ? $self : undef;
 }
+
 
 1;

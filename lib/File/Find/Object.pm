@@ -275,16 +275,15 @@ sub current_path {
 
     return $p;
 }
-
 sub open_dir {
-    my ($self) = @_;
-    opendir(my $handle, $self->{dir}) or return undef;
-    $self->{_files} =
+    my ($self, $current) = @_;
+    opendir(my $handle, $current->{dir}) or return undef;
+    $current->{_files} =
         [ sort { $a cmp $b } File::Spec->no_upwards(readdir($handle)) ];
     closedir($handle);
-    my @st = stat($self->{dir});
-    $self->{inode} = $st[1];
-    $self->{dev} = $st[0];
+    my @st = stat($current->{dir});
+    $current->{inode} = $st[1];
+    $current->{dev} = $st[0];
     return 1;
 }
 
