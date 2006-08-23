@@ -14,7 +14,7 @@ use Carp;
 
 use File::Find::Object::internal;
 
-our $VERSION = '0.0.3';
+our $VERSION = '0.0.4';
 
 sub new {
     my ($class, $options, @files) = @_;
@@ -287,6 +287,8 @@ sub open_dir {
     $self->{dev} = $st[0];
     return 1;
 }
+
+1;
 
 __END__
 
