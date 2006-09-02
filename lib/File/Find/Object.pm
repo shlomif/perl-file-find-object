@@ -15,6 +15,7 @@ use base 'Class::Accessor';
 __PACKAGE__->mk_accessors(qw(
     _action
     _curr_file
+    dev
     dir
     _files
     idx
@@ -271,7 +272,7 @@ sub check_subdir
     {
         return 0;
     }
-    if ($st[0] != $self->_father($current)->{dev} && $self->{nocrossfs})
+    if ($st[0] != $self->_father($current)->dev() && $self->{nocrossfs})
     {
         return 0;
     }
@@ -315,7 +316,7 @@ sub open_dir {
     closedir($handle);
     my @st = stat($current->dir());
     $current->inode($st[1]);
-    $current->{dev} = $st[0];
+    $current->dev($st[0]);
     return 1;
 }
 
