@@ -63,24 +63,40 @@ __PACKAGE__->mk_accessors(qw(
     _dir_stack
 ));
 
+sub _get_options_ids
+{
+    my $class = shift;
+    return [qw(
+        callback
+        depth
+        filter
+        followlink
+        nocrossfs
+    )];
+}
+
+__PACKAGE__->mk_accessors(@{__PACKAGE__->_get_options_ids()});
+
 use Carp;
 
 our $VERSION = '0.0.4';
 
 sub new {
     my ($class, $options, @files) = @_;
+
     my $tree = {
         files => [ @files ],
         ind => -1,
         
-        depth => $options->{depth},
-        nocrossfs => $options->{nocrossfs},
-        followlink => $options->{followlink},
-        filter => $options->{filter},
-        callback => $options->{callback},
         _dir_stack => [],
     };
+
     bless($tree, $class);
+
+    foreach my $opt (@{$tree->_get_options_ids()})
+    {
+        $tree->set($opt, $options->{$opt});
+    }
 
     return $tree;
 }
@@ -211,16 +227,16 @@ sub _process_current {
     $current->_curr_file() or return 0;
 
     $self->isdot($current) and return 0;
-    $self->filter($current) or return 0;  
+    $self->_filter_wrapper($current) or return 0;  
 
-    foreach ($self->{depth} ? qw/b a/ : qw/a b/) {
+    foreach ($self->depth() ? qw/b a/ : qw/a b/) {
         if ($current->_action->{$_}) {
             next;
         }
         $current->_action->{$_} = 1;
         if($_ eq 'a') {
-            if ($self->{callback}) {
-                $self->{callback}->($self->current_path($current));
+            if ($self->callback()) {
+                $self->callback()->($self->current_path($current));
             }
             return 1;
         }
@@ -248,10 +264,10 @@ sub isdot
     return ($file eq ".." || $file eq ".");
 }
 
-sub filter {
+sub _filter_wrapper {
     my ($self, $current) = @_;
-    return defined($self->{filter}) ?
-        $self->{filter}->($self->current_path($current)) :
+    return defined($self->filter()) ?
+        $self->filter()->($self->current_path($current)) :
         1;
 }
 
@@ -268,11 +284,11 @@ sub check_subdir
     {
         return 0;
     }
-    if (-l $self->current_path($current) && !$self->{followlink})
+    if (-l $self->current_path($current) && !$self->followlink())
     {
         return 0;
     }
-    if ($st[0] != $self->_father($current)->dev() && $self->{nocrossfs})
+    if ($st[0] != $self->_father($current)->dev() && $self->nocrossfs())
     {
         return 0;
     }
