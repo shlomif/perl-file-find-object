@@ -62,6 +62,7 @@ use vars qw(@ISA);
 __PACKAGE__->mk_accessors(qw(
     _dir_stack
     _targets
+    _target_index
 ));
 
 sub _get_options_ids
@@ -87,8 +88,6 @@ sub new {
 
     my $tree = {
         
-        ind => -1,
-        
         _dir_stack => [],
     };
 
@@ -99,6 +98,7 @@ sub new {
         $tree->set($opt, $options->{$opt});
     }
     $tree->_targets([ @targets ]);
+    $tree->_target_index(-1);
 
     return $tree;
 }
@@ -164,13 +164,25 @@ sub _movenext_with_current
     }
 }
 
+sub _increment_target_index
+{
+    my $self = shift;
+    $self->_target_index(
+        $self->_target_index() + 1
+    );
+}
+
 sub _movenext_wo_current
 {
     my $self = shift;
 
-    $self->{ind} > @{$self->_targets()} and return;
-    $self->{ind}++;
-    $self->_curr_file($self->_targets()->[$self->{ind}]);
+    if ($self->_target_index() > @{$self->_targets()})
+    {
+        return 0;
+    }
+    $self->_increment_target_index();
+
+    $self->_curr_file($self->_targets()->[$self->_target_index()]);
     $self->_action({});
     1;
 }
