@@ -120,10 +120,16 @@ sub next {
     my ($self) = @_;
     while (1) {
         my $current = $self->_current();
-        $self->_process_current($current) and return $self->item($self->current_path($current));
+        if ($self->_process_current($current))
+        {
+            return $self->item($self->current_path($current));
+        }
         $current = $self->_current();
         if(!$self->movenext) {
-            $self->me_die($current) and return $self->item(undef);
+            if ($self->me_die($current))
+            {
+                return $self->item(undef);
+            }
         }
     }
 }
