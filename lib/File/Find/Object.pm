@@ -10,30 +10,31 @@ package File::Find::Object::PathComponent;
 use strict;
 use warnings;
 
+use base 'Class::Accessor';
+
 use File::Spec;
-sub _curr_file
-{
-    my $self = shift;
 
-    if (@_)
-    {
-        $self->{_curr_file} = shift;
-    }
-
-    return $self->{_curr_file};
-}
+__PACKAGE__->mk_accessors(qw(
+    _action
+    _curr_file
+    dir
+    idx
+    _files
+    )
+);
 
 sub new {
     my ($class, $top, $from, $index) = @_;
 
-    my $self = {
-        dir => $top->current_path($from),
-        idx => $index,
-    };
+    my $self = {};
+    bless $self, $class;
+
+    $self->dir($top->current_path($from));
+    $self->idx($index);
 
     bless($self, $class);
 
-    $from->{dir} = $self->{dir};
+    $from->dir($self->dir());
 
     return $top->open_dir($top->_father($self)) ? $self : undef;
 }
@@ -42,6 +43,17 @@ package File::Find::Object;
 
 use strict;
 use warnings;
+
+use base 'Class::Accessor';
+
+__PACKAGE__->mk_accessors(qw(
+    _action
+    _dir_stack
+    dir
+    idx
+    _curr_file
+    _files
+));
 
 use Carp;
 
@@ -61,34 +73,14 @@ sub new {
         _dir_stack => [],
     };
     bless($tree, $class);
-}
 
-sub _dir_stack
-{
-    my $self = shift;
-    if (@_)
-    {
-        $self->{_dir_stack} = shift;
-    }
-    return $self->{_dir_stack};
-}
-
-sub _curr_file
-{
-    my $self = shift;
-
-    if (@_)
-    {
-        $self->{_curr_file} = shift;
-    }
-
-    return $self->{_curr_file};
+    return $tree;
 }
 
 sub DESTROY {
     my ($self) = @_;
 #    print STDERR join(" ", caller)."\n";
-#    printf STDERR "destroy `%s'\n", $self->{dir} || "--";
+#    printf STDERR "destroy `%s'\n", $self->dir() || "--";
 }
 
 sub _current
@@ -118,13 +110,13 @@ sub _father
 {
     my ($self, $current) = @_;
 
-    if (!defined($current->{idx}))
+    if (!defined($current->idx()))
     {
         return undef;
     }
-    elsif ($current->{idx} >= 1)
+    elsif ($current->idx() >= 1)
     {
-        return $self->_dir_stack()->[$current->{idx}-1];
+        return $self->_dir_stack()->[$current->idx()-1];
     }
     else
     {
@@ -136,10 +128,10 @@ sub _movenext_with_current
 {
     my $self = shift;
     if ($self->_current->_curr_file(
-            shift(@{$self->_father($self->_current)->{_files}})
+            shift(@{$self->_father($self->_current)->_files()})
        ))
     {
-        $self->_current->{_action} = {};
+        $self->_current->_action({});
         return 1;
     } else {
         return 0;
@@ -153,7 +145,7 @@ sub _movenext_wo_current
     $self->{ind} > @{$self->{files}} and return;
     $self->{ind}++;
     $self->_curr_file(${$self->{files}}[$self->{ind}]);
-    $self->{_action} = {};
+    $self->_action({});
     1;
 }
 
@@ -195,7 +187,7 @@ sub become_default
     }
     else
     {
-        while (scalar(@{$self->_dir_stack()}) != $current->{idx} + 1)
+        while (scalar(@{$self->_dir_stack()}) != $current->idx() + 1)
         {
             pop(@{$self->_dir_stack()});
         }
@@ -214,10 +206,10 @@ sub _process_current {
     $self->filter($current) or return 0;  
 
     foreach ($self->{depth} ? qw/b a/ : qw/a b/) {
-        if ($current->{_action}{$_}) {
+        if ($current->_action->{$_}) {
             next;
         }
-        $current->{_action}{$_} = 1;
+        $current->_action->{$_} = 1;
         if($_ eq 'a') {
             if ($self->{callback}) {
                 $self->{callback}->($self->current_path($current));
@@ -285,7 +277,7 @@ sub check_subdir
         $ptr = $self->_father($ptr);
     }
     if ($rc) {
-        printf(STDERR "Avoid loop " . $self->_father($ptr)->{dir} . " => %s\n",
+        printf(STDERR "Avoid loop " . $self->_father($ptr)->dir() . " => %s\n",
             $self->current_path($current));
         return 0;
     }
@@ -300,19 +292,21 @@ sub current_path {
         return $self->_curr_file;
     }
 
-    my $p = $self->_father($current)->{dir};
+    my $p = $self->_father($current)->dir();
     $p =~ s!/+$!!; #!
     $p .= '/' . $current->_curr_file;
 
     return $p;
 }
+
 sub open_dir {
     my ($self, $current) = @_;
-    opendir(my $handle, $current->{dir}) or return undef;
-    $current->{_files} =
-        [ sort { $a cmp $b } File::Spec->no_upwards(readdir($handle)) ];
+    opendir(my $handle, $current->dir()) or return undef;
+    $current->_files(
+        [ sort { $a cmp $b } File::Spec->no_upwards(readdir($handle)) ]
+    );
     closedir($handle);
-    my @st = stat($current->{dir});
+    my @st = stat($current->dir());
     $current->{inode} = $st[1];
     $current->{dev} = $st[0];
     return 1;

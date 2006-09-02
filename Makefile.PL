@@ -16,4 +16,8 @@ MAKECHANGELOG
 WriteMakefile(
     NAME	 => 'File::Find::Object',
     VERSION_FROM => 'lib/File/Find/Object.pm',
+    PREREQ_PM =>
+    {
+        'Class::Accessor' => 0,
+    },
 );
