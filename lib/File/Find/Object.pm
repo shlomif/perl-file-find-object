@@ -61,6 +61,7 @@ use vars qw(@ISA);
 
 __PACKAGE__->mk_accessors(qw(
     _dir_stack
+    _targets
 ));
 
 sub _get_options_ids
@@ -82,10 +83,10 @@ use Carp;
 our $VERSION = '0.0.4';
 
 sub new {
-    my ($class, $options, @files) = @_;
+    my ($class, $options, @targets) = @_;
 
     my $tree = {
-        files => [ @files ],
+        
         ind => -1,
         
         _dir_stack => [],
@@ -97,6 +98,7 @@ sub new {
     {
         $tree->set($opt, $options->{$opt});
     }
+    $tree->_targets([ @targets ]);
 
     return $tree;
 }
@@ -166,9 +168,9 @@ sub _movenext_wo_current
 {
     my $self = shift;
 
-    $self->{ind} > @{$self->{files}} and return;
+    $self->{ind} > @{$self->_targets()} and return;
     $self->{ind}++;
-    $self->_curr_file(${$self->{files}}[$self->{ind}]);
+    $self->_curr_file($self->_targets()->[$self->{ind}]);
     $self->_action({});
     1;
 }
@@ -368,10 +370,10 @@ function, but setting a callback is still possible.
 
 =head2 new
 
-    my $ffo = File::Find::Object->new( { options }, @files);
+    my $ffo = File::Find::Object->new( { options }, @targets);
 
-Create a new File::Find::Object object. @files is the list of directories
-- or files - the object should explore.
+Create a new File::Find::Object object. C<@targets> is the list of 
+directories or files which the object should explore.
 
 =head3 options
 
