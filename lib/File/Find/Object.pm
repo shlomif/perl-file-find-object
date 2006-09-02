@@ -5,23 +5,33 @@
 # This program is free software, distributed under the same terms as 
 # Parrot.
 
-package File::Find::Object::PathComponent;
+package File::Find::Object::Base;
 
 use strict;
 use warnings;
 
 use base 'Class::Accessor';
 
-use File::Spec;
-
 __PACKAGE__->mk_accessors(qw(
     _action
     _curr_file
     dir
-    idx
     _files
-    )
-);
+    idx
+    inode
+));
+
+package File::Find::Object::PathComponent;
+
+use strict;
+use warnings;
+
+use vars qw(@ISA);
+
+@ISA = (qw(File::Find::Object::Base));
+
+use File::Spec;
+
 
 sub new {
     my ($class, $top, $from, $index) = @_;
@@ -44,15 +54,12 @@ package File::Find::Object;
 use strict;
 use warnings;
 
-use base 'Class::Accessor';
+use vars qw(@ISA);
+
+@ISA = (qw(File::Find::Object::Base));
 
 __PACKAGE__->mk_accessors(qw(
-    _action
     _dir_stack
-    dir
-    idx
-    _curr_file
-    _files
 ));
 
 use Carp;
@@ -270,7 +277,7 @@ sub check_subdir
     }
     my $ptr = $current; my $rc;
     while($self->_father($ptr)) {
-        if($self->_father($ptr)->{inode} == $st[1] && $self->_father($ptr) == $st[0]) {
+        if($self->_father($ptr)->inode() == $st[1] && $self->_father($ptr) == $st[0]) {
             $rc = 1;
             last;
         }
@@ -307,7 +314,7 @@ sub open_dir {
     );
     closedir($handle);
     my @st = stat($current->dir());
-    $current->{inode} = $st[1];
+    $current->inode($st[1]);
     $current->{dev} = $st[0];
     return 1;
 }
