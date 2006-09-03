@@ -245,19 +245,20 @@ sub _process_current {
     $self->isdot($current) and return 0;
     $self->_filter_wrapper($current) or return 0;  
 
-    foreach ($self->depth() ? qw/b a/ : qw/a b/) {
-        if ($current->_action->{$_}) {
+    foreach my $action ($self->depth() ? qw/b a/ : qw/a b/)
+    {
+        if ($current->_action->{$action}) {
             next;
         }
-        $current->_action->{$_} = 1;
-        if($_ eq 'a') {
+        $current->_action->{$action} = 1;
+        if($action eq 'a') {
             if ($self->callback()) {
                 $self->callback()->($self->current_path($current));
             }
             return 1;
         }
             
-        if ($_ eq 'b') {
+        if ($action eq 'b') {
             $self->check_subdir($current) or next;
             push @{$self->_dir_stack()}, 
                 File::Find::Object::PathComponent->new(
