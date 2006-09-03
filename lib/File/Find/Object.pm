@@ -1,35 +1,9 @@
-# $Id$
-
-#- Olivier Thauvin <olivier.thauvin@aerov.jussieu.fr>
-
-# This program is free software, distributed under the same terms as 
-# Parrot.
-
-package File::Find::Object::Base;
-
-use strict;
-use warnings;
-
-use base 'Class::Accessor';
-
-__PACKAGE__->mk_accessors(qw(
-    _action
-    _curr_file
-    dev
-    dir
-    _files
-    idx
-    inode
-));
-
 package File::Find::Object::PathComponent;
 
 use strict;
 use warnings;
 
-use vars qw(@ISA);
-
-@ISA = (qw(File::Find::Object::Base));
+use base 'File::Find::Object::Base';
 
 use File::Spec;
 
@@ -55,9 +29,7 @@ package File::Find::Object;
 use strict;
 use warnings;
 
-use vars qw(@ISA);
-
-@ISA = (qw(File::Find::Object::Base));
+use base 'File::Find::Object::Base';
 
 __PACKAGE__->mk_accessors(qw(
     _dir_stack
