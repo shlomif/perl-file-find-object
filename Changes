@@ -1,3 +1,9 @@
+0.0.5 - Sun Sep  3 23:22:36 IDT 2006
+    - Eliminated the F-F-O-internal isa F-F-O relationship.
+    - Created accessors for everything - now based on Class::Accessor
+    - F-F-O-internal is now named File::Find::Object::PathComponent
+    - Some smaller refactorings.
+
 0.0.4 - Wed Aug 23 00:31:39 IDT 2006
     - Eliminated circular references. (Hopefully)
         - Still have an isa relationship between File::Find::Object and
