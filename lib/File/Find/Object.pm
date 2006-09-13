@@ -217,7 +217,7 @@ sub _process_current {
     $self->isdot($current) and return 0;
     $self->_filter_wrapper($current) or return 0;  
 
-    foreach my $action ($self->depth() ? qw/b a/ : qw/a b/)
+    foreach my $action ($self->depth() ? qw(b a) : qw(a b))
     {
         if ($current->_action->{$action}) {
             next;
@@ -306,10 +306,8 @@ sub current_path {
     }
 
     my $p = $self->_father($current)->dir();
-    $p =~ s!/+$!!; #!
-    $p .= '/' . $current->_curr_file;
-
-    return $p;
+    
+    return File::Spec->catfile($p, $current->_curr_file);
 }
 
 sub open_dir {
