@@ -17,7 +17,7 @@ sub new {
     $self->dir($top->current_path($from));
     $self->idx($index);
 
-    bless($self, $class);
+    $self->_was_dir_scanned(0);
 
     $from->dir($self->dir());
 
@@ -32,6 +32,7 @@ use warnings;
 use base 'File::Find::Object::Base';
 
 __PACKAGE__->mk_accessors(qw(
+    _current_idx
     _dir_stack
     item
     _targets
@@ -72,6 +73,7 @@ sub new {
     }
     $tree->_targets([ @targets ]);
     $tree->_target_index(-1);
+    $tree->_current_idx(-1);
 
     return $tree;
 }
@@ -85,7 +87,17 @@ sub DESTROY {
 sub _current
 {
     my $self = shift;
-    return $self->_dir_stack()->[-1] || $self;
+
+    my $dir_stack = $self->_dir_stack();
+
+    if ($self->_current_idx < 0)
+    {
+        return $self;
+    }
+    else
+    {
+        return $dir_stack->[$self->_current_idx];
+    }
 }
 
 sub next {
@@ -110,6 +122,13 @@ sub _father
 {
     my ($self, $current) = @_;
 
+    if (!defined($current))
+    {
+        require Data::Dumper;
+        print Data::Dumper->new([$self],['$self'])->Dump();
+        confess "Current is undef";
+    }
+
     if (!defined($current->idx()))
     {
         return undef;
@@ -128,7 +147,7 @@ sub _movenext_with_current
 {
     my $self = shift;
     if ($self->_current->_curr_file(
-            shift(@{$self->_father($self->_current)->_files()})
+            shift(@{$self->_father($self->_current)->_traverse_to()})
        ))
     {
         $self->_current->_action({});
@@ -196,12 +215,14 @@ sub become_default
     if ($self eq $current)
     {
         @{$self->_dir_stack()} = ();
+        $self->_current_idx(-1);
     }
     else
     {
         while (scalar(@{$self->_dir_stack()}) != $current->idx() + 1)
         {
             pop(@{$self->_dir_stack()});
+            $self->_current_idx($self->_current_idx()-1);
         }
     }
 
@@ -231,16 +252,35 @@ sub _process_current {
         }
             
         if ($action eq 'b') {
-            $self->check_subdir($current) or next;
-            push @{$self->_dir_stack()}, 
-                File::Find::Object::PathComponent->new(
-                    $self,
-                    $current, 
-                    scalar(@{$self->_dir_stack()})
-                );
-            return 0;
+            my $status = $self->_recurse($current);
+            
+            if ($status eq "SKIP")
+            {
+                next;
+            }
+            else
+            {
+                $self->_current_idx($self->_current_idx()+1);
+                return $status;
+            }
         }
     }
+    return 0;
+}
+
+sub _recurse
+{
+    my ($self, $current) = @_;
+    $self->check_subdir($current) or 
+        return "SKIP";
+    
+    push @{$self->_dir_stack()}, 
+        File::Find::Object::PathComponent->new(
+            $self,
+            $current,
+            scalar(@{$self->_dir_stack()})
+        );
+
     return 0;
 }
 
@@ -313,15 +353,48 @@ sub current_path {
 sub open_dir {
     my ($self, $current) = @_;
     opendir(my $handle, $current->dir()) or return undef;
-    $current->_files(
-        [ sort { $a cmp $b } File::Spec->no_upwards(readdir($handle)) ]
-    );
+    my @files = (sort { $a cmp $b } File::Spec->no_upwards(readdir($handle)));
     closedir($handle);
+
+    $current->_files(
+        [ @files ]
+    );
+    $current->_traverse_to(
+        [ @files ]
+    );
+
+    
     my @st = stat($current->dir());
     $current->inode($st[1]);
     $current->dev($st[0]);
     return 1;
 }
+
+sub set_traverse_to
+{
+    my ($self, $children) = @_;
+    $self->_current->_traverse_to([@$children]);
+}
+
+sub get_traverse_to
+{
+    my $self = shift;
+
+    return [ @{$self->_current->traverse_to()} ];
+}
+
+sub get_current_node_files_list
+{
+    my $self = shift;
+
+    # Remming out because it doesn't work.
+    # $self->_father($self->_current)->dir($self->_current->dir());
+
+    $self->_recurse($self->_current);
+
+    return [ @{$self->_current->_files()}];
+}
+
 
 1;
 
@@ -402,6 +475,21 @@ the scan is completed.
 
 Returns the current filename found by the File::Find::Object object, i.e: the
 last value returned by next().
+
+=head2 $ff->set_traverse_to([@children])
+
+Sets the children to traverse to from the current node. Useful for pruning
+items to traverse.
+
+=head2 [@children] = $ff->get_traverse_to()
+
+Retrieves the children that will be traversed to.
+
+=head2 [@files] = $ff->get_current_node_files_list()
+
+Gets all the files that appear in the current directory. This value is
+constant for every node, and is useful to use as the basis of the argument
+for C<set_traverse_to()>.
 
 =head1 BUGS
 
