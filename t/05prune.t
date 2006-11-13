@@ -80,7 +80,11 @@ use File::Path;
     for my $i (1 .. 7)
     {
         my $file = $ff->next();
-        if ($file eq 
+        # We're doing that because get_current_node_files_list() used to
+        # call ->_recurse() which caused some subtle bugs.
+        my $files_in_node = $ff->get_current_node_files_list();
+        
+        if ($file eq
             $t->get_path("t/sample-data/traverse-2/foo/please-prune-me")
            )
         {
@@ -112,4 +116,5 @@ use File::Path;
 
     rmtree($t->get_path("./t/sample-data/traverse-2"))
 }
+
 

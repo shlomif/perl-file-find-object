@@ -17,7 +17,7 @@ sub new {
     $self->dir($top->current_path($from));
     $self->idx($index);
 
-    $self->_was_dir_scanned(0);
+    $self->_last_dir_scanned(undef);
 
     $from->dir($self->dir());
 
@@ -74,6 +74,8 @@ sub new {
     $tree->_targets([ @targets ]);
     $tree->_target_index(-1);
     $tree->_current_idx(-1);
+
+    $tree->_last_dir_scanned(undef);
 
     return $tree;
 }
@@ -271,9 +273,11 @@ sub _process_current {
 sub _recurse
 {
     my ($self, $current) = @_;
+
     $self->check_subdir($current) or 
         return "SKIP";
-    
+
+
     push @{$self->_dir_stack()}, 
         File::Find::Object::PathComponent->new(
             $self,
@@ -352,7 +356,22 @@ sub current_path {
 
 sub open_dir {
     my ($self, $current) = @_;
-    opendir(my $handle, $current->dir()) or return undef;
+
+    if (defined($current->_last_dir_scanned()) &&
+        ($current->_last_dir_scanned() eq $current->dir()
+       )
+    )
+    {
+        return $current->_open_dir_ret();
+    }
+
+    $current->_last_dir_scanned($current->dir());
+
+    my $handle;
+    if (!opendir($handle, $current->dir()))
+    {
+        return $current->_open_dir_ret(undef);
+    }
     my @files = (sort { $a cmp $b } File::Spec->no_upwards(readdir($handle)));
     closedir($handle);
 
@@ -367,7 +386,9 @@ sub open_dir {
     my @st = stat($current->dir());
     $current->inode($st[1]);
     $current->dev($st[0]);
-    return 1;
+
+
+    return $current->_open_dir_ret(1);
 }
 
 sub set_traverse_to
@@ -390,9 +411,17 @@ sub get_current_node_files_list
     # Remming out because it doesn't work.
     # $self->_father($self->_current)->dir($self->_current->dir());
 
-    $self->_recurse($self->_current);
+    $self->_current->dir($self->current_path($self->_current()));
 
-    return [ @{$self->_current->_files()}];
+    # open_dir can return undef if $self->_current is not a directory.
+    if ($self->open_dir($self->_current))
+    {
+        return [ @{$self->_current->_files()}];    
+    }
+    else
+    {
+        return [];
+    }
 }
 
 

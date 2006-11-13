@@ -20,8 +20,9 @@ __PACKAGE__->mk_accessors(qw(
     _files
     idx
     inode
+    _last_dir_scanned
+    _open_dir_ret
     _traverse_to
-    _was_dir_scanned
 ));
 
 1;
