@@ -394,6 +394,10 @@ sub open_dir {
 sub set_traverse_to
 {
     my ($self, $children) = @_;
+
+    # Make sure we scan the current directory for sub-items first.
+    $self->get_current_node_files_list();
+
     $self->_current->_traverse_to([@$children]);
 }
 
@@ -401,7 +405,7 @@ sub get_traverse_to
 {
     my $self = shift;
 
-    return [ @{$self->_current->traverse_to()} ];
+    return [ @{$self->_current->_traverse_to()} ];
 }
 
 sub get_current_node_files_list
@@ -416,7 +420,7 @@ sub get_current_node_files_list
     # open_dir can return undef if $self->_current is not a directory.
     if ($self->open_dir($self->_current))
     {
-        return [ @{$self->_current->_files()}];    
+        return [ @{$self->_current->_files()}];
     }
     else
     {
@@ -424,6 +428,12 @@ sub get_current_node_files_list
     }
 }
 
+sub prune
+{
+    my $self = shift;
+
+    return $self->set_traverse_to([]);
+}
 
 1;
 
@@ -509,6 +519,10 @@ last value returned by next().
 
 Sets the children to traverse to from the current node. Useful for pruning
 items to traverse.
+
+=head2 $ff->prune()
+
+Prunes the current directory. Equivalent to $ff->set_traverse_to([]).
 
 =head2 [@children] = $ff->get_traverse_to()
 
