@@ -1,3 +1,11 @@
+0.0.6 - Tue Nov 28 15:49:23 IST 2006
+    - Added the following new interface methods:
+        - set_traverse_to
+        - get_traverse_to
+        - get_current_node_files_list
+        - prune
+    - Some changes to the internals to accomodate for them.
+
 0.0.5 - Sun Sep  3 23:22:36 IDT 2006
     - Eliminated the F-F-O-internal isa F-F-O relationship.
     - Created accessors for everything - now based on Class::Accessor
