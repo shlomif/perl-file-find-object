@@ -522,7 +522,7 @@ for C<set_traverse_to()>.
 
 =head1 BUGS
 
-Currently works only on UNIX as it uses '/' as a path separator.
+No bugs are known but it doesn't mean there aren't any.
 
 =head1 SEE ALSO
 
