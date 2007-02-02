@@ -1,3 +1,14 @@
+0.0.7 - Fri Feb  2 19:03:29 IST 2007
+    - moved the tree script under the examples directory.
+    - added the LICENSE section to the POD.
+    - added t/pod.t and t/pod-coverage.t and made sure the module
+      has full POD coverage.
+    - added a Build.PL build script to generate a better META.yml file.
+    - all of these are Kwalitee improvements.
+      ( http://cpants.perl.org/dist/File-Find-Object )
+    - Added some links to the main POD documentation for similar modules
+      and for the Perl Advent article.
+
 0.0.6 - Tue Nov 28 15:49:23 IST 2006
     - Added the following new interface methods:
         - set_traverse_to

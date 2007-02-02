@@ -55,7 +55,7 @@ __PACKAGE__->mk_accessors(@{__PACKAGE__->_get_options_ids()});
 
 use Carp;
 
-our $VERSION = '0.0.6';
+our $VERSION = '0.0.7';
 
 sub new {
     my ($class, $options, @targets) = @_;
@@ -526,7 +526,14 @@ No bugs are known, but it doesn't mean there aren't any.
 
 =head1 SEE ALSO
 
-L<File::Find>
+There's an article about this module in the Perl Advent Calendar of 2006:
+L<http://perladvent.pm.org/2006/2/>.
+
+L<File::Find> is the core module for traversing files in perl, which has
+several limitations.
+
+L<File::Next>, L<File::Find::Iterator>, L<File::Walker> and the unmaintained
+L<File::FTS> are alternatives to this module.
 
 =head1 LICENSE
 
