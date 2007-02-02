@@ -1,7 +1,3 @@
-# $Id: Object.pm 73 2006-09-03 20:14:23Z shlomif $
-
-#- Olivier Thauvin <olivier.thauvin@aerov.jussieu.fr>
-
 # This program is free software, distributed under the same terms as 
 # Parrot.
 
@@ -27,3 +23,15 @@ __PACKAGE__->mk_accessors(qw(
 
 1;
 
+=head1 NAME
+
+File::Find::Object::Base - base class for File::Find::Object
+
+=head2 DESCRIPTION
+
+This is the base class for F::F::O classes. It only defines some accessors,
+and is for File::Find::Object's internal use.
+
+=head1 SEE ALSO
+
+L<File::Find::Object>

@@ -14,14 +14,14 @@ sub new {
     my $self = {};
     bless $self, $class;
 
-    $self->dir($top->current_path($from));
+    $self->dir($top->_current_path($from));
     $self->idx($index);
 
     $self->_last_dir_scanned(undef);
 
     $from->dir($self->dir());
 
-    return $top->open_dir($top->_father($self)) ? $self : undef;
+    return $top->_open_dir($top->_father($self)) ? $self : undef;
 }
 
 package File::Find::Object;
@@ -108,11 +108,11 @@ sub next {
         my $current = $self->_current();
         if ($self->_process_current($current))
         {
-            return $self->item($self->current_path($current));
+            return $self->item($self->_current_path($current));
         }
         $current = $self->_current();
-        if(!$self->movenext) {
-            if ($self->me_die($current))
+        if(!$self->_movenext) {
+            if ($self->_me_die($current))
             {
                 return $self->item(undef);
             }
@@ -182,7 +182,7 @@ sub _movenext_wo_current
     1;
 }
 
-sub movenext {
+sub _movenext {
     my ($self) = @_;
     if (@{$self->_dir_stack()})
     {
@@ -194,11 +194,7 @@ sub movenext {
     }
 }
 
-sub me_die {
-    if (@_ != 2)
-    {
-        confess "Hello";
-    }
+sub _me_die {
     my ($self, $current) = @_;
 
     if ($self eq $current)
@@ -206,11 +202,11 @@ sub me_die {
         return 1;
     }
 
-    $self->become_default($self->_father($current));
+    $self->_become_default($self->_father($current));
     return 0;
 }
 
-sub become_default
+sub _become_default
 {
     my ($self, $current) = @_;
 
@@ -237,7 +233,6 @@ sub _process_current {
    
     $current->_curr_file() or return 0;
 
-    $self->isdot($current) and return 0;
     $self->_filter_wrapper($current) or return 0;  
 
     foreach my $action ($self->depth() ? qw(b a) : qw(a b))
@@ -248,7 +243,7 @@ sub _process_current {
         $current->_action->{$action} = 1;
         if($action eq 'a') {
             if ($self->callback()) {
-                $self->callback()->($self->current_path($current));
+                $self->callback()->($self->_current_path($current));
             }
             return 1;
         }
@@ -274,7 +269,7 @@ sub _recurse
 {
     my ($self, $current) = @_;
 
-    $self->check_subdir($current) or 
+    $self->_check_subdir($current) or 
         return "SKIP";
 
 
@@ -288,23 +283,14 @@ sub _recurse
     return 0;
 }
 
-sub isdot
-{
-    my ($self, $current) = @_;
-
-    my $file = $current->_curr_file();
-
-    return ($file eq ".." || $file eq ".");
-}
-
 sub _filter_wrapper {
     my ($self, $current) = @_;
     return defined($self->filter()) ?
-        $self->filter()->($self->current_path($current)) :
+        $self->filter()->($self->_current_path($current)) :
         1;
 }
 
-sub check_subdir 
+sub _check_subdir 
 {
     my ($self, $current) = @_;
 
@@ -312,12 +298,12 @@ sub check_subdir
     {
         return 1;
     }
-    my @st = stat($self->current_path($current));
+    my @st = stat($self->_current_path($current));
     if (!-d _)
     {
         return 0;
     }
-    if (-l $self->current_path($current) && !$self->followlink())
+    if (-l $self->_current_path($current) && !$self->followlink())
     {
         return 0;
     }
@@ -335,13 +321,13 @@ sub check_subdir
     }
     if ($rc) {
         printf(STDERR "Avoid loop " . $self->_father($ptr)->dir() . " => %s\n",
-            $self->current_path($current));
+            $self->_current_path($current));
         return 0;
     }
     return 1;
 }
 
-sub current_path {
+sub _current_path {
     my ($self, $current) = @_;
 
     if ($self eq $current)
@@ -354,7 +340,7 @@ sub current_path {
     return File::Spec->catfile($p, $current->_curr_file);
 }
 
-sub open_dir {
+sub _open_dir {
     my ($self, $current) = @_;
 
     if (defined($current->_last_dir_scanned()) &&
@@ -415,10 +401,10 @@ sub get_current_node_files_list
     # Remming out because it doesn't work.
     # $self->_father($self->_current)->dir($self->_current->dir());
 
-    $self->_current->dir($self->current_path($self->_current()));
+    $self->_current->dir($self->_current_path($self->_current()));
 
-    # open_dir can return undef if $self->_current is not a directory.
-    if ($self->open_dir($self->_current))
+    # _open_dir can return undef if $self->_current is not a directory.
+    if ($self->_open_dir($self->_current))
     {
         return [ @{$self->_current->_files()}];
     }

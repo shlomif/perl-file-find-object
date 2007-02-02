@@ -13,3 +13,5 @@ t/04destroy.t
 t/05prune.t
 t/lib/File/Find/Object/TreeCreate.pm
 t/sample-data/h.txt
+t/pod.t
+t/pod-coverage.t
