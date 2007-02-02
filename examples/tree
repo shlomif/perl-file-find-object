@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-# $Id: tree,v 1.2 2005/06/18 20:35:38 nanardon Exp $
+# $Id$
 
 use strict;
 use warnings;

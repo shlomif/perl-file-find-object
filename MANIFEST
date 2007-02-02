@@ -1,4 +1,5 @@
 Changes
+examples/tree
 lib/File/Find/Object/Base.pm
 lib/File/Find/Object.pm
 Makefile.PL
@@ -11,5 +12,4 @@ t/03traverse.t
 t/04destroy.t
 t/05prune.t
 t/lib/File/Find/Object/TreeCreate.pm
-tree
 t/sample-data/h.txt
