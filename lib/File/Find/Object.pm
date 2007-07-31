@@ -55,7 +55,7 @@ __PACKAGE__->mk_accessors(@{__PACKAGE__->_get_options_ids()});
 
 use Carp;
 
-our $VERSION = '0.0.7';
+our $VERSION = '0.0.8';
 
 sub new {
     my ($class, $options, @targets) = @_;

@@ -20,4 +20,5 @@ WriteMakefile(
     {
         'Class::Accessor' => 0,
     },
+    PL_FILES => {},
 );

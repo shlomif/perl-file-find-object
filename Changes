@@ -1,3 +1,7 @@
+0.0.8 - Tue Jul 31 16:23:34 IDT 2007
+    - added the empty PL_FILES key to the Makefile.PL to avoid running 
+    Build.PL on older versions of EU::MM.
+
 0.0.7 - Fri Feb  2 19:03:29 IST 2007
     - moved the tree script under the examples directory.
     - added the LICENSE section to the POD.
