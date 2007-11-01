@@ -167,6 +167,22 @@ sub _increment_target_index
     );
 }
 
+sub _calc_next_target
+{
+    my $self = shift;
+
+    my $target = $self->_targets()->[$self->_target_index()];
+
+    return defined($target) ? File::Spec->canonpath($target) : undef;
+}
+
+sub _move_to_next_target
+{
+    my $self = shift; 
+
+    $self->_curr_file($self->_calc_next_target());
+}
+
 sub _movenext_wo_current
 {
     my $self = shift;
@@ -177,7 +193,8 @@ sub _movenext_wo_current
     }
     $self->_increment_target_index();
 
-    $self->_curr_file($self->_targets()->[$self->_target_index()]);
+    $self->_move_to_next_target();
+
     $self->_action({});
     1;
 }
@@ -444,7 +461,7 @@ File::Find::Object does same job as File::Find but works like an object and
 with an iterator. As File::Find is not object oriented, one cannot perform
 multiple searches in the same application. The second problem of File::Find 
 is its file processing: after starting its main loop, one cannot easilly wait 
-for another event an so get the next result.
+for another event and so get the next result.
 
 With File::Find::Object you can get the next file by calling the next() 
 function, but setting a callback is still possible.

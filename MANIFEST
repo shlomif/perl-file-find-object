@@ -12,7 +12,8 @@ t/02tree-create.t
 t/03traverse.t
 t/04destroy.t
 t/05prune.t
+t/06trailing-slash.t
 t/lib/File/Find/Object/TreeCreate.pm
-t/sample-data/h.txt
-t/pod.t
 t/pod-coverage.t
+t/pod.t
+t/sample-data/h.txt

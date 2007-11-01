@@ -1,3 +1,7 @@
+    - Now running canonpath() on the targets in the call to 
+    File::Find::Object->new. That way, trailing slashes are omitted in
+    the results.
+
 0.0.8 - Tue Jul 31 16:23:34 IDT 2007
     - added the empty PL_FILES key to the Makefile.PL to avoid running 
     Build.PL on older versions of EU::MM.
