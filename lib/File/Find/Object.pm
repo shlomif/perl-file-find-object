@@ -311,14 +311,17 @@ sub _check_subdir
 {
     my ($self, $current) = @_;
 
-    if ($self eq $current)
-    {
-        return 1;
-    }
+    # If current is not a directory always return 0, because we may
+    # be asked to traverse single-files.
     my @st = stat($self->_current_path($current));
     if (!-d _)
     {
         return 0;
+    }
+
+    if ($self eq $current)
+    {
+        return 1;
     }
     if (-l $self->_current_path($current) && !$self->followlink())
     {
