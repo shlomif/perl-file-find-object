@@ -162,9 +162,9 @@ sub _movenext_with_current
 sub _increment_target_index
 {
     my $self = shift;
-    $self->_target_index(
-        $self->_target_index() + 1
-    );
+    $self->_target_index( $self->_target_index() + 1 );
+
+    return ($self->_target_index() < scalar(@{$self->_targets()}));
 }
 
 sub _calc_next_target
@@ -180,23 +180,24 @@ sub _move_to_next_target
 {
     my $self = shift; 
 
-    $self->_curr_file($self->_calc_next_target());
+    return $self->_curr_file($self->_calc_next_target());
 }
 
 sub _movenext_wo_current
 {
     my $self = shift;
 
-    if ($self->_target_index() > @{$self->_targets()})
+    while ($self->_increment_target_index())
     {
-        return 0;
+        if (-e $self->_move_to_next_target())
+        {
+            $self->_action({});
+
+            return 1;
+        }
     }
-    $self->_increment_target_index();
 
-    $self->_move_to_next_target();
-
-    $self->_action({});
-    1;
+    return 0;
 }
 
 sub _movenext {

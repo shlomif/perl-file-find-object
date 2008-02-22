@@ -5,7 +5,9 @@
       files as input paths. Fixes:
         http://rt.cpan.org/Public/Bug/Display.html?id=33453
       Thanks to Sergey V Panteleev for reporting the bug.
-    - TODO : check behavior on traversing non-existing paths.
+    - TODO : check behavior on traversing non-existant paths.
+    - Now skipping non-existant files.
+        - Added a test for it in t/03traverse.t
 
 0.0.8 - Tue Jul 31 16:23:34 IDT 2007
     - added the empty PL_FILES key to the Makefile.PL to avoid running 
