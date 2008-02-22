@@ -1,3 +1,4 @@
+0.0.9 - Fri Feb 22 20:04:03 IST 2008
     - Now running canonpath() on the targets in the call to 
       File::Find::Object->new. That way, trailing slashes are omitted in
       the results.
@@ -6,6 +7,7 @@
         http://rt.cpan.org/Public/Bug/Display.html?id=33453
       Thanks to Sergey V Panteleev for reporting the bug.
     - TODO : check behavior on traversing non-existant paths.
+        - Done.
     - Now skipping non-existant files.
         - Added a test for it in t/03traverse.t
 
