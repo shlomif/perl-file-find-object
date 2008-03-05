@@ -1,4 +1,4 @@
-0.1.0
+0.1.0 - Wed Mar  5 20:46:27 IST 2008
     - Now handling directories that cannot be opendir()'ed in a graceful
     manner - just not traversing them further.
 
