@@ -1,3 +1,7 @@
+0.1.0
+    - Now handling directories that cannot be opendir()'ed in a graceful
+    manner - just not traversing them further.
+
 0.0.9 - Fri Feb 22 20:04:03 IST 2008
     - Now running canonpath() on the targets in the call to 
       File::Find::Object->new. That way, trailing slashes are omitted in
