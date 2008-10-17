@@ -86,7 +86,7 @@ sub _top_it
     return;
 }
 
-__PACKAGE__->_top_it([qw(_current _me_die)]);
+__PACKAGE__->_top_it([qw(_current _me_die _check_subdir_helper)]);
 
 use Carp;
 
@@ -400,8 +400,6 @@ sub _check_subdir
 {
     my $self = shift;
 
-    my $current = $self->_current();
-
     # If current is not a directory always return 0, because we may
     # be asked to traverse single-files.
     my @st = stat($self->_current_path());
@@ -409,22 +407,33 @@ sub _check_subdir
     {
         return 0;
     }
-
-    if ($self->_is_top())
+    else
     {
-        return 1;
+        return $self->_check_subdir_helper(\@st);
     }
+}
+
+sub _top__check_subdir_helper {
+    return 1;
+}
+
+sub _non_top__check_subdir_helper {
+    my $self = shift;
+    my $st = shift;
+
+    my $current = $self->_current();
+
     if (-l $self->_current_path() && !$self->followlink())
     {
         return 0;
     }
-    if ($st[0] != $self->_father($current)->dev() && $self->nocrossfs())
+    if ($st->[0] != $self->_father($current)->dev() && $self->nocrossfs())
     {
         return 0;
     }
     my $ptr = $current; my $rc;
     while($self->_father($ptr)) {
-        if($self->_father($ptr)->inode() == $st[1] && $self->_father($ptr) == $st[0]) {
+        if($self->_father($ptr)->inode() == $st->[1] && $self->_father($ptr) == $st->[0]) {
             $rc = 1;
             last;
         }
