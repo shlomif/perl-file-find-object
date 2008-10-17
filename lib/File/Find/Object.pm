@@ -190,11 +190,17 @@ sub _father
     }
 }
 
+sub _current_father {
+    my $self = shift;
+
+    return $self->_father($self->_current);
+}
+
 sub _movenext_with_current
 {
     my $self = shift;
     if ($self->_current->_curr_file(
-            shift(@{$self->_father($self->_current)->_traverse_to()})
+            shift(@{$self->_current_father->_traverse_to()})
        ))
     {
         $self->_current->_reset_actions();
@@ -272,7 +278,7 @@ sub _become_default
 {
     my $self = shift;
 
-    my $father = $self->_father($self->_current());
+    my $father = $self->_current_father;
 
     if ($self eq $father)
     {
@@ -459,7 +465,7 @@ sub _non_top__check_subdir_helper {
     {
         return 0;
     }
-    if ($st->[0] != $self->_father($current)->dev() && $self->nocrossfs())
+    if ($st->[0] != $self->_current_father->dev() && $self->nocrossfs())
     {
         return 0;
     }
@@ -490,7 +496,7 @@ sub _non_top__current_path
     my $self = shift;
 
     return File::Spec->catfile(
-        $self->_father($self->_current)->dir(),
+        $self->_current_father->dir(),
         $self->_current->_curr_file
     );
 }
@@ -556,9 +562,6 @@ sub get_traverse_to
 sub get_current_node_files_list
 {
     my $self = shift;
-
-    # Remming out because it doesn't work.
-    # $self->_father($self->_current)->dir($self->_current->dir());
 
     $self->_current->dir($self->_current_path());
 
