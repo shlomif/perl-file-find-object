@@ -417,10 +417,20 @@ sub _current_path {
     {
         return $self->_curr_file;
     }
+    else
+    {
+        return $self->_non_top_current_path();
+    }
+}
 
-    my $p = $self->_father($current)->dir();
-    
-    return File::Spec->catfile($p, $current->_curr_file);
+sub _non_top_current_path
+{
+    my $self = shift;
+
+    return File::Spec->catfile(
+        $self->_father($self->_current)->dir(),
+        $self->_current->_curr_file
+    );
 }
 
 sub _open_dir {
