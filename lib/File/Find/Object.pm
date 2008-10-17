@@ -240,13 +240,30 @@ sub _become_default
     {
         while (scalar(@{$self->_dir_stack()}) != $father->idx() + 1)
         {
-            # TODO : Extract methods.
-            pop(@{$self->_dir_stack()});
-            $self->_current_idx($self->_current_idx()-1);
+            $self->_pop_item();
         }
     }
 
     return 0;
+}
+
+sub _pop_item
+{
+    my $self = shift;
+
+    pop(@{$self->_dir_stack()});
+    $self->_dec_current_idx();
+
+    return;
+}
+
+sub _dec_current_idx
+{
+    my $self = shift;
+
+    $self->_current_idx($self->_current_idx()-1);
+
+    return;
 }
 
 # Return true if there is somthing next
