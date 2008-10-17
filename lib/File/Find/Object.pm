@@ -120,22 +120,22 @@ sub next {
 
 sub _father
 {
-    my ($self, $current) = @_;
+    my ($self, $level) = @_;
 
-    if (!defined($current))
+    if (!defined($level))
     {
         require Data::Dumper;
         print Data::Dumper->new([$self],['$self'])->Dump();
         confess "Current is undef";
     }
 
-    if (!defined($current->idx()))
+    if (!defined($level->idx()))
     {
         return undef;
     }
-    elsif ($current->idx() >= 1)
+    elsif ($level->idx() >= 1)
     {
-        return $self->_dir_stack()->[$current->idx()-1];
+        return $self->_dir_stack()->[$level->idx()-1];
     }
     else
     {
