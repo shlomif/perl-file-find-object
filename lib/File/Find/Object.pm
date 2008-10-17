@@ -213,10 +213,8 @@ sub _movenext {
 sub _me_die {
     my $self = shift;
 
-    my $current = $self->_current();
-
     # TODO : Refactor this check - it appears several times.
-    if ($self eq $current)
+    if ($self eq $self->_current())
     {
         return 1;
     }
@@ -266,6 +264,13 @@ sub _dec_current_idx
     return;
 }
 
+sub _calc_actions
+{
+    my $self = shift;
+
+    return $self->depth() ? qw(b a) : qw(a b);
+}
+
 # Return true if there is somthing next
 sub _process_current {
     my $self = shift;
@@ -276,7 +281,7 @@ sub _process_current {
 
     $self->_filter_wrapper() or return 0;  
 
-    foreach my $action ($self->depth() ? qw(b a) : qw(a b))
+    foreach my $action ($self->_calc_actions())
     {
         if ($current->_action->{$action}) {
             next;
