@@ -23,7 +23,7 @@ sub new {
 
     $self->_reset_actions();
 
-    return $top->_open_dir($top->_father($self)) ? $self : undef;
+    return $top->_open_dir() ? $self : undef;
 }
 
 package File::Find::Object;
@@ -417,7 +417,9 @@ sub _current_path {
 }
 
 sub _open_dir {
-    my ($self, $current) = @_;
+    my $self = shift;
+
+    my $current = $self->_current();
 
     if (defined($current->_last_dir_scanned()) &&
         ($current->_last_dir_scanned() eq $current->dir()
@@ -482,7 +484,7 @@ sub get_current_node_files_list
     $self->_current->dir($self->_current_path());
 
     # _open_dir can return undef if $self->_current is not a directory.
-    if ($self->_open_dir($self->_current))
+    if ($self->_open_dir())
     {
         return [ @{$self->_current->_files()}];
     }
