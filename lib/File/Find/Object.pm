@@ -105,6 +105,13 @@ sub _current
     }
 }
 
+sub _is_top
+{
+    my $self = shift;
+
+    return ($self->_current() eq $self);
+}
+
 sub next {
     my ($self) = @_;
     while (1) {
@@ -216,7 +223,7 @@ sub _me_die {
     my $self = shift;
 
     # TODO : Refactor this check - it appears several times.
-    if ($self eq $self->_current())
+    if ($self->_is_top())
     {
         return 1;
     }
@@ -373,7 +380,7 @@ sub _check_subdir
         return 0;
     }
 
-    if ($self eq $current)
+    if ($self->_is_top())
     {
         return 1;
     }
@@ -406,7 +413,7 @@ sub _current_path {
 
     my $current = $self->_current();
 
-    if ($self eq $self->_current())
+    if ($self->_is_top())
     {
         return $self->_curr_file;
     }
