@@ -105,14 +105,12 @@ sub _current
 sub next {
     my ($self) = @_;
     while (1) {
-        my $current = $self->_current();
-        if ($self->_process_current($current))
+        if ($self->_process_current())
         {
-            return $self->item($self->_current_path($current));
+            return $self->item($self->_current_path($self->_current()));
         }
-        $current = $self->_current();
         if(!$self->_movenext) {
-            if ($self->_me_die($current))
+            if ($self->_me_die($self->_current()))
             {
                 return $self->item(undef);
             }
@@ -247,7 +245,9 @@ sub _become_default
 
 # Return true if there is somthing next
 sub _process_current {
-    my ($self, $current) = @_;
+    my $self = shift;
+
+    my $current = $self->_current;
    
     $current->_curr_file() or return 0;
 
