@@ -281,6 +281,22 @@ sub _get_real_action
     return ($self->_calc_actions())[$action];
 }
 
+sub _shift_current_action
+{
+    my $self = shift;
+
+    my $action_proto = shift(@{$self->_current->_actions()});
+
+    if (!defined($action_proto))
+    {
+        return;
+    }
+    else
+    {
+        return $self->_get_real_action($action_proto);
+    }
+}
+
 # Return true if there is somthing next
 sub _process_current {
     my $self = shift;
@@ -291,10 +307,8 @@ sub _process_current {
 
     $self->_filter_wrapper() or return 0;  
 
-    while (defined(my $action_proto = shift(@{$current->_actions()})))
+    while (my $action = $self->_shift_current_action())
     {
-        my $action = $self->_get_real_action($action_proto);
-
         if($action eq 'a') {
             if ($self->callback()) {
                 $self->callback()->($self->_current_path($current));
