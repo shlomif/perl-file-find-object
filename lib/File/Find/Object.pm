@@ -313,7 +313,7 @@ sub _calc_actions
 {
     my $self = shift;
 
-    my @actions = qw(_handle_callback _handle_recurse);
+    my @actions = qw(_handle_callback _recurse);
 
     if ($self->depth())
     {
@@ -384,19 +384,6 @@ sub _inc_current_idx {
     return;
 }
 
-sub _handle_recurse {
-    my $self = shift;
-
-    my $status = $self->_recurse();
-    
-    if ($status ne "SKIP")
-    {
-        $self->_inc_current_idx();
-    }
-
-    return $status;
-}
-
 sub _process_current_actions
 {
     my $self = shift;
@@ -427,6 +414,8 @@ sub _recurse
             $self->_current(),
             scalar(@{$self->_dir_stack()})
         );
+
+    $self->_inc_current_idx();
 
     return 0;
 }
