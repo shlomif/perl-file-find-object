@@ -9,7 +9,7 @@ use warnings;
 use base 'Class::Accessor';
 
 __PACKAGE__->mk_accessors(qw(
-    _action
+    _actions
     _curr_file
     dev
     dir
@@ -20,6 +20,13 @@ __PACKAGE__->mk_accessors(qw(
     _open_dir_ret
     _traverse_to
 ));
+
+sub _reset_actions
+{
+    my $self = shift;
+
+    $self->_actions([0,1]);
+}
 
 1;
 

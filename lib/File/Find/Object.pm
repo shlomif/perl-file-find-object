@@ -21,6 +21,8 @@ sub new {
 
     $from->dir($self->dir());
 
+    $self->_reset_actions();
+
     return $top->_open_dir($top->_father($self)) ? $self : undef;
 }
 
@@ -74,6 +76,7 @@ sub new {
     $tree->_targets([ @targets ]);
     $tree->_target_index(-1);
     $tree->_current_idx(-1);
+    $tree->_reset_actions();
 
     $tree->_last_dir_scanned(undef);
 
@@ -150,7 +153,7 @@ sub _movenext_with_current
             shift(@{$self->_father($self->_current)->_traverse_to()})
        ))
     {
-        $self->_current->_action({});
+        $self->_current->_reset_actions();
         return 1;
     } else {
         return 0;
@@ -189,8 +192,7 @@ sub _movenext_wo_current
     {
         if (-e $self->_move_to_next_target())
         {
-            $self->_action({});
-
+            $self->_reset_actions();
             return 1;
         }
     }
@@ -271,6 +273,14 @@ sub _calc_actions
     return $self->depth() ? qw(b a) : qw(a b);
 }
 
+sub _get_real_action
+{
+    my $self = shift;
+    my $action = shift;
+
+    return ($self->_calc_actions())[$action];
+}
+
 # Return true if there is somthing next
 sub _process_current {
     my $self = shift;
@@ -281,12 +291,10 @@ sub _process_current {
 
     $self->_filter_wrapper() or return 0;  
 
-    foreach my $action ($self->_calc_actions())
+    while (defined(my $action_proto = shift(@{$current->_actions()})))
     {
-        if ($current->_action->{$action}) {
-            next;
-        }
-        $current->_action->{$action} = 1;
+        my $action = $self->_get_real_action($action_proto);
+
         if($action eq 'a') {
             if ($self->callback()) {
                 $self->callback()->($self->_current_path($current));
@@ -295,7 +303,7 @@ sub _process_current {
         }
             
         if ($action eq 'b') {
-            my $status = $self->_recurse($current);
+            my $status = $self->_recurse();
             
             if ($status eq "SKIP")
             {
@@ -308,21 +316,21 @@ sub _process_current {
             }
         }
     }
+
     return 0;
 }
 
 sub _recurse
 {
-    my ($self, $current) = @_;
+    my $self = shift;
 
-    $self->_check_subdir($current) or 
+    $self->_check_subdir($self->_current()) or 
         return "SKIP";
-
 
     push @{$self->_dir_stack()}, 
         File::Find::Object::PathComponent->new(
             $self,
-            $current,
+            $self->_current(),
             scalar(@{$self->_dir_stack()})
         );
 
