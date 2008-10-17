@@ -80,11 +80,11 @@ sub new {
     return $tree;
 }
 
-sub DESTROY {
-    my ($self) = @_;
+#sub DESTROY {
+#    my ($self) = @_;
 #    print STDERR join(" ", caller)."\n";
 #    printf STDERR "destroy `%s'\n", $self->dir() || "--";
-}
+#}
 
 sub _current
 {
