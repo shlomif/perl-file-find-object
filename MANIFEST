@@ -1,6 +1,7 @@
 Build.PL
 Changes
 examples/tree
+inc/Test/Run/Builder.pm
 lib/File/Find/Object/Base.pm
 lib/File/Find/Object.pm
 Makefile.PL

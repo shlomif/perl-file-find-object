@@ -1,9 +1,13 @@
+
 use strict;
 use warnings;
 
-use Module::Build;
+use File::Spec;
+use lib File::Spec->catdir(File::Spec->curdir(), "inc");
 
-my $build = Module::Build->new(
+use Test::Run::Builder;
+
+my $builder = Test::Run::Builder->new(
     'module_name' => "File::Find::Object",
     'requires' =>
     {
@@ -11,4 +15,4 @@ my $build = Module::Build->new(
     },
     'license' => "perl",
 );
-$build->create_build_script;
+$builder->create_build_script;
