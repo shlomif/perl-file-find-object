@@ -86,7 +86,7 @@ sub _top_it
     return;
 }
 
-__PACKAGE__->_top_it([qw(_current)]);
+__PACKAGE__->_top_it([qw(_current _me_die)]);
 
 use Carp;
 
@@ -250,16 +250,15 @@ sub _movenext {
     }
 }
 
-sub _me_die {
+sub _top__me_die {
+    return 1;
+}
+
+sub _non_top__me_die {
     my $self = shift;
 
-    # TODO : Refactor this check - it appears several times.
-    if ($self->_is_top())
-    {
-        return 1;
-    }
-
     $self->_become_default();
+
     return 0;
 }
 
