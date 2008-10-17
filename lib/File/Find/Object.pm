@@ -313,7 +313,13 @@ sub _calc_actions
 {
     my $self = shift;
 
-    return $self->depth() ? qw(b a) : qw(a b);
+    my @actions = qw(_handle_callback _handle_recurse);
+
+    if ($self->depth())
+    {
+        @actions = reverse(@actions);
+    }
+    return @actions;
 }
 
 sub _get_real_action
@@ -360,31 +366,39 @@ sub _process_current {
     }
 }
 
+sub _handle_callback {
+    my $self = shift;
+
+    if ($self->callback()) {
+        $self->callback()->($self->_current_path());
+    }
+
+    return 1;
+}
+
+sub _handle_recurse {
+    my $self = shift;
+
+    my $status = $self->_recurse();
+    
+    if ($status ne "SKIP")
+    {
+        $self->_current_idx($self->_current_idx()+1);
+    }
+    return $status;
+}
+
 sub _process_current_actions
 {
     my $self = shift;
 
     while (my $action = $self->_shift_current_action())
     {
-        if($action eq 'a') {
-            if ($self->callback()) {
-                $self->callback()->($self->_current_path());
-            }
-            return 1;
-        }
-            
-        if ($action eq 'b') {
-            my $status = $self->_recurse();
-            
-            if ($status eq "SKIP")
-            {
-                next;
-            }
-            else
-            {
-                $self->_current_idx($self->_current_idx()+1);
-                return $status;
-            }
+        my $status = $self->$action();
+
+        if ($status ne "SKIP")
+        {
+            return $status;
         }
     }
 
