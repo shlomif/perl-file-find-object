@@ -376,6 +376,14 @@ sub _handle_callback {
     return 1;
 }
 
+sub _inc_current_idx {
+    my $self = shift;
+
+    $self->_current_idx($self->_current_idx()+1);
+
+    return;
+}
+
 sub _handle_recurse {
     my $self = shift;
 
@@ -383,8 +391,9 @@ sub _handle_recurse {
     
     if ($status ne "SKIP")
     {
-        $self->_current_idx($self->_current_idx()+1);
+        $self->_inc_current_idx();
     }
+
     return $status;
 }
 
