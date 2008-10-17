@@ -55,6 +55,39 @@ sub _get_options_ids
 
 __PACKAGE__->mk_accessors(@{__PACKAGE__->_get_options_ids()});
 
+# This is a variation of the Conditional-to-Inheritance refactoring - 
+# we have two methods - one if _is_top is true
+# and the other if it's false.
+#
+# This has been a common pattern in the code and should be eliminated.
+
+sub _top_it
+{
+    my ($pkg, $methods) = @_;
+
+    no strict 'refs';
+    foreach my $method (@$methods)
+    {
+        *{$pkg."::".$method} =
+            do {
+                my $m = $method;
+                my $top = "_top_$m";
+                my $non = "_non_top_$m";
+                sub {
+                    my $self = shift;
+                    return $self->_is_top()
+                        ? $self->$top(@_)
+                        : $self->$non(@_)
+                        ;
+                };
+            };
+    }
+
+    return;
+}
+
+__PACKAGE__->_top_it([qw(_current)]);
+
 use Carp;
 
 our $VERSION = '0.1.0';
@@ -89,20 +122,18 @@ sub new {
 #    printf STDERR "destroy `%s'\n", $self->dir() || "--";
 #}
 
-sub _current
+sub _top__current
 {
     my $self = shift;
 
-    my $dir_stack = $self->_dir_stack();
+    return $self;
+}
 
-    if ($self->_is_top())
-    {
-        return $self;
-    }
-    else
-    {
-        return $dir_stack->[$self->_current_idx];
-    }
+sub _non_top__current
+{
+    my $self = shift;
+
+    return $self->_dir_stack->[$self->_current_idx];
 }
 
 sub _is_top
