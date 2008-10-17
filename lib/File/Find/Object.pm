@@ -86,7 +86,13 @@ sub _top_it
     return;
 }
 
-__PACKAGE__->_top_it([qw(_current _me_die _check_subdir_helper)]);
+__PACKAGE__->_top_it([qw(
+    _check_subdir_helper
+    _current
+    _current_path
+    _me_die 
+    )]
+);
 
 use Carp;
 
@@ -447,22 +453,13 @@ sub _non_top__check_subdir_helper {
     return 1;
 }
 
-sub _current_path {
-    my $self = shift;
+sub _top__current_path {
+    my $self = shift; 
 
-    my $current = $self->_current();
-
-    if ($self->_is_top())
-    {
-        return $self->_curr_file;
-    }
-    else
-    {
-        return $self->_non_top_current_path();
-    }
+    return $self->_curr_file;
 }
 
-sub _non_top_current_path
+sub _non_top__current_path
 {
     my $self = shift;
 
