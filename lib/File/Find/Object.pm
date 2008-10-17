@@ -95,7 +95,7 @@ sub _current
 
     my $dir_stack = $self->_dir_stack();
 
-    if ($self->_current_idx < 0)
+    if ($self->_is_top())
     {
         return $self;
     }
@@ -109,7 +109,7 @@ sub _is_top
 {
     my $self = shift;
 
-    return ($self->_current() eq $self);
+    return ($self->_current_idx() < 0);
 }
 
 sub next {
