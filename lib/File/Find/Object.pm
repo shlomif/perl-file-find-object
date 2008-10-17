@@ -110,7 +110,7 @@ sub next {
             return $self->item($self->_current_path($self->_current()));
         }
         if(!$self->_movenext) {
-            if ($self->_me_die($self->_current()))
+            if ($self->_me_die())
             {
                 return $self->item(undef);
             }
@@ -211,8 +211,11 @@ sub _movenext {
 }
 
 sub _me_die {
-    my ($self, $current) = @_;
+    my $self = shift;
 
+    my $current = $self->_current();
+
+    # TODO : Refactor this check.
     if ($self eq $current)
     {
         return 1;
