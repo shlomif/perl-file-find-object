@@ -274,7 +274,7 @@ sub _process_current {
    
     $current->_curr_file() or return 0;
 
-    $self->_filter_wrapper($current) or return 0;  
+    $self->_filter_wrapper() or return 0;  
 
     foreach my $action ($self->depth() ? qw(b a) : qw(a b))
     {
@@ -325,9 +325,10 @@ sub _recurse
 }
 
 sub _filter_wrapper {
-    my ($self, $current) = @_;
+    my $self = shift;
+
     return defined($self->filter()) ?
-        $self->filter()->($self->_current_path($current)) :
+        $self->filter()->($self->_current_path($self->_current())) :
         1;
 }
 
