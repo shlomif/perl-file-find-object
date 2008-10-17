@@ -340,15 +340,29 @@ sub _shift_current_action
     }
 }
 
+sub _check_process_current {
+    my $self = shift;
+
+    return ($self->_current->_curr_file() && $self->_filter_wrapper());
+}
+
 # Return true if there is somthing next
 sub _process_current {
     my $self = shift;
 
-    my $current = $self->_current;
-   
-    $current->_curr_file() or return 0;
+    if (!$self->_check_process_current())
+    {
+        return 0;
+    }
+    else
+    {
+        return $self->_process_current_actions();
+    }
+}
 
-    $self->_filter_wrapper() or return 0;  
+sub _process_current_actions
+{
+    my $self = shift;
 
     while (my $action = $self->_shift_current_action())
     {
