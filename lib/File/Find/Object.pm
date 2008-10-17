@@ -215,29 +215,32 @@ sub _me_die {
 
     my $current = $self->_current();
 
-    # TODO : Refactor this check.
+    # TODO : Refactor this check - it appears several times.
     if ($self eq $current)
     {
         return 1;
     }
 
-    $self->_become_default($self->_father($current));
+    $self->_become_default();
     return 0;
 }
 
 sub _become_default
 {
-    my ($self, $current) = @_;
+    my $self = shift;
 
-    if ($self eq $current)
+    my $father = $self->_father($self->_current());
+
+    if ($self eq $father)
     {
         @{$self->_dir_stack()} = ();
         $self->_current_idx(-1);
     }
     else
     {
-        while (scalar(@{$self->_dir_stack()}) != $current->idx() + 1)
+        while (scalar(@{$self->_dir_stack()}) != $father->idx() + 1)
         {
+            # TODO : Extract methods.
             pop(@{$self->_dir_stack()});
             $self->_current_idx($self->_current_idx()-1);
         }
