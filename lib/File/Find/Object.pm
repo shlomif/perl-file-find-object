@@ -338,7 +338,7 @@ sub _recurse
 {
     my $self = shift;
 
-    $self->_check_subdir($self->_current()) or 
+    $self->_check_subdir() or 
         return "SKIP";
 
     push @{$self->_dir_stack()}, 
@@ -361,7 +361,9 @@ sub _filter_wrapper {
 
 sub _check_subdir 
 {
-    my ($self, $current) = @_;
+    my $self = shift;
+
+    my $current = $self->_current();
 
     # If current is not a directory always return 0, because we may
     # be asked to traverse single-files.
