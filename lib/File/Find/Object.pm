@@ -14,7 +14,7 @@ sub new {
     my $self = {};
     bless $self, $class;
 
-    $self->dir($top->_current_path($from));
+    $self->dir($top->_current_path());
     $self->idx($index);
 
     $self->_last_dir_scanned(undef);
@@ -110,7 +110,7 @@ sub next {
     while (1) {
         if ($self->_process_current())
         {
-            return $self->item($self->_current_path($self->_current()));
+            return $self->item($self->_current_path());
         }
         if(!$self->_movenext) {
             if ($self->_me_die())
@@ -311,7 +311,7 @@ sub _process_current {
     {
         if($action eq 'a') {
             if ($self->callback()) {
-                $self->callback()->($self->_current_path($current));
+                $self->callback()->($self->_current_path());
             }
             return 1;
         }
@@ -355,7 +355,7 @@ sub _filter_wrapper {
     my $self = shift;
 
     return defined($self->filter()) ?
-        $self->filter()->($self->_current_path($self->_current())) :
+        $self->filter()->($self->_current_path()) :
         1;
 }
 
@@ -367,7 +367,7 @@ sub _check_subdir
 
     # If current is not a directory always return 0, because we may
     # be asked to traverse single-files.
-    my @st = stat($self->_current_path($current));
+    my @st = stat($self->_current_path());
     if (!-d _)
     {
         return 0;
@@ -377,7 +377,7 @@ sub _check_subdir
     {
         return 1;
     }
-    if (-l $self->_current_path($current) && !$self->followlink())
+    if (-l $self->_current_path() && !$self->followlink())
     {
         return 0;
     }
@@ -395,16 +395,18 @@ sub _check_subdir
     }
     if ($rc) {
         printf(STDERR "Avoid loop " . $self->_father($ptr)->dir() . " => %s\n",
-            $self->_current_path($current));
+            $self->_current_path());
         return 0;
     }
     return 1;
 }
 
 sub _current_path {
-    my ($self, $current) = @_;
+    my $self = shift;
 
-    if ($self eq $current)
+    my $current = $self->_current();
+
+    if ($self eq $self->_current())
     {
         return $self->_curr_file;
     }
@@ -477,7 +479,7 @@ sub get_current_node_files_list
     # Remming out because it doesn't work.
     # $self->_father($self->_current)->dir($self->_current->dir());
 
-    $self->_current->dir($self->_current_path($self->_current()));
+    $self->_current->dir($self->_current_path());
 
     # _open_dir can return undef if $self->_current is not a directory.
     if ($self->_open_dir($self->_current))
