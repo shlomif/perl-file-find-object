@@ -458,7 +458,7 @@ sub _non_top__check_subdir_helper {
     }
 
     if ($rc) {
-        printf(STDERR "Avoid loop " . $self->_father($ptr)->_dir_as_string . " => %s\n",
+        printf(STDERR "Avoid loop " . $ptr->_dir_as_string . " => %s\n",
             $self->_current_path());
         return 0;
     }
