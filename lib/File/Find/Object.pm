@@ -488,7 +488,7 @@ sub _non_top__check_subdir_helper {
 sub _top__current_path {
     my $self = shift; 
 
-    return $self->_curr_file;
+    return $self->_current->_curr_file;
 }
 
 sub _non_top__current_path
