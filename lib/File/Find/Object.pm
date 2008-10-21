@@ -34,7 +34,6 @@ use warnings;
 use base 'File::Find::Object::Base';
 
 __PACKAGE__->mk_accessors(qw(
-    _current_idx
     _dir_stack
     item
     _targets
@@ -114,7 +113,6 @@ sub new {
     }
     $tree->_targets([ @targets ]);
     $tree->_target_index(-1);
-    $tree->_current_idx(-1);
     $tree->_reset_actions();
 
     $tree->_last_dir_scanned(undef);
@@ -154,6 +152,13 @@ sub _is_top
     my $self = shift;
 
     return ($self->_current_idx() < 0);
+}
+
+sub _current_idx
+{
+    my $self = shift;
+
+    return $#{$self->_dir_stack()};
 }
 
 sub _current_path
@@ -290,7 +295,6 @@ sub _become_default
     if ($self eq $father)
     {
         @{$self->_dir_stack()} = ();
-        $self->_current_idx(-1);
     }
     else
     {
@@ -308,7 +312,6 @@ sub _pop_item
     my $self = shift;
 
     pop(@{$self->_dir_stack()});
-    $self->_dec_current_idx();
 
     return;
 }
@@ -427,8 +430,6 @@ sub _recurse
             $self->_current(),
             scalar(@{$self->_dir_stack()})
         );
-
-    $self->_inc_current_idx();
 
     return 0;
 }
