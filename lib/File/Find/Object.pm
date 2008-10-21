@@ -438,18 +438,25 @@ sub _non_top__check_subdir_helper {
     {
         return 0;
     }
+
     if ($st->[0] != $self->_current_father->_dev() && $self->nocrossfs())
     {
         return 0;
     }
-    my $ptr = $current; my $rc;
-    while($self->_father($ptr)) {
-        if ($self->_father($ptr)->_is_same_inode($st)) {
+
+    my $ptr = $self->_current_father;
+    my $rc;
+
+    while($ptr) {
+        if ($ptr->_is_same_inode($st)) {
             $rc = 1;
             last;
         }
+    }
+    continue {
         $ptr = $self->_father($ptr);
     }
+
     if ($rc) {
         printf(STDERR "Avoid loop " . $self->_father($ptr)->_dir_as_string . " => %s\n",
             $self->_current_path());
