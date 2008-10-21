@@ -428,12 +428,11 @@ sub _top__check_subdir_helper {
     return 1;
 }
 
-sub _find_ancestor_with_same_st {
+sub _find_ancestor_with_same_inode {
     my $self = shift;
     my $st = shift;
 
     my $ptr = $self->_current_father;
-    my $rc;
 
     while($ptr) {
         if ($ptr->_is_same_inode($st)) {
@@ -443,6 +442,7 @@ sub _find_ancestor_with_same_st {
     continue {
         $ptr = $self->_father($ptr);
     }
+
     return;
 }
 
@@ -462,7 +462,7 @@ sub _non_top__check_subdir_helper {
         return 0;
     }
 
-    if (my $ptr = $self->_find_ancestor_with_same_st($st)) {
+    if (my $ptr = $self->_find_ancestor_with_same_inode($st)) {
         printf(STDERR "Avoid loop " . $ptr->_dir_as_string . " => %s\n",
             $self->_current_path());
         return 0;
