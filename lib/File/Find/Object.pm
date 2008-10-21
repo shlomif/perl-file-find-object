@@ -156,7 +156,7 @@ sub _is_top
     return ($self->_current_idx() < 0);
 }
 
-sub _NEW_current_path
+sub _current_path
 {
     my $self = shift;
 
@@ -168,7 +168,7 @@ sub next {
     while (1) {
         if ($self->_process_current())
         {
-            return $self->item($self->_NEW_current_path());
+            return $self->item($self->_current_path());
         }
         if(!$self->_movenext) {
             if ($self->_me_die())
@@ -390,7 +390,7 @@ sub _handle_callback {
     my $self = shift;
 
     if ($self->callback()) {
-        $self->callback()->($self->_NEW_current_path());
+        $self->callback()->($self->_current_path());
     }
 
     return 1;
@@ -444,7 +444,7 @@ sub _filter_wrapper {
     my $self = shift;
 
     return defined($self->filter()) ?
-        $self->filter()->($self->_NEW_current_path()) :
+        $self->filter()->($self->_current_path()) :
         1;
 }
 
@@ -454,7 +454,7 @@ sub _check_subdir
 
     # If current is not a directory always return 0, because we may
     # be asked to traverse single-files.
-    my @st = stat($self->_NEW_current_path());
+    my @st = stat($self->_current_path());
     if (!-d _)
     {
         return 0;
@@ -475,7 +475,7 @@ sub _non_top__check_subdir_helper {
 
     my $current = $self->_current();
 
-    if (-l $self->_NEW_current_path() && !$self->followlink())
+    if (-l $self->_current_path() && !$self->followlink())
     {
         return 0;
     }
@@ -493,7 +493,7 @@ sub _non_top__check_subdir_helper {
     }
     if ($rc) {
         printf(STDERR "Avoid loop " . $self->_father($ptr)->_dir_as_string . " => %s\n",
-            $self->_NEW_current_path());
+            $self->_current_path());
         return 0;
     }
     return 1;
