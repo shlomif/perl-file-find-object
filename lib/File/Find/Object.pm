@@ -438,13 +438,13 @@ sub _non_top__check_subdir_helper {
     {
         return 0;
     }
-    if ($st->[0] != $self->_current_father->dev() && $self->nocrossfs())
+    if ($st->[0] != $self->_current_father->_dev() && $self->nocrossfs())
     {
         return 0;
     }
     my $ptr = $current; my $rc;
     while($self->_father($ptr)) {
-        if($self->_father($ptr)->inode() == $st->[1] && $self->_father($ptr) == $st->[0]) {
+        if ($self->_father($ptr)->_is_same_inode($st)) {
             $rc = 1;
             last;
         }
@@ -516,8 +516,8 @@ sub _open_dir {
     );
     
     my @st = stat($current->_dir_as_string());
-    $current->inode($st[1]);
-    $current->dev($st[0]);
+    $current->_inode($st[1]);
+    $current->_dev($st[0]);
 
     return $current->_open_dir_ret(1);
 }

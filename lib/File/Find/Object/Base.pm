@@ -13,11 +13,11 @@ use File::Spec;
 __PACKAGE__->mk_accessors(qw(
     _actions
     _curr_file
-    dev
+    _dev
     _dir
     _files
     idx
-    inode
+    _inode
     _last_dir_scanned
     _open_dir_ret
     _traverse_to
@@ -42,6 +42,15 @@ sub _dir_as_string
     my $self = shift;
 
     return File::Spec->catdir(@{$self->_dir()});
+}
+
+sub _is_same_inode
+{
+    my $self = shift;
+    # $st is an array ref with the return of perldoc -f stat .
+    my $st = shift;
+
+    return ($self->_dev() == $st->[0] && $self->_inode() == $st->[1]);
 }
 
 1;
