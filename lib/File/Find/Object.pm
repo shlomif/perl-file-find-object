@@ -183,13 +183,6 @@ sub _father
 {
     my ($self, $level) = @_;
 
-    if (!defined($level))
-    {
-        require Data::Dumper;
-        print Data::Dumper->new([$self],['$self'])->Dump();
-        confess "Current is undef";
-    }
-
     if (!defined($level->idx()))
     {
         return undef;
