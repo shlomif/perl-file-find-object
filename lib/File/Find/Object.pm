@@ -144,21 +144,14 @@ sub _non_top__current
 {
     my $self = shift;
 
-    return $self->_dir_stack->[$self->_current_idx];
+    return $self->_dir_stack->[-1];
 }
 
 sub _is_top
 {
     my $self = shift;
 
-    return ($self->_current_idx() < 0);
-}
-
-sub _current_idx
-{
-    my $self = shift;
-
-    return $#{$self->_dir_stack()};
+    return ! @{$self->_dir_stack()};
 }
 
 sub _current_path
@@ -316,15 +309,6 @@ sub _pop_item
     return;
 }
 
-sub _dec_current_idx
-{
-    my $self = shift;
-
-    $self->_current_idx($self->_current_idx()-1);
-
-    return;
-}
-
 sub _calc_actions
 {
     my $self = shift;
@@ -390,14 +374,6 @@ sub _handle_callback {
     }
 
     return 1;
-}
-
-sub _inc_current_idx {
-    my $self = shift;
-
-    $self->_current_idx($self->_current_idx()+1);
-
-    return;
 }
 
 sub _process_current_actions
