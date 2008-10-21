@@ -14,12 +14,12 @@ sub new {
     my $self = {};
     bless $self, $class;
 
-    $self->dir($top->_current_path());
+    $self->_dir($top->_current_components_copy());
     $self->idx($index);
 
     $self->_last_dir_scanned(undef);
 
-    $from->dir($self->dir());
+    $from->_dir($self->_dir_copy());
 
     $self->_reset_actions();
 
@@ -89,7 +89,7 @@ sub _top_it
 __PACKAGE__->_top_it([qw(
     _check_subdir_helper
     _current
-    _current_path
+    _current_components
     _me_die 
     )]
 );
@@ -125,8 +125,15 @@ sub new {
 #sub DESTROY {
 #    my ($self) = @_;
 #    print STDERR join(" ", caller)."\n";
-#    printf STDERR "destroy `%s'\n", $self->dir() || "--";
+#    printf STDERR "destroy `%s'\n", $self->_dir_as_string || "--";
 #}
+
+sub _current_components_copy
+{
+    my $self = shift;
+
+    return [ @{$self->_current_components()} ];
+}
 
 sub _top__current
 {
@@ -149,12 +156,19 @@ sub _is_top
     return ($self->_current_idx() < 0);
 }
 
+sub _NEW_current_path
+{
+    my $self = shift;
+
+    return File::Spec->catfile(@{$self->_current_components_copy()});
+}
+
 sub next {
     my ($self) = @_;
     while (1) {
         if ($self->_process_current())
         {
-            return $self->item($self->_current_path());
+            return $self->item($self->_NEW_current_path());
         }
         if(!$self->_movenext) {
             if ($self->_me_die())
@@ -376,7 +390,7 @@ sub _handle_callback {
     my $self = shift;
 
     if ($self->callback()) {
-        $self->callback()->($self->_current_path());
+        $self->callback()->($self->_NEW_current_path());
     }
 
     return 1;
@@ -430,7 +444,7 @@ sub _filter_wrapper {
     my $self = shift;
 
     return defined($self->filter()) ?
-        $self->filter()->($self->_current_path()) :
+        $self->filter()->($self->_NEW_current_path()) :
         1;
 }
 
@@ -440,7 +454,7 @@ sub _check_subdir
 
     # If current is not a directory always return 0, because we may
     # be asked to traverse single-files.
-    my @st = stat($self->_current_path());
+    my @st = stat($self->_NEW_current_path());
     if (!-d _)
     {
         return 0;
@@ -461,7 +475,7 @@ sub _non_top__check_subdir_helper {
 
     my $current = $self->_current();
 
-    if (-l $self->_current_path() && !$self->followlink())
+    if (-l $self->_NEW_current_path() && !$self->followlink())
     {
         return 0;
     }
@@ -478,27 +492,27 @@ sub _non_top__check_subdir_helper {
         $ptr = $self->_father($ptr);
     }
     if ($rc) {
-        printf(STDERR "Avoid loop " . $self->_father($ptr)->dir() . " => %s\n",
-            $self->_current_path());
+        printf(STDERR "Avoid loop " . $self->_father($ptr)->_dir_as_string . " => %s\n",
+            $self->_NEW_current_path());
         return 0;
     }
     return 1;
 }
 
-sub _top__current_path {
+sub _top__current_components {
     my $self = shift; 
 
-    return $self->_current->_curr_file;
+    return [$self->_current->_curr_file];
 }
 
-sub _non_top__current_path
+sub _non_top__current_components
 {
     my $self = shift;
 
-    return File::Spec->catfile(
-        $self->_current_father->dir(),
-        $self->_current->_curr_file
-    );
+    return [
+        @{$self->_current_father->_dir_copy()},
+        $self->_current->_curr_file()
+    ];
 }
 
 sub _open_dir {
@@ -507,18 +521,18 @@ sub _open_dir {
     my $current = $self->_current();
 
     if (defined($current->_last_dir_scanned()) &&
-        ($current->_last_dir_scanned() eq $current->dir()
+        ($current->_last_dir_scanned() eq $current->_dir_as_string()
        )
     )
     {
         return $current->_open_dir_ret();
     }
 
-    $current->_last_dir_scanned($current->dir());
+    $current->_last_dir_scanned($current->_dir_as_string());
 
     my $handle;
     my @files;
-    if (!opendir($handle, $current->dir()))
+    if (!opendir($handle, $current->_dir_as_string()))
     {
         # Handle this error gracefully.        
     }
@@ -535,7 +549,7 @@ sub _open_dir {
         [ @files ]
     );
     
-    my @st = stat($current->dir());
+    my @st = stat($current->_dir_as_string());
     $current->inode($st[1]);
     $current->dev($st[0]);
 
@@ -563,7 +577,7 @@ sub get_current_node_files_list
 {
     my $self = shift;
 
-    $self->_current->dir($self->_current_path());
+    $self->_current->_dir($self->_current_components_copy());
 
     # _open_dir can return undef if $self->_current is not a directory.
     if ($self->_open_dir())
@@ -594,7 +608,7 @@ File::Find::Object - An object oriented File::Find replacement
 =head1 SYNOPSIS
 
     use File::Find::Object;
-    my $tree = File::Find::Object->new({}, @dir);
+    my $tree = File::Find::Object->new({}, @targets);
 
     while (my $r = $tree->next()) {
         print $r ."\n";

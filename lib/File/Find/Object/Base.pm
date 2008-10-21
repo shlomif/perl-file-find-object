@@ -8,11 +8,13 @@ use warnings;
 
 use base 'Class::Accessor';
 
+use File::Spec;
+
 __PACKAGE__->mk_accessors(qw(
     _actions
     _curr_file
     dev
-    dir
+    _dir
     _files
     idx
     inode
@@ -26,6 +28,20 @@ sub _reset_actions
     my $self = shift;
 
     $self->_actions([0,1]);
+}
+
+sub _dir_copy
+{
+    my $self = shift;
+
+    return [ @{$self->_dir()} ];
+}
+
+sub _dir_as_string
+{
+    my $self = shift;
+
+    return File::Spec->catdir(@{$self->_dir()});
 }
 
 1;
