@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 21;
+use Test::More tests => 37;
 
 BEGIN
 {
@@ -328,6 +328,10 @@ use File::Path;
                 'subs' =>
                 [
                     {
+                        'name' => "file.txt",
+                        'contents' => "A file that should come before yet/",
+                    },
+                    {
                         'name' => "yet/",
                     },
                 ],
@@ -405,23 +409,83 @@ use File::Path;
         is ($r->basename(), "b.doc", "Basename is 'b.doc'");
     }
 
-=begin Hello
-    is_deeply(
-        \@results,
-        [(map { $t->get_path("t/sample-data/traverse-1/$_") }
-            ("", qw(
-                a
-                b.doc
-                foo
-                foo/yet
-            ))),
-         undef
-        ],
-        "Checking for regular, lexicographically sorted order",
-    );
-=end Hello
+    {
+        my $r = $ff->next_obj();
 
-=cut
+        # TEST
+        is ($r->path(), $t->get_path("t/sample-data/traverse-1/foo"), "Path");
+
+        # TEST
+        is ($r->base(), $t->get_path("./t/sample-data/traverse-1"), "Base");
+
+        # TEST
+        is_deeply ($r->dir_components(), [qw(foo)], 
+            "Dir_Components are 'foo'"
+        );
+
+        # TEST
+        ok ($r->is_dir(), "Is a directory");
+
+        # TEST
+        is_deeply ($r->full_components(), [qw(foo)], 
+            "Full components are 'foo'"
+        );
+    }
+
+    {
+        my $r = $ff->next_obj();
+
+        # TEST
+        is ($r->path(), $t->get_path("t/sample-data/traverse-1/foo/file.txt"), 
+            "Path",
+        );
+
+        # TEST
+        is ($r->base(), $t->get_path("./t/sample-data/traverse-1"), 
+            "Base"
+        );
+
+        # TEST
+        is_deeply ($r->dir_components(), [qw(foo)], 
+            "Dir_Components are 'foo'"
+        );
+
+        # TEST
+        ok (!$r->is_dir(), "Not a directory");
+
+        # TEST
+        is_deeply ($r->full_components(), [qw(foo file.txt)], 
+            "Full components are 'foo/file.txt'"
+        );
+
+        # TEST
+        is ($r->basename(), "file.txt", "Basename is 'file.txt'");
+    }
+
+    {
+        my $r = $ff->next_obj();
+
+        # TEST
+        is ($r->path(), $t->get_path("t/sample-data/traverse-1/foo/yet"), 
+            "Path",
+        );
+
+        # TEST
+        is ($r->base(), $t->get_path("./t/sample-data/traverse-1"), "Base");
+
+        # TEST
+        is_deeply ($r->dir_components(), [qw(foo yet)], 
+            "Dir_Components are 'foo/yet'"
+        );
+
+        # TEST
+        ok ($r->is_dir(), "Is a directory");
+
+        # TEST
+        is_deeply ($r->full_components(), [qw(foo yet)], 
+            "Full components are 'foo/yet'"
+        );
+    }
 
     rmtree($t->get_path("./t/sample-data/traverse-1"))
 }
