@@ -89,7 +89,8 @@ __PACKAGE__->_top_it([qw(
     _check_subdir_helper
     _current
     _father_components
-    _me_die 
+    _me_die
+    _movenext
     )]
 );
 
@@ -201,7 +202,7 @@ sub _current_father {
     return $self->_father($self->_current);
 }
 
-sub _movenext_with_current
+sub _non_top__movenext
 {
     my $self = shift;
     if ($self->_current->_curr_file(
@@ -239,7 +240,7 @@ sub _move_to_next_target
     return $self->_curr_file($self->_calc_next_target());
 }
 
-sub _movenext_wo_current
+sub _top__movenext
 {
     my $self = shift;
 
@@ -253,18 +254,6 @@ sub _movenext_wo_current
     }
 
     return 0;
-}
-
-sub _movenext {
-    my ($self) = @_;
-    if (@{$self->_dir_stack()})
-    {
-        return $self->_movenext_with_current();
-    }
-    else
-    {
-        return $self->_movenext_wo_current();
-    }
 }
 
 sub _top__me_die {
