@@ -515,9 +515,7 @@ sub _open_dir {
         [ @files ]
     );
     
-    my @st = stat($current->_dir_as_string());
-    $current->_inode($st[1]);
-    $current->_dev($st[0]);
+    $current->_mystat();
 
     return $current->_open_dir_ret(1);
 }

@@ -53,6 +53,17 @@ sub _is_same_inode
     return ($self->_dev() == $st->[0] && $self->_inode() == $st->[1]);
 }
 
+sub _mystat
+{
+    my $self = shift;
+
+    my @st = stat($self->_dir_as_string());
+    $self->_inode($st[1]);
+    $self->_dev($st[0]);
+
+    return;
+}
+
 1;
 
 =head1 NAME
