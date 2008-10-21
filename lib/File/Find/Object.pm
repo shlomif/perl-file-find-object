@@ -33,9 +33,11 @@ use warnings;
 
 use base 'File::Find::Object::Base';
 
+use File::Find::Object::Result;
+
 __PACKAGE__->mk_accessors(qw(
     _dir_stack
-    item
+    item_obj
     _targets
     _target_index
 ));
@@ -162,20 +164,67 @@ sub _current_path
     return File::Spec->catfile(@{$self->_current_components_copy()});
 }
 
-sub next {
+sub _calc_current_item_obj {
+    my $self = shift;
+
+    my $components = $self->_current_components_copy();
+    my $base = shift(@$components);
+    
+    my @basename = ();
+    my $path = $self->_current_path();
+    my $is_dir = -d $path;
+    if (! $is_dir)
+    {
+        @basename = (basename => pop(@$components));
+    }
+
+    return File::Find::Object::Result->new(
+        {
+            @basename,
+            path => $path,
+            is_dir => $is_dir,
+            dir_components => $components,
+            base => $base,
+        }
+    );
+}
+
+sub _calc_next_obj {
     my ($self) = @_;
     while (1) {
         if ($self->_process_current())
         {
-            return $self->item($self->_current_path());
+            return $self->_calc_current_item_obj();
         }
         if(!$self->_movenext) {
             if ($self->_me_die())
             {
-                return $self->item(undef);
+                return undef();
             }
         }
     }
+}
+
+sub next_obj {
+    my $self = shift;
+
+    my $obj = $self->_calc_next_obj();
+
+    return $self->item_obj($obj);
+}
+
+sub next {
+    my $self = shift;
+
+    $self->next_obj();
+
+    return $self->item();
+}
+
+sub item {
+    my $self = shift;
+
+    return $self->item_obj() ? $self->item_obj()->path() : undef;
 }
 
 sub _father
@@ -651,6 +700,18 @@ the scan is completed.
 
 Returns the current filename found by the File::Find::Object object, i.e: the
 last value returned by next().
+
+=head2 next_obj
+
+Like next() only returns the result as a convenient 
+L<File::Find::Object::Result> object. C<< $ff->next() >> is equivalent to
+C<< $ff->next_obj()->path() >>.
+
+=head2 item_obj
+
+Like item() only returns the result as a convenient 
+L<File::Find::Object::Result> object. C<< $ff->item() >> is equivalent to
+C<< $ff->item_obj()->path() >>.
 
 =head2 $ff->set_traverse_to([@children])
 
