@@ -89,7 +89,7 @@ sub _top_it
 __PACKAGE__->_top_it([qw(
     _check_subdir_helper
     _current
-    _current_components
+    _father_components
     _me_die 
     )]
 );
@@ -499,20 +499,27 @@ sub _non_top__check_subdir_helper {
     return 1;
 }
 
-sub _top__current_components {
-    my $self = shift; 
+sub _current_components {
+    my $self = shift;
 
-    return [$self->_current->_curr_file];
+    return
+    [
+        @{$self->_father_components()},
+        $self->_current->_curr_file
+    ];
 }
 
-sub _non_top__current_components
+sub _top__father_components {
+    my $self = shift; 
+
+    return [];
+}
+
+sub _non_top__father_components
 {
     my $self = shift;
 
-    return [
-        @{$self->_current_father->_dir_copy()},
-        $self->_current->_curr_file()
-    ];
+    return $self->_current_father->_dir_copy();
 }
 
 sub _open_dir {
