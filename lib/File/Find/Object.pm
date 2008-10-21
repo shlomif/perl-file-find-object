@@ -450,8 +450,6 @@ sub _non_top__check_subdir_helper {
     my $self = shift;
     my $st = shift;
 
-    my $current = $self->_current();
-
     if (-l $self->_current_path() && !$self->followlink())
     {
         return 0;
