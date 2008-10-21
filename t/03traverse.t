@@ -68,7 +68,7 @@ use File::Path;
         "Checking for regular, lexicographically sorted order",
     );
 
-    rmtree($t->get_path("./t/sample-data/traverse-1"))
+    rmtree($t->get_path("./t/sample-data/traverse-1"));
 }
 
 {
