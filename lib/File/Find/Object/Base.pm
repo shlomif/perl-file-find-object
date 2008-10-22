@@ -47,6 +47,8 @@ sub _make_copy_methods
 
 __PACKAGE__->_make_copy_methods([qw(
         _dir
+        _files
+        _traverse_to
     )]
 );
 
@@ -106,14 +108,9 @@ sub _set_up_dir
 {
     my $self = shift;
 
-    my $files = $self->_calc_dir_files();
+    $self->_files($self->_calc_dir_files());
 
-    $self->_files(
-        [ @$files ]
-    );
-    $self->_traverse_to(
-        [ @$files ]
-    );
+    $self->_traverse_to($self->_files_copy());
     
     $self->_mystat();
 

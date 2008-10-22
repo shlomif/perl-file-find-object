@@ -119,7 +119,7 @@ sub new {
     {
         $tree->set($opt, $options->{$opt});
     }
-    $tree->_targets([ @targets ]);
+    $tree->_targets(\@targets);
     $tree->_target_index(-1);
     $tree->_reset_actions();
 
@@ -559,7 +559,7 @@ sub get_traverse_to
 {
     my $self = shift;
 
-    return [ @{$self->_current->_traverse_to()} ];
+    return $self->_current->_traverse_to_copy();
 }
 
 sub get_current_node_files_list
@@ -571,7 +571,7 @@ sub get_current_node_files_list
     # _open_dir can return undef if $self->_current is not a directory.
     if ($self->_open_dir())
     {
-        return [ @{$self->_current->_files()}];
+        return $self->_current->_files_copy();
     }
     else
     {
