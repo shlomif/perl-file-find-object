@@ -23,18 +23,38 @@ __PACKAGE__->mk_accessors(qw(
     _traverse_to
 ));
 
+# Create a _copy method that does a flat copy of an array returned by
+# a method as a reference.
+
+sub _make_copy_methods
+{
+    my ($pkg, $methods) = @_;
+
+    no strict 'refs';
+    foreach my $method (@$methods)
+    {
+        *{$pkg."::".$method."_copy"} =
+            do {
+                my $m = $method;
+                sub {
+                    my $self = shift;
+                    return [ @{$self->$m(@_)} ];
+                };
+            };
+    }
+    return;
+}
+
+__PACKAGE__->_make_copy_methods([qw(
+        _dir
+    )]
+);
+
 sub _reset_actions
 {
     my $self = shift;
 
     $self->_actions([0,1]);
-}
-
-sub _dir_copy
-{
-    my $self = shift;
-
-    return [ @{$self->_dir()} ];
 }
 
 sub _dir_as_string
@@ -85,7 +105,8 @@ sub _should_scan_dir
 sub _set_up_dir
 {
     my $self = shift;
-    my $files = shift;
+
+    my $files = $self->_calc_dir_files();
 
     $self->_files(
         [ @$files ]
@@ -127,9 +148,7 @@ sub _component_open_dir
         return $self->_open_dir_ret();
     }
 
-    return $self->_set_up_dir(
-        $self->_calc_dir_files(),
-    );
+    return $self->_set_up_dir();
 }
 
 1;

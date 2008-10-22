@@ -96,6 +96,11 @@ __PACKAGE__->_top_it([qw(
     )]
 );
 
+__PACKAGE__->_make_copy_methods([qw(
+    _current_components
+    )]
+);
+
 use Carp;
 
 our $VERSION = '0.1.0';
@@ -128,13 +133,6 @@ sub new {
 #    print STDERR join(" ", caller)."\n";
 #    printf STDERR "destroy `%s'\n", $self->_dir_as_string || "--";
 #}
-
-sub _current_components_copy
-{
-    my $self = shift;
-
-    return [ @{$self->_current_components()} ];
-}
 
 sub _top__current
 {
