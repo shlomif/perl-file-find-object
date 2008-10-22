@@ -82,6 +82,23 @@ sub _should_scan_dir
     }
 }
 
+sub _set_up_dir
+{
+    my $self = shift;
+    my $files = shift;
+
+    $self->_files(
+        [ @$files ]
+    );
+    $self->_traverse_to(
+        [ @$files ]
+    );
+    
+    $self->_mystat();
+
+    return $self->_open_dir_ret(1);
+}
+
 1;
 
 =head1 NAME

@@ -555,24 +555,15 @@ sub _open_dir {
     my @files;
     if (!opendir($handle, $current->_dir_as_string()))
     {
-        # Handle this error gracefully.        
+        # Handle this error gracefully.
     }
     else
     {
         @files = (sort { $a cmp $b } File::Spec->no_upwards(readdir($handle)));
         closedir($handle);
     }
-    
-    $current->_files(
-        [ @files ]
-    );
-    $current->_traverse_to(
-        [ @files ]
-    );
-    
-    $current->_mystat();
 
-    return $current->_open_dir_ret(1);
+    return $current->_set_up_dir(\@files);
 }
 
 sub set_traverse_to
