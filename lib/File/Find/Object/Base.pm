@@ -64,6 +64,24 @@ sub _mystat
     return;
 }
 
+sub _should_scan_dir
+{
+    my $self = shift;
+
+    if (defined($self->_last_dir_scanned()) &&
+        ($self->_last_dir_scanned() eq $self->_dir_as_string()
+       )
+    )
+    {
+        return;
+    }
+    else
+    {
+        $self->_last_dir_scanned($self->_dir_as_string());
+        return 1;
+    }
+}
+
 1;
 
 =head1 NAME

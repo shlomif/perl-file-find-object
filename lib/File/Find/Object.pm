@@ -546,15 +546,10 @@ sub _open_dir {
 
     my $current = $self->_current();
 
-    if (defined($current->_last_dir_scanned()) &&
-        ($current->_last_dir_scanned() eq $current->_dir_as_string()
-       )
-    )
+    if (!$current->_should_scan_dir())
     {
         return $current->_open_dir_ret();
     }
-
-    $current->_last_dir_scanned($current->_dir_as_string());
 
     my $handle;
     my @files;
