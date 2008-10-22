@@ -1,3 +1,25 @@
+0.1.1 - Wed Oct 22 12:30:56 IST 2008
+    - Potential Security Fix!!! No longer passing a filename directly to
+    the format in <<printf (STDERR)>> when warning on a loop.
+    - Bug fix - the check for a loop was broken.
+    - New Feature - Added the ->next_obj() and ->item_obj() methods
+    to return a File::Find::Object::Result object instead of a plain
+    path.
+    - Refactoring:
+        - No longer passing $current explicitly from one method to another
+        (hello EEK!). Instead, we reference $self->_current()
+        - Remmed out the DESTROY method as it was empty.
+        - Revamped the _action handling - an array instead of a hash.
+        - Created _top and _non_top methods delegated by _is_top using
+            _top_it()
+        - _current_idx() was eliminated - now it's just $#dir_stack.
+        - Created a _copy methods to create flat copies of array references.
+        - Extracted many methods.
+    - Switched Build.PL to inc/Test/Run/Builder.pm - that gives us:
+        - ./Build runtest
+        - ./Build distruntest
+        - ./Build tags
+
 0.1.0 - Wed Mar  5 20:46:27 IST 2008
     - Now handling directories that cannot be opendir()'ed in a graceful
     manner - just not traversing them further.
