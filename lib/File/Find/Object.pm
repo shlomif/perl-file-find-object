@@ -551,19 +551,9 @@ sub _open_dir {
         return $current->_open_dir_ret();
     }
 
-    my $handle;
-    my @files;
-    if (!opendir($handle, $current->_dir_as_string()))
-    {
-        # Handle this error gracefully.
-    }
-    else
-    {
-        @files = (sort { $a cmp $b } File::Spec->no_upwards(readdir($handle)));
-        closedir($handle);
-    }
-
-    return $current->_set_up_dir(\@files);
+    return $current->_set_up_dir(
+        $current->_calc_dir_files(),
+    );
 }
 
 sub set_traverse_to

@@ -99,6 +99,25 @@ sub _set_up_dir
     return $self->_open_dir_ret(1);
 }
 
+sub _calc_dir_files
+{
+    my $self = shift;
+
+    my $handle;
+    my @files;
+    if (!opendir($handle, $self->_dir_as_string()))
+    {
+        # Handle this error gracefully.
+    }
+    else
+    {
+        @files = (sort { $a cmp $b } File::Spec->no_upwards(readdir($handle)));
+        closedir($handle);
+    }
+
+    return \@files;
+}
+
 1;
 
 =head1 NAME
