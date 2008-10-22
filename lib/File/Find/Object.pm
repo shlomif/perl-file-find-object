@@ -544,16 +544,7 @@ sub _non_top__father_components
 sub _open_dir {
     my $self = shift;
 
-    my $current = $self->_current();
-
-    if (!$current->_should_scan_dir())
-    {
-        return $current->_open_dir_ret();
-    }
-
-    return $current->_set_up_dir(
-        $current->_calc_dir_files(),
-    );
+    return $self->_current()->_component_open_dir();
 }
 
 sub set_traverse_to

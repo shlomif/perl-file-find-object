@@ -118,6 +118,20 @@ sub _calc_dir_files
     return \@files;
 }
 
+sub _component_open_dir
+{
+    my $self = shift;
+
+    if (!$self->_should_scan_dir())
+    {
+        return $self->_open_dir_ret();
+    }
+
+    return $self->_set_up_dir(
+        $self->_calc_dir_files(),
+    );
+}
+
 1;
 
 =head1 NAME
