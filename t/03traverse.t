@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 37;
+use Test::More tests => 38;
 
 BEGIN
 {
@@ -486,6 +486,15 @@ use File::Path;
             "Full components are 'foo/yet'"
         );
     }
+
+    {
+        my $r = $ff->next_obj();
+
+        # TEST
+        ok (!defined($r), "Last result is undef");
+    }
+
+    undef ($ff);
 
     rmtree($t->get_path("./t/sample-data/traverse-1"))
 }
