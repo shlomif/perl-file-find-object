@@ -493,6 +493,23 @@ sub _find_ancestor_with_same_inode {
     return;
 }
 
+sub _warn_about_loop
+{
+    my $self = shift;
+    my $ptr = shift;
+
+    # Don't pass strings directly to the format.
+    # Instead - use %s
+    # This was a security problem.
+    printf(STDERR
+        "Avoid loop %s => %s\n",
+            $ptr->_dir_as_string(),
+            $self->_current_path()
+        );
+
+    return;
+}
+
 sub _non_top__check_subdir_helper {
     my $self = shift;
     my $st = shift;
@@ -508,8 +525,7 @@ sub _non_top__check_subdir_helper {
     }
 
     if (my $ptr = $self->_find_ancestor_with_same_inode($st)) {
-        printf(STDERR "Avoid loop " . $ptr->_dir_as_string . " => %s\n",
-            $self->_current_path());
+        $self->_warn_about_loop($ptr);
         return 0;
     }
 
