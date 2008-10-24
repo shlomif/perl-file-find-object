@@ -1,3 +1,6 @@
+
+    - Corrected the README.
+
 0.1.1 - Wed Oct 22 12:30:56 IST 2008
     - Potential Security Fix!!! No longer passing a filename directly to
     the format in <<printf (STDERR)>> when warning on a loop.

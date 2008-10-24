@@ -15,16 +15,19 @@ after you install all of its dependencies.
 
 Alternatively use the CPAN.pm module:
 
-    # perl -MCPAN -e 'install HTML::Widgets::NavMenu'
+    # perl -MCPAN -e 'install File::Find::Object'
 
-Or the new CPANPLUS.pm module
+Or the newer CPANPLUS.pm module
 
-    # perl -MCPANPLUS -e 'install HTML::Widgets::NavMenu'
+    # perl -MCPANPLUS -e 'install File::Find::Object'
 
 DEPENDENCIES
 
-This module has no dependencies except for a Perl version that
-supports the "use warnings" pragma.
+This module's dependencies are:
+
+1. A Perl version that supports the "use warnings" pragma.
+
+2. The Class::Accessor module from CPAN.
 
 COPYRIGHT AND LICENSE
 
