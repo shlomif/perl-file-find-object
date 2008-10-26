@@ -72,7 +72,15 @@ sub _is_same_inode
     # $st is an array ref with the return of perldoc -f stat .
     my $st = shift;
 
-    return ($self->_dev() == $st->[0] && $self->_inode() == $st->[1]);
+    # On MS-Windows, all inodes in stat are returned as 0, so we need to 
+    # check that both inodes are not zero. This is why there's the 
+    # $self->_inode() != 0 check at the end.
+    return
+    (   
+        $self->_dev() == $st->[0]
+     && $self->_inode() == $st->[1]
+     && $self->_inode() != 0
+    );
 }
 
 sub _mystat

@@ -1,5 +1,8 @@
 
     - Corrected the README.
+    - Now checking for inodes that are 0, when checking for cyclical trees,
+    as a fix for stat() calls on systems that do not support them. This should
+    fix Win32 test failures (and bad behaviour in general) like the following:          - http://nntp.x.perl.org/group/perl.cpan.testers/2479582
 
 0.1.1 - Wed Oct 22 12:30:56 IST 2008
     - Potential Security Fix!!! No longer passing a filename directly to
