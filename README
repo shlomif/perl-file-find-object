@@ -1,4 +1,4 @@
-File::Find::Object is an object-oriented and iterative replacment for 
+File::Find::Object is an object-oriented and iterative replacement for 
 File::Find. I.e: it is a module for traversing a directory tree, and finding
 all the files contained within it programatically.
 
