@@ -210,7 +210,7 @@ sub _calc_next_obj {
         {
             return $self->_calc_current_item_obj();
         }
-        if(!$self->_top_move_to_next) {
+        if(!$self->_master_move_to_next) {
             if ($self->_me_die())
             {
                 return undef();
@@ -305,7 +305,7 @@ sub _move_next
     return 0;
 }
 
-sub _top_move_to_next {
+sub _master_move_to_next {
     my $self = shift;
 
     return $self->_current()->_move_next($self);
