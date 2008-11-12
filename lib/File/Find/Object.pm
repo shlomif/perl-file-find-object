@@ -33,7 +33,7 @@ sub _move_next
     # TODO :
     # Implement traversal to files with the filenames of exactly "0".
     if ($self->_curr_file(
-            shift(@{$top->_father($self)->_traverse_to()})
+            $top->_father($self)->_next_traverse_to()
        ))
     {
         $self->_reset_actions();

@@ -156,6 +156,13 @@ sub _component_open_dir
     return $self->_set_up_dir();
 }
 
+sub _next_traverse_to
+{
+    my $self = shift;
+
+    return shift(@{$self->_traverse_to()}); 
+}
+
 1;
 
 =head1 NAME

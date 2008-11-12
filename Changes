@@ -1,6 +1,7 @@
 
     - Refactoring: converted _movenext() from pseudo-conditionals
     to polymorphism by making it a method of ->_current().
+    - Refactoring: extracted the _next_traverse_to() method.
 
 0.1.2 - Sun Oct 26 12:57:55 IST 2008
     - Corrected the README.
