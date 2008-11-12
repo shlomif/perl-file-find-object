@@ -318,9 +318,7 @@ sub _top__me_die {
 sub _non_top__me_die {
     my $self = shift;
 
-    $self->_become_default();
-
-    return 0;
+    return $self->_become_default();
 }
 
 sub _become_default
