@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 38;
+use Test::More tests => 39;
 
 BEGIN
 {
@@ -497,4 +497,71 @@ use File::Path;
     undef ($ff);
 
     rmtree($t->get_path("./t/sample-data/traverse-1"))
+}
+
+{
+    my $tree =
+    {
+        'name' => "traverse-1/",
+        'subs' =>
+        [
+            {
+                'name' => "0/",
+            },
+            {
+                'name' => "foo/",
+                'subs' =>
+                [
+                    {
+                        'name' => "0",
+                        'contents' => "Zero file",
+                    },
+                    {
+                        'name' => "1",
+                        'contents' => "One file",
+                    },
+                    {
+                        'name' => "2",
+                        'contents' => "Two file",
+                    },
+                    
+
+                ],
+            },
+        ],
+    };
+
+    my $t = File::Find::Object::TreeCreate->new();
+    $t->create_tree("./t/sample-data/", $tree);
+
+    my $ff =
+        File::Find::Object->new(
+            {},
+            $t->get_path("./t/sample-data/traverse-1")
+        );
+
+    my @results;
+    for my $i (1 .. 7)
+    {
+        push @results, $ff->next();
+    }
+
+    # TEST
+    is_deeply(
+        \@results,
+        [(map { $t->get_path("t/sample-data/traverse-1/$_") }
+            sort {$a cmp $b }
+            ("", qw(
+                0
+                foo
+                foo/0
+                foo/1
+                foo/2
+            ))),
+         undef
+        ],
+        "Checking that files named '0' are correctly scanned",
+    );
+
+    rmtree($t->get_path("./t/sample-data/traverse-1"));
 }

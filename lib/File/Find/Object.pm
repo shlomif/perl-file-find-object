@@ -30,11 +30,9 @@ sub _move_next
 {
     my ($self, $top) = @_;
 
-    # TODO :
-    # Implement traversal to files with the filenames of exactly "0".
-    if ($self->_curr_file(
+    if (defined($self->_curr_file(
             $top->_father($self)->_next_traverse_to()
-       ))
+       )))
     {
         $self->_reset_actions();
         return 1;
@@ -391,7 +389,7 @@ sub _shift_current_action
 sub _check_process_current {
     my $self = shift;
 
-    return ($self->_current->_curr_file() && $self->_filter_wrapper());
+    return (defined($self->_current->_curr_file()) && $self->_filter_wrapper());
 }
 
 # Return true if there is somthing next
