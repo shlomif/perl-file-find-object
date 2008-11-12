@@ -26,6 +26,23 @@ sub new {
     return $top->_open_dir() ? $self : undef;
 }
 
+sub _move_next
+{
+    my ($self, $top) = @_;
+
+    # TODO :
+    # Implement traversal to files with the filenames of exactly "0".
+    if ($self->_curr_file(
+            shift(@{$top->_father($self)->_traverse_to()})
+       ))
+    {
+        $self->_reset_actions();
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
 package File::Find::Object;
 
 use strict;
@@ -92,7 +109,6 @@ __PACKAGE__->_top_it([qw(
     _current
     _father_components
     _me_die
-    _movenext
     )]
 );
 
@@ -194,7 +210,7 @@ sub _calc_next_obj {
         {
             return $self->_calc_current_item_obj();
         }
-        if(!$self->_movenext) {
+        if(!$self->_top_move_to_next) {
             if ($self->_me_die())
             {
                 return undef();
@@ -249,20 +265,6 @@ sub _current_father {
     return $self->_father($self->_current);
 }
 
-sub _non_top__movenext
-{
-    my $self = shift;
-    if ($self->_current->_curr_file(
-            shift(@{$self->_current_father->_traverse_to()})
-       ))
-    {
-        $self->_current->_reset_actions();
-        return 1;
-    } else {
-        return 0;
-    }
-}
-
 sub _increment_target_index
 {
     my $self = shift;
@@ -287,7 +289,7 @@ sub _move_to_next_target
     return $self->_curr_file($self->_calc_next_target());
 }
 
-sub _top__movenext
+sub _move_next
 {
     my $self = shift;
 
@@ -301,6 +303,12 @@ sub _top__movenext
     }
 
     return 0;
+}
+
+sub _top_move_to_next {
+    my $self = shift;
+
+    return $self->_current()->_move_next($self);
 }
 
 sub _top__me_die {
