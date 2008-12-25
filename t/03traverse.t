@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 39;
+use Test::More tests => 42;
 
 BEGIN
 {
@@ -562,6 +562,67 @@ use File::Path;
         ],
         "Checking that files named '0' are correctly scanned",
     );
+
+    rmtree($t->get_path("./t/sample-data/traverse-1"));
+}
+
+{
+    my $tree =
+    {
+        'name' => "traverse-1/",
+        'subs' =>
+        [
+            {
+                'name' => "b.doc",
+                'contents' => "This file was spotted in the wild.",
+            },            
+            {
+                'name' => "a/",
+            },
+            {
+                'name' => "foo/",
+                'subs' =>
+                [
+                    {
+                        'name' => "yet/",
+                    },
+                ],
+            },
+        ],
+    };
+
+    my $t = File::Find::Object::TreeCreate->new();
+    $t->create_tree("./t/sample-data/", $tree);
+
+    my $ff;
+    my $callback = sub {
+        my $path = shift;
+
+        my $path_obj = $ff->item_obj();
+
+        # TEST
+        ok ($path_obj, "Path object is defined.");
+
+        # TEST
+        is_deeply($path_obj->full_components(),
+            [],
+            "Path empty."
+        );
+
+        # TEST
+        ok ($path_obj->is_dir(), "Path object is a directory");
+    };
+
+    $ff = 
+        File::Find::Object->new(
+            {callback => $callback},
+            $t->get_path("./t/sample-data/traverse-1")
+        );
+
+    my @results;
+
+    # Call $ff->next() and do the tests in $callback .
+    push @results, $ff->next();
 
     rmtree($t->get_path("./t/sample-data/traverse-1"));
 }
