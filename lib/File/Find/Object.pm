@@ -117,7 +117,7 @@ __PACKAGE__->_make_copy_methods([qw(
 
 use Carp;
 
-our $VERSION = '0.1.3';
+our $VERSION = '0.1.4';
 
 sub new {
     my ($class, $options, @targets) = @_;
