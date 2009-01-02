@@ -15,6 +15,8 @@ sub new {
     bless $self, $class;
 
     $self->_dir($top->_current_components_copy());
+    $self->_stat_ret($top->_top_stat_copy());
+
     $self->idx($index);
 
     $self->_last_dir_scanned(undef);
@@ -50,11 +52,14 @@ use base 'File::Find::Object::Base';
 
 use File::Find::Object::Result;
 
+use Fcntl ':mode';
+
 __PACKAGE__->mk_accessors(qw(
     _dir_stack
     item_obj
     _targets
     _target_index
+    _top_stat
 ));
 
 sub _get_options_ids
@@ -112,6 +117,7 @@ __PACKAGE__->_top_it([qw(
 
 __PACKAGE__->_make_copy_methods([qw(
     _current_components
+    _top_stat
     )]
 );
 
@@ -466,14 +472,22 @@ sub _check_subdir
 
     # If current is not a directory always return 0, because we may
     # be asked to traverse single-files.
-    my @st = stat($self->_current_path());
-    if (!-d _)
+
+    $self->_top_stat([stat($self->_current_path())]);
+
+    if ($self->_is_top()) {
+        # Assign to _stat_ret as well, so the _stat_ret field of the top
+        # item will be set.    
+        $self->_stat_ret($self->_top_stat_copy());
+    }
+
+    if (! S_ISDIR($self->_top_stat->[2]))
     {
         return 0;
     }
     else
     {
-        return $self->_check_subdir_helper(\@st);
+        return $self->_check_subdir_helper();
     }
 }
 
@@ -483,12 +497,11 @@ sub _top__check_subdir_helper {
 
 sub _find_ancestor_with_same_inode {
     my $self = shift;
-    my $st = shift;
 
     my $ptr = $self->_current_father;
 
     while($ptr) {
-        if ($ptr->_is_same_inode($st)) {
+        if ($ptr->_is_same_inode($self->_top_stat())) {
             return $ptr;
         }
     }
@@ -518,19 +531,20 @@ sub _warn_about_loop
 
 sub _non_top__check_subdir_helper {
     my $self = shift;
-    my $st = shift;
 
-    if (-l $self->_current_path() && !$self->followlink())
+    if (S_ISLNK($self->_top_stat->[2]) && !$self->followlink())
     {
         return 0;
     }
 
-    if ($st->[0] != $self->_current_father->_dev() && $self->nocrossfs())
+    if (   $self->_top_stat->[0] != $self->_current_father->_dev()
+        && $self->nocrossfs()
+    )
     {
         return 0;
     }
 
-    if (my $ptr = $self->_find_ancestor_with_same_inode($st)) {
+    if (my $ptr = $self->_find_ancestor_with_same_inode()) {
         $self->_warn_about_loop($ptr);
         return 0;
     }

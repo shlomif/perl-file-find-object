@@ -13,13 +13,12 @@ use File::Spec;
 __PACKAGE__->mk_accessors(qw(
     _actions
     _curr_file
-    _dev
     _dir
     _files
     idx
-    _inode
     _last_dir_scanned
     _open_dir_ret
+    _stat_ret
     _traverse_to
 ));
 
@@ -52,6 +51,16 @@ __PACKAGE__->_make_copy_methods([qw(
     )]
 );
 
+sub _dev
+{
+    return shift->_stat_ret->[0];
+}
+
+sub _inode
+{
+    return shift->_stat_ret->[1];
+}
+
 sub _reset_actions
 {
     my $self = shift;
@@ -83,17 +92,6 @@ sub _is_same_inode
     );
 }
 
-sub _mystat
-{
-    my $self = shift;
-
-    my @st = stat($self->_dir_as_string());
-    $self->_inode($st[1]);
-    $self->_dev($st[0]);
-
-    return;
-}
-
 sub _should_scan_dir
 {
     my $self = shift;
@@ -120,8 +118,6 @@ sub _set_up_dir
 
     $self->_traverse_to($self->_files_copy());
     
-    $self->_mystat();
-
     return $self->_open_dir_ret(1);
 }
 
