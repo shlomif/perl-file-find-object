@@ -187,11 +187,12 @@ sub _calc_current_item_obj {
 
     my $components = $self->_current_components_copy();
     my $base = shift(@$components);
-    
+    my $stat = $self->_top_stat_copy();
+
     my @basename = ();
     my $path = $self->_current_path();
-    my $is_dir = -d $path;
-    if (! $is_dir)
+
+    if (! S_ISDIR($stat->[2]))
     {
         @basename = (basename => pop(@$components));
     }
@@ -200,9 +201,9 @@ sub _calc_current_item_obj {
         {
             @basename,
             path => $path,
-            is_dir => $is_dir,
             dir_components => $components,
             base => $base,
+            stat_ret => $stat,
         }
     );
 }
@@ -364,7 +365,15 @@ sub _calc_actions
     {
         @actions = reverse(@actions);
     }
-    return @actions;
+    return ("_mystat", @actions);
+}
+
+sub _mystat {
+    my $self = shift;
+
+    $self->_top_stat([stat($self->_current_path())]);
+
+    return "SKIP";
 }
 
 sub _get_real_action
@@ -472,8 +481,6 @@ sub _check_subdir
 
     # If current is not a directory always return 0, because we may
     # be asked to traverse single-files.
-
-    $self->_top_stat([stat($self->_current_path())]);
 
     if ($self->_is_top()) {
         # Assign to _stat_ret as well, so the _stat_ret field of the top

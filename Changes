@@ -1,6 +1,8 @@
     - Unified the two calls to stat() (and several calls to other file
     operators) in order to reduce the number of system calls/disk accesses
     issued by File::Find::Object.
+    - Refactored the code from the last change and added
+    File::Find::Object::Result->stat_ret() for the return value of stat().
 
 0.1.4 - Thu Dec 25 18:27:48 IST 2008
     - Bug fix: made sure ->item_obj() is available on the first call

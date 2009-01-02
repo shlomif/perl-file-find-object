@@ -8,13 +8,20 @@ use warnings;
 
 use base 'Class::Accessor';
 
+use Fcntl qw(:mode);
+
 __PACKAGE__->mk_accessors(qw(
     base
     basename
     path
     dir_components
-    is_dir
+    stat_ret
 ));
+
+sub is_dir
+{
+    return S_ISDIR(shift->stat_ret->[2]);
+}
 
 sub full_components
 {
@@ -67,6 +74,12 @@ Otherwise - undef().
 
 Returns the full components of the result with the basename if it is
 a file.
+
+=head2 $result->stat_ret()
+
+The return value of L<perlfunc/stat> for the result, placed
+inside an array reference. This is calculated by L<File::Find::Object> and 
+kept here for convenience and for internal use.
 
 =head1 SEE ALSO
 

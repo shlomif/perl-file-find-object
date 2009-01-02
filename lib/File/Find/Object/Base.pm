@@ -65,7 +65,7 @@ sub _reset_actions
 {
     my $self = shift;
 
-    $self->_actions([0,1]);
+    $self->_actions([0,1,2]);
 }
 
 sub _dir_as_string
