@@ -175,6 +175,14 @@ sub _is_top
     return ! @{$self->_dir_stack()};
 }
 
+sub _curr_mode {
+    return shift->_top_stat->[2];
+}
+
+sub _curr_not_a_dir {
+    return !S_ISDIR( shift->_curr_mode() );
+}
+
 sub _current_path
 {
     my $self = shift;
@@ -189,10 +197,10 @@ sub _calc_current_item_obj {
     my $base = shift(@$components);
     my $stat = $self->_top_stat_copy();
 
-    my @basename = ();
     my $path = $self->_current_path();
 
-    if (! S_ISDIR($stat->[2]))
+    my @basename = ();
+    if ($self->_curr_not_a_dir())
     {
         @basename = (basename => pop(@$components));
     }
@@ -488,7 +496,7 @@ sub _check_subdir
         $self->_stat_ret($self->_top_stat_copy());
     }
 
-    if (! S_ISDIR($self->_top_stat->[2]))
+    if ($self->_curr_not_a_dir())
     {
         return 0;
     }
@@ -539,7 +547,7 @@ sub _warn_about_loop
 sub _non_top__check_subdir_helper {
     my $self = shift;
 
-    if (S_ISLNK($self->_top_stat->[2]) && !$self->followlink())
+    if (S_ISLNK($self->_curr_mode()) && !$self->followlink())
     {
         return 0;
     }
