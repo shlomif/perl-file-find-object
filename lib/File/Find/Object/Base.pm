@@ -6,21 +6,26 @@ package File::Find::Object::Base;
 use strict;
 use warnings;
 
-use base 'Class::Accessor';
+use Class::XSAccessor
+	accessors => {
+        (map
+            { $_ => $_ }
+            (qw(
+                _actions
+                _curr_file
+                _dir
+                _files
+                idx
+                _last_dir_scanned
+                _open_dir_ret
+                _stat_ret
+                _traverse_to
+            ))
+        ) 
+    }
+    ;
 
 use File::Spec;
-
-__PACKAGE__->mk_accessors(qw(
-    _actions
-    _curr_file
-    _dir
-    _files
-    idx
-    _last_dir_scanned
-    _open_dir_ret
-    _stat_ret
-    _traverse_to
-));
 
 # Create a _copy method that does a flat copy of an array returned by
 # a method as a reference.
@@ -165,10 +170,16 @@ sub _next_traverse_to
 
 File::Find::Object::Base - base class for File::Find::Object
 
-=head2 DESCRIPTION
+=head1 DESCRIPTION
 
 This is the base class for F::F::O classes. It only defines some accessors,
 and is for File::Find::Object's internal use.
+
+=head1 METHODS
+
+=head2 $self->idx()
+
+For internal use.
 
 =head1 SEE ALSO
 

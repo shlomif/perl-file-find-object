@@ -11,7 +11,7 @@ my $builder = Test::Run::Builder->new(
     'module_name' => "File::Find::Object",
     'requires' =>
     {
-        'Class::Accessor' => 0,
+        'Class::XSAccessor' => 0,
     },
     'license' => "perl",
 );

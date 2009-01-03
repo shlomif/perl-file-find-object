@@ -1,3 +1,8 @@
+    - Converted the accessor generator to Class::XSAccessor instead
+    of Class::Accessor. After consulting Devel::NYTProf, it seemed that
+    the majority of the time of a simple File-Find-Object scan was spent
+    in Class::Accessor. Hopefully, this will make F-F-O run faster.
+
 0.1.5 - Sat Jan  3 17:17:31 IST 2009
     - Unified the two calls to stat() (and several calls to other file
     operators) in order to reduce the number of system calls/disk accesses

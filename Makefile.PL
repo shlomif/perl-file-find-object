@@ -18,7 +18,7 @@ WriteMakefile(
     VERSION_FROM => 'lib/File/Find/Object.pm',
     PREREQ_PM =>
     {
-        'Class::Accessor' => 0,
+        'Class::XSAccessor' => 0,
     },
     PL_FILES => {},
 );

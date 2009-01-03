@@ -7,7 +7,6 @@ use base 'File::Find::Object::Base';
 
 use File::Spec;
 
-
 sub new {
     my ($class, $top, $from, $index) = @_;
 
@@ -54,14 +53,6 @@ use File::Find::Object::Result;
 
 use Fcntl ':mode';
 
-__PACKAGE__->mk_accessors(qw(
-    _dir_stack
-    item_obj
-    _targets
-    _target_index
-    _top_stat
-));
-
 sub _get_options_ids
 {
     my $class = shift;
@@ -74,7 +65,21 @@ sub _get_options_ids
     )];
 }
 
-__PACKAGE__->mk_accessors(@{__PACKAGE__->_get_options_ids()});
+use Class::XSAccessor
+    accessors => {
+        (map { $_ => $_ } 
+        (qw(
+            _dir_stack
+            item_obj
+            _targets
+            _target_index
+            _top_stat
+            ), 
+            @{__PACKAGE__->_get_options_ids()}
+        )
+        )
+    }
+    ;
 
 # This is a variation of the Conditional-to-Inheritance refactoring - 
 # we have two methods - one if _is_top is true
@@ -137,7 +142,7 @@ sub new {
 
     foreach my $opt (@{$tree->_get_options_ids()})
     {
-        $tree->set($opt, $options->{$opt});
+        $tree->$opt($options->{$opt});
     }
     $tree->_targets(\@targets);
     $tree->_target_index(-1);
