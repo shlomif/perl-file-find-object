@@ -101,9 +101,9 @@ sub _top_it
                 my $non = "_non_top_$m";
                 sub {
                     my $self = shift;
-                    return $self->_is_top()
-                        ? $self->$top(@_)
-                        : $self->$non(@_)
+                    return exists($self->{_st})
+                        ? $self->$non(@_)
+                        : $self->$top(@_)
                         ;
                 };
             };
@@ -133,8 +133,10 @@ our $VERSION = '0.1.5';
 sub new {
     my ($class, $options, @targets) = @_;
 
+    # The *existence* of a _st key inside the struct
+    # indicates that the stack is full.
+    # So now it's empty.
     my $tree = {
-        
         _dir_stack => [],
     };
 
@@ -177,7 +179,7 @@ sub _is_top
 {
     my $self = shift;
 
-    return ! @{$self->_dir_stack()};
+    return ! exists($self->{_st});
 }
 
 sub _curr_mode {
@@ -344,28 +346,19 @@ sub _become_default
 
     my $father = $self->_current_father;
 
+    my $st = $self->_dir_stack();
+
     if ($self eq $father)
     {
-        @{$self->_dir_stack()} = ();
+        @$st = ();
+        delete($self->{_st});
     }
     else
     {
-        while (scalar(@{$self->_dir_stack()}) != $father->idx() + 1)
-        {
-            $self->_pop_item();
-        }
+        splice(@$st, $father->idx()+1);
     }
 
     return 0;
-}
-
-sub _pop_item
-{
-    my $self = shift;
-
-    pop(@{$self->_dir_stack()});
-
-    return;
 }
 
 sub _calc_actions
@@ -476,6 +469,8 @@ sub _recurse
             $self->_current(),
             scalar(@{$self->_dir_stack()})
         );
+
+    $self->{_st} = 1;
 
     return 0;
 }
