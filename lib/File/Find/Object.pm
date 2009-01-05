@@ -114,7 +114,6 @@ sub _top_it
 
 __PACKAGE__->_top_it([qw(
     _check_subdir_helper
-    _current
     _father_components
     _me_die
     )]
@@ -161,18 +160,11 @@ sub new {
 #    printf STDERR "destroy `%s'\n", $self->_dir_as_string || "--";
 #}
 
-sub _top__current
+sub _current
 {
     my $self = shift;
 
-    return $self;
-}
-
-sub _non_top__current
-{
-    my $self = shift;
-
-    return $self->_dir_stack->[-1];
+    return $self->_dir_stack->[-1] || $self;
 }
 
 sub _is_top
