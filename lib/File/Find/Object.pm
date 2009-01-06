@@ -38,6 +38,8 @@ sub _move_next
        )))
     {
         $top->_current_components()->[-1] = $self->_curr_file();
+        $top->_calc_curr_path();
+
         $self->_reset_actions();
         return 1;
     } else {
@@ -73,6 +75,7 @@ use Class::XSAccessor
         (map { $_ => $_ } 
         (qw(
             _current_components
+            _current_path
             _dir_stack
             item_obj
             _targets
@@ -186,11 +189,15 @@ sub _curr_not_a_dir {
     return !S_ISDIR( shift->_curr_mode() );
 }
 
-sub _current_path
+# Calculates _current_path from $self->_current_components().
+# Must be called whenever _current_components is modified.
+sub _calc_curr_path
 {
     my $self = shift;
 
-    return File::Spec->catfile(@{$self->_current_components()});
+    $self->_current_path(File::Spec->catfile(@{$self->_current_components()}));
+
+    return;
 }
 
 sub _calc_current_item_obj {
@@ -303,6 +310,7 @@ sub _move_to_next_target
 
     my $target = $self->_curr_file($self->_calc_next_target());
     @{$self->_current_components()} = ($target);
+    $self->_calc_curr_path();
 
     return $target;
 }
@@ -356,6 +364,14 @@ sub _become_default
     {
         splice(@$st, $father->idx()+1);
         splice(@{$self->_current_components()}, $father->idx()+2);
+        
+        # If depth is false, then we no longer need the _current_path
+        # of the directories above the previously-set value, because we 
+        # already traversed them.
+        if ($self->depth())
+        {
+            $self->_calc_curr_path();
+        }
     }
 
     return 0;

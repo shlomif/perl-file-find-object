@@ -13,6 +13,9 @@
     a function whose return value is dereferenced and flatted.
     - A small optimization - now caching the results of _current_components
     inside an accessor and updating it upon every change.
+    - A small optimization - now caching the results of _current_path()
+    upon every modification of _current_components, so File::Spec->catfile()
+    won't be called excessively.
 
 0.1.5 - Sat Jan  3 17:17:31 IST 2009
     - Unified the two calls to stat() (and several calls to other file
