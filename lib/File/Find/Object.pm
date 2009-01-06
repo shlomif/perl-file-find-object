@@ -13,7 +13,7 @@ sub new {
     my $self = {};
     bless $self, $class;
 
-    $self->_dir($top->_current_components());
+    $self->_dir([ @{$top->_current_components()} ]);
     $self->_stat_ret($top->_top_stat_copy());
 
     $self->idx($index);
@@ -23,6 +23,8 @@ sub new {
     $from->_dir($self->_dir_copy());
 
     $self->_reset_actions();
+
+    push @{$top->_current_components()}, "";
 
     return $top->_open_dir() ? $self : undef;
 }
@@ -35,6 +37,7 @@ sub _move_next
             $top->_father($self)->_next_traverse_to()
        )))
     {
+        $top->_current_components()->[-1] = $self->_curr_file();
         $self->_reset_actions();
         return 1;
     } else {
@@ -69,6 +72,7 @@ use Class::XSAccessor
     accessors => {
         (map { $_ => $_ } 
         (qw(
+            _current_components
             _dir_stack
             item_obj
             _targets
@@ -136,6 +140,7 @@ sub new {
     # So now it's empty.
     my $tree = {
         _dir_stack => [],
+        _current_components => [],
     };
 
     bless($tree, $class);
@@ -191,8 +196,8 @@ sub _current_path
 sub _calc_current_item_obj {
     my $self = shift;
 
-    my $components = $self->_current_components();
-    my $base = shift(@$components);
+    my @comps = @{$self->_current_components()};
+    my $base = shift(@comps);
     my $stat = $self->_top_stat_copy();
 
     my $path = $self->_current_path();
@@ -200,14 +205,14 @@ sub _calc_current_item_obj {
     my @basename = ();
     if ($self->_curr_not_a_dir())
     {
-        @basename = (basename => pop(@$components));
+        @basename = (basename => pop(@comps));
     }
 
     return File::Find::Object::Result->new(
         {
             @basename,
             path => $path,
-            dir_components => $components,
+            dir_components => \@comps,
             base => $base,
             stat_ret => $stat,
         }
@@ -296,7 +301,10 @@ sub _move_to_next_target
 {
     my $self = shift; 
 
-    return $self->_curr_file($self->_calc_next_target());
+    my $target = $self->_curr_file($self->_calc_next_target());
+    @{$self->_current_components()} = ($target);
+
+    return $target;
 }
 
 sub _move_next
@@ -347,6 +355,7 @@ sub _become_default
     else
     {
         splice(@$st, $father->idx()+1);
+        splice(@{$self->_current_components()}, $father->idx()+2);
     }
 
     return 0;
@@ -558,6 +567,8 @@ sub _non_top__check_subdir_helper {
     return 1;
 }
 
+=begin Nothing
+
 sub _current_components {
     my $self = shift;
 
@@ -580,6 +591,10 @@ sub _non_top__father_components
 
     return $self->_current_father->_dir();
 }
+
+=end Nothing
+
+=cut
 
 sub _open_dir {
     my $self = shift;
