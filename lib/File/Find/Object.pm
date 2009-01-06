@@ -13,7 +13,7 @@ sub new {
     my $self = {};
     bless $self, $class;
 
-    $self->_dir([ @{$top->_current_components()} ]);
+    $self->_dir([ @{$top->_curr_comps()} ]);
     $self->_stat_ret($top->_top_stat_copy());
 
     $self->idx($index);
@@ -24,7 +24,7 @@ sub new {
 
     $top->_fill_actions($self);
 
-    push @{$top->_current_components()}, "";
+    push @{$top->_curr_comps()}, "";
 
     return $top->_open_dir() ? $self : undef;
 }
@@ -37,7 +37,7 @@ sub _move_next
             $top->_father($self)->_next_traverse_to()
        )))
     {
-        $top->_current_components()->[-1] = $self->_curr_file();
+        $top->_curr_comps()->[-1] = $self->_curr_file();
         $top->_calc_curr_path();
 
         $top->_fill_actions($self);
@@ -72,12 +72,15 @@ sub _get_options_ids
     )];
 }
 
+# _curr_comps are the components (comps) of the master object's current path.
+# _curr_path is the concatenated path itself.
+
 use Class::XSAccessor
     accessors => {
         (map { $_ => $_ } 
         (qw(
-            _current_components
-            _current_path
+            _curr_comps
+            _curr_path
             _def_actions
             _dir_stack
             item_obj
@@ -146,7 +149,7 @@ sub new {
     # So now it's empty.
     my $tree = {
         _dir_stack => [],
-        _current_components => [],
+        _curr_comps => [],
     };
 
     bless($tree, $class);
@@ -195,13 +198,13 @@ sub _curr_not_a_dir {
     return !S_ISDIR( shift->_curr_mode() );
 }
 
-# Calculates _current_path from $self->_current_components().
-# Must be called whenever _current_components is modified.
+# Calculates _curr_path from $self->_curr_comps().
+# Must be called whenever _curr_comps is modified.
 sub _calc_curr_path
 {
     my $self = shift;
 
-    $self->_current_path(File::Spec->catfile(@{$self->_current_components()}));
+    $self->_curr_path(File::Spec->catfile(@{$self->_curr_comps()}));
 
     return;
 }
@@ -209,11 +212,11 @@ sub _calc_curr_path
 sub _calc_current_item_obj {
     my $self = shift;
 
-    my @comps = @{$self->_current_components()};
+    my @comps = @{$self->_curr_comps()};
     my $base = shift(@comps);
     my $stat = $self->_top_stat_copy();
 
-    my $path = $self->_current_path();
+    my $path = $self->_curr_path();
 
     my @basename = ();
     if ($self->_curr_not_a_dir())
@@ -315,7 +318,7 @@ sub _move_to_next_target
     my $self = shift; 
 
     my $target = $self->_curr_file($self->_calc_next_target());
-    @{$self->_current_components()} = ($target);
+    @{$self->_curr_comps()} = ($target);
     $self->_calc_curr_path();
 
     return $target;
@@ -369,9 +372,9 @@ sub _become_default
     else
     {
         splice(@$st, $father->idx()+1);
-        splice(@{$self->_current_components()}, $father->idx()+2);
+        splice(@{$self->_curr_comps()}, $father->idx()+2);
         
-        # If depth is false, then we no longer need the _current_path
+        # If depth is false, then we no longer need the _curr_path
         # of the directories above the previously-set value, because we 
         # already traversed them.
         if ($self->depth())
@@ -407,7 +410,7 @@ sub _fill_actions {
 sub _mystat {
     my $self = shift;
 
-    $self->_top_stat([stat($self->_current_path())]);
+    $self->_top_stat([stat($self->_curr_path())]);
 
     return "SKIP";
 }
@@ -445,7 +448,7 @@ sub _handle_callback {
     $self->item_obj($self->_calc_current_item_obj());
 
     if ($self->callback()) {
-        $self->callback()->($self->_current_path());
+        $self->callback()->($self->_curr_path());
     }
 
     return 1;
@@ -491,7 +494,7 @@ sub _filter_wrapper {
     my $self = shift;
 
     return defined($self->filter()) ?
-        $self->filter()->($self->_current_path()) :
+        $self->filter()->($self->_curr_path()) :
         1;
 }
 
@@ -550,7 +553,7 @@ sub _warn_about_loop
     printf(STDERR
         "Avoid loop %s => %s\n",
             $ptr->_dir_as_string(),
-            $self->_current_path()
+            $self->_curr_path()
         );
 
     return;
@@ -606,7 +609,7 @@ sub get_current_node_files_list
 {
     my $self = shift;
 
-    $self->_current->_dir($self->_current_components());
+    $self->_current->_dir($self->_curr_comps());
 
     # _open_dir can return undef if $self->_current is not a directory.
     if ($self->_open_dir())
