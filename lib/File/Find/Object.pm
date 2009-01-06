@@ -22,7 +22,7 @@ sub new {
 
     $from->_dir($self->_dir_copy());
 
-    $self->_reset_actions();
+    $top->_fill_actions($self);
 
     push @{$top->_current_components()}, "";
 
@@ -40,9 +40,11 @@ sub _move_next
         $top->_current_components()->[-1] = $self->_curr_file();
         $top->_calc_curr_path();
 
-        $self->_reset_actions();
+        $top->_fill_actions($self);
+
         return 1;
-    } else {
+    }
+    else {
         return 0;
     }
 }
@@ -76,6 +78,7 @@ use Class::XSAccessor
         (qw(
             _current_components
             _current_path
+            _def_actions
             _dir_stack
             item_obj
             _targets
@@ -154,7 +157,10 @@ sub new {
     }
     $tree->_targets(\@targets);
     $tree->_target_index(-1);
-    $tree->_reset_actions();
+
+    $tree->_calc_default_actions();
+
+    $tree->_fill_actions($tree);
 
     $tree->_last_dir_scanned(undef);
 
@@ -323,7 +329,7 @@ sub _move_next
     {
         if (-e $self->_move_to_next_target())
         {
-            $self->_reset_actions();
+            $self->_fill_actions($self);
             return 1;
         }
     }
@@ -377,17 +383,25 @@ sub _become_default
     return 0;
 }
 
-sub _calc_actions
-{
+sub _calc_default_actions {
     my $self = shift;
 
     my @actions = qw(_handle_callback _recurse);
 
-    if ($self->depth())
-    {
-        @actions = reverse(@actions);
-    }
-    return ("_mystat", @actions);
+    $self->_def_actions(
+        ["_mystat", ($self->depth() ? reverse(@actions) : @actions)]
+    );
+
+    return;
+}
+
+sub _fill_actions {
+    my $self = shift;
+    my $other = shift;
+
+    $other->_actions([ @{$self->_def_actions()} ]);
+
+    return;
 }
 
 sub _mystat {
@@ -398,28 +412,10 @@ sub _mystat {
     return "SKIP";
 }
 
-sub _get_real_action
-{
-    my $self = shift;
-    my $action = shift;
-
-    return ($self->_calc_actions())[$action];
-}
-
-sub _shift_current_action
-{
+sub _next_action {
     my $self = shift;
 
-    my $action_proto = shift(@{$self->_current->_actions()});
-
-    if (!defined($action_proto))
-    {
-        return;
-    }
-    else
-    {
-        return $self->_get_real_action($action_proto);
-    }
+    return shift(@{$self->_current->_actions()});
 }
 
 sub _check_process_current {
@@ -459,7 +455,7 @@ sub _process_current_actions
 {
     my $self = shift;
 
-    while (my $action = $self->_shift_current_action())
+    while (my $action = $self->_next_action())
     {
         my $status = $self->$action();
 

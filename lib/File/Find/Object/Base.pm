@@ -66,13 +66,6 @@ sub _inode
     return shift->_stat_ret->[1];
 }
 
-sub _reset_actions
-{
-    my $self = shift;
-
-    $self->_actions([0,1,2]);
-}
-
 sub _dir_as_string
 {
     my $self = shift;

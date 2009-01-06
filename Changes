@@ -16,6 +16,12 @@
     - A small optimization - now caching the results of _current_path()
     upon every modification of _current_components, so File::Spec->catfile()
     won't be called excessively.
+    - Optimization/Refactoring - changed the actions() handling so instead
+    of having the indices, we calculate an array of master actions at
+    start that correspond with the depth() parameter, and then assign it for
+    each PathComponent object in turn based on $top. This is instead of 
+    the indexes and explicit calculations etc., which was both messier
+    and slower.
 
 0.1.5 - Sat Jan  3 17:17:31 IST 2009
     - Unified the two calls to stat() (and several calls to other file
