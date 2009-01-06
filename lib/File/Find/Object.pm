@@ -578,7 +578,7 @@ sub _non_top__father_components
 {
     my $self = shift;
 
-    return $self->_current_father->_dir_copy();
+    return $self->_current_father->_dir();
 }
 
 sub _open_dir {
