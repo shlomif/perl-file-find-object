@@ -13,7 +13,7 @@ sub new {
     my $self = {};
     bless $self, $class;
 
-    $self->_dir($top->_current_components_copy());
+    $self->_dir($top->_current_components());
     $self->_stat_ret($top->_top_stat_copy());
 
     $self->idx($index);
@@ -120,7 +120,6 @@ __PACKAGE__->_top_it([qw(
 );
 
 __PACKAGE__->_make_copy_methods([qw(
-    _current_components
     _top_stat
     )]
 );
@@ -186,13 +185,13 @@ sub _current_path
 {
     my $self = shift;
 
-    return File::Spec->catfile(@{$self->_current_components_copy()});
+    return File::Spec->catfile(@{$self->_current_components()});
 }
 
 sub _calc_current_item_obj {
     my $self = shift;
 
-    my $components = $self->_current_components_copy();
+    my $components = $self->_current_components();
     my $base = shift(@$components);
     my $stat = $self->_top_stat_copy();
 
@@ -609,7 +608,7 @@ sub get_current_node_files_list
 {
     my $self = shift;
 
-    $self->_current->_dir($self->_current_components_copy());
+    $self->_current->_dir($self->_current_components());
 
     # _open_dir can return undef if $self->_current is not a directory.
     if ($self->_open_dir())

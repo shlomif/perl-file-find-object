@@ -6,6 +6,9 @@
     is full or not. This is used inside _top_it() and _is_top().
     - A small optimization - implemented _current directly instead of
     a _top / _non_top version - saved 2.5 seconds of runtime.
+    - A small optimization - got rid of _current_components_copy() (which
+    was useless because _current_components already returns a dynamic
+    reference) and replaced all calls with calls to _current_components().
 
 0.1.5 - Sat Jan  3 17:17:31 IST 2009
     - Unified the two calls to stat() (and several calls to other file
