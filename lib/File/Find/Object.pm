@@ -579,35 +579,6 @@ sub _non_top__check_subdir_helper {
     return 1;
 }
 
-=begin Nothing
-
-sub _current_components {
-    my $self = shift;
-
-    return
-    [
-        @{$self->_father_components()},
-        $self->_current->_curr_file
-    ];
-}
-
-sub _top__father_components {
-    my $self = shift; 
-
-    return [];
-}
-
-sub _non_top__father_components
-{
-    my $self = shift;
-
-    return $self->_current_father->_dir();
-}
-
-=end Nothing
-
-=cut
-
 sub _open_dir {
     my $self = shift;
 
