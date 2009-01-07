@@ -3,7 +3,7 @@ package File::Find::Object::PathComponent;
 use strict;
 use warnings;
 
-use base 'File::Find::Object::Base';
+use base 'File::Find::Object::PathComp';
 
 use File::Spec;
 
@@ -52,7 +52,7 @@ sub _move_next
 
 package File::Find::Object::PathTop;
 
-use base 'File::Find::Object::Base';
+use base 'File::Find::Object::PathComp';
 
 sub new {
     my $class = shift;

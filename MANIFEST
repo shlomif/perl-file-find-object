@@ -3,6 +3,7 @@ Changes
 examples/tree
 inc/Test/Run/Builder.pm
 lib/File/Find/Object/Base.pm
+lib/File/Find/Object/PathComp.pm
 lib/File/Find/Object.pm
 lib/File/Find/Object/Result.pm
 Makefile.PL

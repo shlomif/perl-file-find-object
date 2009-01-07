@@ -33,6 +33,10 @@
     - Refactoring - made the top path component-handling object a separate
     object (::PathTop) instead of $top/$tree . Hopefully, this will later 
     allow caching _current(), and having a unified directory stack.
+    - Refactoring - created a base class for Path-Components (i.e: ::PathTop
+    and ::PathComponent). Most of the methods out of ::Base belong there
+    so they were moved. This class inherits from ::Base, but there's not
+    a lot there anymore.
 
 0.1.5 - Sat Jan  3 17:17:31 IST 2009
     - Unified the two calls to stat() (and several calls to other file
