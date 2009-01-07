@@ -213,26 +213,21 @@ sub _calc_current_item_obj {
     my $self = shift;
 
     my @comps = @{$self->_curr_comps()};
-    my $base = shift(@comps);
-    my $stat = $self->_top_stat_copy();
 
-    my $path = $self->_curr_path();
+    my $ret =
+    {
+        path => scalar($self->_curr_path()),
+        dir_components => \@comps,
+        base => shift(@comps),
+        stat_ret => scalar($self->_top_stat_copy()),
+    };
 
-    my @basename = ();
     if ($self->_curr_not_a_dir())
     {
-        @basename = (basename => pop(@comps));
+        $ret->{basename} = pop(@comps);
     }
 
-    return File::Find::Object::Result->new(
-        {
-            @basename,
-            path => $path,
-            dir_components => \@comps,
-            base => $base,
-            stat_ret => $stat,
-        }
-    );
+    return File::Find::Object::Result->new($ret);
 }
 
 sub _calc_next_obj {

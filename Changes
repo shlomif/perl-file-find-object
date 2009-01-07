@@ -25,6 +25,7 @@
     - Optimization/Refactoring - renamed _current_components() to
     _curr_comps() and _current_path to _curr_path() to make them
     shorter and faster. Added a comment explaining what they are.
+    - Optimization/Refactoring - optimized _calc_current_item_obj.
 
 0.1.5 - Sat Jan  3 17:17:31 IST 2009
     - Unified the two calls to stat() (and several calls to other file
