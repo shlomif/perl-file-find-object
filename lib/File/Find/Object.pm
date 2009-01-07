@@ -192,10 +192,6 @@ use Carp;
 
 our $VERSION = '0.1.5';
 
-sub _actions {
-    Carp::confess "_actions called.";
-}
-
 sub new {
     my ($class, $options, @targets) = @_;
 
