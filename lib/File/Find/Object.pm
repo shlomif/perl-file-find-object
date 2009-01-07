@@ -41,6 +41,7 @@ sub _move_next
         $top->_calc_curr_path();
 
         $top->_fill_actions($self);
+        $top->_mystat();
 
         return 1;
     }
@@ -183,12 +184,21 @@ sub _current
     return $self->_dir_stack->[-1] || $self;
 }
 
+=begin Removed
+
+# We're removing this because it's no longer used, but may be used in the
+# future.
+
 sub _is_top
 {
     my $self = shift;
 
     return ! exists($self->{_st});
 }
+
+=end Removed
+
+=cut
 
 sub _curr_mode {
     return shift->_top_stat->[2];
@@ -328,6 +338,8 @@ sub _move_next
         if (-e $self->_move_to_next_target())
         {
             $self->_fill_actions($self);
+            $self->_mystat();
+            $self->_stat_ret($self->_top_stat_copy());
             return 1;
         }
     }
@@ -387,7 +399,7 @@ sub _calc_default_actions {
     my @actions = qw(_handle_callback _recurse);
 
     $self->_def_actions(
-        ["_mystat", ($self->depth() ? reverse(@actions) : @actions)]
+        [($self->depth() ? reverse(@actions) : @actions)]
     );
 
     return;
@@ -499,12 +511,6 @@ sub _check_subdir
 
     # If current is not a directory always return 0, because we may
     # be asked to traverse single-files.
-
-    if ($self->_is_top()) {
-        # Assign to _stat_ret as well, so the _stat_ret field of the top
-        # item will be set.    
-        $self->_stat_ret($self->_top_stat_copy());
-    }
 
     if ($self->_curr_not_a_dir())
     {

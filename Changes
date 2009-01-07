@@ -26,6 +26,10 @@
     _curr_comps() and _current_path to _curr_path() to make them
     shorter and faster. Added a comment explaining what they are.
     - Optimization/Refactoring - optimized _calc_current_item_obj.
+    - Optimization - removed an _is_top() conditional in _recurse() that
+    was likely not to be evaluated, by re-arranging the order of _mystat
+    call. Now _mystat is not an action, but rather called explicitly.
+    _is_top() is now PODded-out because it's not used.
 
 0.1.5 - Sat Jan  3 17:17:31 IST 2009
     - Unified the two calls to stat() (and several calls to other file
