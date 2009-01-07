@@ -7,14 +7,13 @@ use base 'File::Find::Object::Base';
 
 use File::Spec;
 
-
 sub new {
     my ($class, $top, $from, $index) = @_;
 
     my $self = {};
     bless $self, $class;
 
-    $self->_dir($top->_current_components_copy());
+    $self->_dir([ @{$top->_curr_comps()} ]);
     $self->_stat_ret($top->_top_stat_copy());
 
     $self->idx($index);
@@ -23,7 +22,9 @@ sub new {
 
     $from->_dir($self->_dir_copy());
 
-    $self->_reset_actions();
+    $top->_fill_actions($self);
+
+    push @{$top->_curr_comps()}, "";
 
     return $top->_open_dir() ? $self : undef;
 }
@@ -36,9 +37,15 @@ sub _move_next
             $top->_father($self)->_next_traverse_to()
        )))
     {
-        $self->_reset_actions();
+        $top->_curr_comps()->[-1] = $self->_curr_file();
+        $top->_calc_curr_path();
+
+        $top->_fill_actions($self);
+        $top->_mystat();
+
         return 1;
-    } else {
+    }
+    else {
         return 0;
     }
 }
@@ -54,14 +61,6 @@ use File::Find::Object::Result;
 
 use Fcntl ':mode';
 
-__PACKAGE__->mk_accessors(qw(
-    _dir_stack
-    item_obj
-    _targets
-    _target_index
-    _top_stat
-));
-
 sub _get_options_ids
 {
     my $class = shift;
@@ -74,7 +73,27 @@ sub _get_options_ids
     )];
 }
 
-__PACKAGE__->mk_accessors(@{__PACKAGE__->_get_options_ids()});
+# _curr_comps are the components (comps) of the master object's current path.
+# _curr_path is the concatenated path itself.
+
+use Class::XSAccessor
+    accessors => {
+        (map { $_ => $_ } 
+        (qw(
+            _curr_comps
+            _curr_path
+            _def_actions
+            _dir_stack
+            item_obj
+            _targets
+            _target_index
+            _top_stat
+            ), 
+            @{__PACKAGE__->_get_options_ids()}
+        )
+        )
+    }
+    ;
 
 # This is a variation of the Conditional-to-Inheritance refactoring - 
 # we have two methods - one if _is_top is true
@@ -96,9 +115,9 @@ sub _top_it
                 my $non = "_non_top_$m";
                 sub {
                     my $self = shift;
-                    return $self->_is_top()
-                        ? $self->$top(@_)
-                        : $self->$non(@_)
+                    return exists($self->{_st})
+                        ? $self->$non(@_)
+                        : $self->$top(@_)
                         ;
                 };
             };
@@ -109,14 +128,12 @@ sub _top_it
 
 __PACKAGE__->_top_it([qw(
     _check_subdir_helper
-    _current
     _father_components
     _me_die
     )]
 );
 
 __PACKAGE__->_make_copy_methods([qw(
-    _current_components
     _top_stat
     )]
 );
@@ -128,20 +145,26 @@ our $VERSION = '0.1.5';
 sub new {
     my ($class, $options, @targets) = @_;
 
+    # The *existence* of a _st key inside the struct
+    # indicates that the stack is full.
+    # So now it's empty.
     my $tree = {
-        
         _dir_stack => [],
+        _curr_comps => [],
     };
 
     bless($tree, $class);
 
     foreach my $opt (@{$tree->_get_options_ids()})
     {
-        $tree->set($opt, $options->{$opt});
+        $tree->$opt($options->{$opt});
     }
     $tree->_targets(\@targets);
     $tree->_target_index(-1);
-    $tree->_reset_actions();
+
+    $tree->_calc_default_actions();
+
+    $tree->_fill_actions($tree);
 
     $tree->_last_dir_scanned(undef);
 
@@ -154,26 +177,28 @@ sub new {
 #    printf STDERR "destroy `%s'\n", $self->_dir_as_string || "--";
 #}
 
-sub _top__current
+sub _current
 {
     my $self = shift;
 
-    return $self;
+    return $self->_dir_stack->[-1] || $self;
 }
 
-sub _non_top__current
-{
-    my $self = shift;
+=begin Removed
 
-    return $self->_dir_stack->[-1];
-}
+# We're removing this because it's no longer used, but may be used in the
+# future.
 
 sub _is_top
 {
     my $self = shift;
 
-    return ! @{$self->_dir_stack()};
+    return ! exists($self->{_st});
 }
+
+=end Removed
+
+=cut
 
 sub _curr_mode {
     return shift->_top_stat->[2];
@@ -183,37 +208,36 @@ sub _curr_not_a_dir {
     return !S_ISDIR( shift->_curr_mode() );
 }
 
-sub _current_path
+# Calculates _curr_path from $self->_curr_comps().
+# Must be called whenever _curr_comps is modified.
+sub _calc_curr_path
 {
     my $self = shift;
 
-    return File::Spec->catfile(@{$self->_current_components_copy()});
+    $self->_curr_path(File::Spec->catfile(@{$self->_curr_comps()}));
+
+    return;
 }
 
 sub _calc_current_item_obj {
     my $self = shift;
 
-    my $components = $self->_current_components_copy();
-    my $base = shift(@$components);
-    my $stat = $self->_top_stat_copy();
+    my @comps = @{$self->_curr_comps()};
 
-    my $path = $self->_current_path();
+    my $ret =
+    {
+        path => scalar($self->_curr_path()),
+        dir_components => \@comps,
+        base => shift(@comps),
+        stat_ret => scalar($self->_top_stat_copy()),
+    };
 
-    my @basename = ();
     if ($self->_curr_not_a_dir())
     {
-        @basename = (basename => pop(@$components));
+        $ret->{basename} = pop(@comps);
     }
 
-    return File::Find::Object::Result->new(
-        {
-            @basename,
-            path => $path,
-            dir_components => $components,
-            base => $base,
-            stat_ret => $stat,
-        }
-    );
+    return File::Find::Object::Result->new($ret);
 }
 
 sub _calc_next_obj {
@@ -298,7 +322,11 @@ sub _move_to_next_target
 {
     my $self = shift; 
 
-    return $self->_curr_file($self->_calc_next_target());
+    my $target = $self->_curr_file($self->_calc_next_target());
+    @{$self->_curr_comps()} = ($target);
+    $self->_calc_curr_path();
+
+    return $target;
 }
 
 sub _move_next
@@ -309,7 +337,9 @@ sub _move_next
     {
         if (-e $self->_move_to_next_target())
         {
-            $self->_reset_actions();
+            $self->_fill_actions($self);
+            $self->_mystat();
+            $self->_stat_ret($self->_top_stat_copy());
             return 1;
         }
     }
@@ -339,73 +369,63 @@ sub _become_default
 
     my $father = $self->_current_father;
 
+    my $st = $self->_dir_stack();
+
     if ($self eq $father)
     {
-        @{$self->_dir_stack()} = ();
+        @$st = ();
+        delete($self->{_st});
     }
     else
     {
-        while (scalar(@{$self->_dir_stack()}) != $father->idx() + 1)
+        splice(@$st, $father->idx()+1);
+        splice(@{$self->_curr_comps()}, $father->idx()+2);
+        
+        # If depth is false, then we no longer need the _curr_path
+        # of the directories above the previously-set value, because we 
+        # already traversed them.
+        if ($self->depth())
         {
-            $self->_pop_item();
+            $self->_calc_curr_path();
         }
     }
 
     return 0;
 }
 
-sub _pop_item
-{
-    my $self = shift;
-
-    pop(@{$self->_dir_stack()});
-
-    return;
-}
-
-sub _calc_actions
-{
+sub _calc_default_actions {
     my $self = shift;
 
     my @actions = qw(_handle_callback _recurse);
 
-    if ($self->depth())
-    {
-        @actions = reverse(@actions);
-    }
-    return ("_mystat", @actions);
+    $self->_def_actions(
+        [($self->depth() ? reverse(@actions) : @actions)]
+    );
+
+    return;
+}
+
+sub _fill_actions {
+    my $self = shift;
+    my $other = shift;
+
+    $other->_actions([ @{$self->_def_actions()} ]);
+
+    return;
 }
 
 sub _mystat {
     my $self = shift;
 
-    $self->_top_stat([stat($self->_current_path())]);
+    $self->_top_stat([stat($self->_curr_path())]);
 
     return "SKIP";
 }
 
-sub _get_real_action
-{
-    my $self = shift;
-    my $action = shift;
-
-    return ($self->_calc_actions())[$action];
-}
-
-sub _shift_current_action
-{
+sub _next_action {
     my $self = shift;
 
-    my $action_proto = shift(@{$self->_current->_actions()});
-
-    if (!defined($action_proto))
-    {
-        return;
-    }
-    else
-    {
-        return $self->_get_real_action($action_proto);
-    }
+    return shift(@{$self->_current->_actions()});
 }
 
 sub _check_process_current {
@@ -435,7 +455,7 @@ sub _handle_callback {
     $self->item_obj($self->_calc_current_item_obj());
 
     if ($self->callback()) {
-        $self->callback()->($self->_current_path());
+        $self->callback()->($self->_curr_path());
     }
 
     return 1;
@@ -445,7 +465,7 @@ sub _process_current_actions
 {
     my $self = shift;
 
-    while (my $action = $self->_shift_current_action())
+    while (my $action = $self->_next_action())
     {
         my $status = $self->$action();
 
@@ -472,6 +492,8 @@ sub _recurse
             scalar(@{$self->_dir_stack()})
         );
 
+    $self->{_st} = 1;
+
     return 0;
 }
 
@@ -479,7 +501,7 @@ sub _filter_wrapper {
     my $self = shift;
 
     return defined($self->filter()) ?
-        $self->filter()->($self->_current_path()) :
+        $self->filter()->($self->_curr_path()) :
         1;
 }
 
@@ -489,12 +511,6 @@ sub _check_subdir
 
     # If current is not a directory always return 0, because we may
     # be asked to traverse single-files.
-
-    if ($self->_is_top()) {
-        # Assign to _stat_ret as well, so the _stat_ret field of the top
-        # item will be set.    
-        $self->_stat_ret($self->_top_stat_copy());
-    }
 
     if ($self->_curr_not_a_dir())
     {
@@ -538,7 +554,7 @@ sub _warn_about_loop
     printf(STDERR
         "Avoid loop %s => %s\n",
             $ptr->_dir_as_string(),
-            $self->_current_path()
+            $self->_curr_path()
         );
 
     return;
@@ -565,29 +581,6 @@ sub _non_top__check_subdir_helper {
     }
 
     return 1;
-}
-
-sub _current_components {
-    my $self = shift;
-
-    return
-    [
-        @{$self->_father_components()},
-        $self->_current->_curr_file
-    ];
-}
-
-sub _top__father_components {
-    my $self = shift; 
-
-    return [];
-}
-
-sub _non_top__father_components
-{
-    my $self = shift;
-
-    return $self->_current_father->_dir_copy();
 }
 
 sub _open_dir {
@@ -617,7 +610,7 @@ sub get_current_node_files_list
 {
     my $self = shift;
 
-    $self->_current->_dir($self->_current_components_copy());
+    $self->_current->_dir($self->_curr_comps());
 
     # _open_dir can return undef if $self->_current is not a directory.
     if ($self->_open_dir())

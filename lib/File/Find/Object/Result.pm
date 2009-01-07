@@ -6,17 +6,29 @@ package File::Find::Object::Result;
 use strict;
 use warnings;
 
-use base 'Class::Accessor';
+use Class::XSAccessor
+    accessors => {
+        (map { $_ => $_ } (qw(
+        base
+        basename
+        path
+        dir_components
+        stat_ret
+        )))
+    }
+    ;
 
 use Fcntl qw(:mode);
 
-__PACKAGE__->mk_accessors(qw(
-    base
-    basename
-    path
-    dir_components
-    stat_ret
-));
+sub new
+{
+    my $class = shift;
+    my $self = shift;
+
+    bless $self, $class;
+
+    return $self;
+}
 
 sub is_dir
 {
@@ -46,6 +58,10 @@ This is a class returning a single L<File::Find::Object> result as returned
 by its next_obj() method.
 
 =head1 METHODS
+
+=head2 File::Find::Object::Result->new({%args});
+
+Initializes a new object from %args. For internal use.
 
 =head2 $result->base()
 
