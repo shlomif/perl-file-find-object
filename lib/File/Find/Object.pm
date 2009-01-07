@@ -50,6 +50,55 @@ sub _move_next
     }
 }
 
+package File::Find::Object::PathTop;
+
+use base 'File::Find::Object::Base';
+
+sub new {
+    my $class = shift;
+    my $top = shift;
+
+    my $self = {};
+    bless $self, $class;
+
+    $top->_fill_actions($self);
+    $self->idx(-1);
+
+    return $self;
+}
+
+
+sub _move_to_next_target
+{
+    my $self = shift;
+    my $top = shift;
+
+    my $target = $self->_curr_file($top->_calc_next_target());
+    @{$top->_curr_comps()} = ($target);
+    $top->_calc_curr_path();
+
+    return $target;
+}
+
+sub _move_next
+{
+    my $self = shift;
+    my $top = shift;
+
+    while ($top->_increment_target_index())
+    {
+        if (-e $self->_move_to_next_target($top))
+        {
+            $top->_fill_actions($self);
+            $top->_mystat();
+            $self->_stat_ret($top->_top_stat_copy());
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
 package File::Find::Object;
 
 use strict;
@@ -85,6 +134,7 @@ use Class::XSAccessor
             _def_actions
             _dir_stack
             item_obj
+            _path_top
             _targets
             _target_index
             _top_stat
@@ -142,6 +192,10 @@ use Carp;
 
 our $VERSION = '0.1.5';
 
+sub _actions {
+    Carp::confess "_actions called.";
+}
+
 sub new {
     my ($class, $options, @targets) = @_;
 
@@ -159,12 +213,15 @@ sub new {
     {
         $tree->$opt($options->{$opt});
     }
+
     $tree->_targets(\@targets);
     $tree->_target_index(-1);
 
     $tree->_calc_default_actions();
 
-    $tree->_fill_actions($tree);
+    $tree->_path_top(
+        File::Find::Object::PathTop->new($tree)
+    );
 
     $tree->_last_dir_scanned(undef);
 
@@ -181,7 +238,7 @@ sub _current
 {
     my $self = shift;
 
-    return $self->_dir_stack->[-1] || $self;
+    return $self->_dir_stack->[-1] || $self->_path_top();
 }
 
 =begin Removed
@@ -281,7 +338,8 @@ sub _father
 {
     my ($self, $level) = @_;
 
-    if (!defined($level->idx()))
+    # TODO : Unify.
+    if ($level->idx() < 0)
     {
         return undef;
     }
@@ -291,7 +349,7 @@ sub _father
     }
     else
     {
-        return $self;
+        return $self->_path_top();
     }
 }
 
@@ -318,35 +376,6 @@ sub _calc_next_target
     return defined($target) ? File::Spec->canonpath($target) : undef;
 }
 
-sub _move_to_next_target
-{
-    my $self = shift; 
-
-    my $target = $self->_curr_file($self->_calc_next_target());
-    @{$self->_curr_comps()} = ($target);
-    $self->_calc_curr_path();
-
-    return $target;
-}
-
-sub _move_next
-{
-    my $self = shift;
-
-    while ($self->_increment_target_index())
-    {
-        if (-e $self->_move_to_next_target())
-        {
-            $self->_fill_actions($self);
-            $self->_mystat();
-            $self->_stat_ret($self->_top_stat_copy());
-            return 1;
-        }
-    }
-
-    return 0;
-}
-
 sub _master_move_to_next {
     my $self = shift;
 
@@ -371,7 +400,7 @@ sub _become_default
 
     my $st = $self->_dir_stack();
 
-    if ($self eq $father)
+    if ($father->idx < 0)
     {
         @$st = ();
         delete($self->{_st});

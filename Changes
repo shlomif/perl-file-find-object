@@ -30,6 +30,9 @@
     was likely not to be evaluated, by re-arranging the order of _mystat
     call. Now _mystat is not an action, but rather called explicitly.
     _is_top() is now PODded-out because it's not used.
+    - Refactoring - made the top path component-handling object a separate
+    object (::PathTop) instead of $top/$tree . Hopefully, this will later 
+    allow caching _current(), and having a unified directory stack.
 
 0.1.5 - Sat Jan  3 17:17:31 IST 2009
     - Unified the two calls to stat() (and several calls to other file
