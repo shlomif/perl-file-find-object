@@ -62,7 +62,7 @@ sub new {
     bless $self, $class;
 
     $top->_fill_actions($self);
-    $self->idx(-1);
+    $self->idx(0);
 
     return $self;
 }
@@ -134,7 +134,6 @@ use Class::XSAccessor
             _def_actions
             _dir_stack
             item_obj
-            _path_top
             _targets
             _target_index
             _top_stat
@@ -215,9 +214,9 @@ sub new {
 
     $tree->_calc_default_actions();
 
-    $tree->_path_top(
+    push @{$tree->_dir_stack()},
         File::Find::Object::TopPath->new($tree)
-    );
+        ;
 
     $tree->_last_dir_scanned(undef);
 
@@ -234,7 +233,7 @@ sub _current
 {
     my $self = shift;
 
-    return $self->_dir_stack->[-1] || $self->_path_top();
+    return $self->_dir_stack->[-1];
 }
 
 =begin Removed
@@ -334,18 +333,13 @@ sub _father
 {
     my ($self, $level) = @_;
 
-    # TODO : Unify.
-    if ($level->idx() < 0)
+    if ($level->idx() == 0)
     {
         return undef;
     }
-    elsif ($level->idx() >= 1)
-    {
-        return $self->_dir_stack()->[$level->idx()-1];
-    }
     else
     {
-        return $self->_path_top();
+        return $self->_dir_stack()->[$level->idx()-1];
     }
 }
 
@@ -396,15 +390,15 @@ sub _become_default
 
     my $st = $self->_dir_stack();
 
-    if ($father->idx < 0)
+    if ($father->idx == 0)
     {
-        @$st = ();
+        splice(@$st, 1);
         delete($self->{_st});
     }
     else
     {
         splice(@$st, $father->idx()+1);
-        splice(@{$self->_curr_comps()}, $father->idx()+2);
+        splice(@{$self->_curr_comps()}, $father->idx()+1);
         
         # If depth is false, then we no longer need the _curr_path
         # of the directories above the previously-set value, because we 
