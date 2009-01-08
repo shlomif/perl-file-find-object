@@ -37,6 +37,8 @@
     and ::PathComponent). Most of the methods out of ::Base belong there
     so they were moved. This class inherits from ::Base, but there's not
     a lot there anymore.
+    - Refactoring - renamed ::PathComponent as ::DeepPath and ::PathTop
+    as ::TopPath. Otherwise they could be confused with ::PathComp.
 
 0.1.5 - Sat Jan  3 17:17:31 IST 2009
     - Unified the two calls to stat() (and several calls to other file

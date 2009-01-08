@@ -1,4 +1,4 @@
-package File::Find::Object::PathComponent;
+package File::Find::Object::DeepPath;
 
 use strict;
 use warnings;
@@ -50,7 +50,7 @@ sub _move_next
     }
 }
 
-package File::Find::Object::PathTop;
+package File::Find::Object::TopPath;
 
 use base 'File::Find::Object::PathComp';
 
@@ -216,7 +216,7 @@ sub new {
     $tree->_calc_default_actions();
 
     $tree->_path_top(
-        File::Find::Object::PathTop->new($tree)
+        File::Find::Object::TopPath->new($tree)
     );
 
     $tree->_last_dir_scanned(undef);
@@ -511,7 +511,7 @@ sub _recurse
         return "SKIP";
 
     push @{$self->_dir_stack()}, 
-        File::Find::Object::PathComponent->new(
+        File::Find::Object::DeepPath->new(
             $self,
             $self->_current(),
             scalar(@{$self->_dir_stack()})
