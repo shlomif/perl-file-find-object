@@ -42,6 +42,8 @@
     - Refactoring - made the first ::PathTop component the first element
     in _dir_stack() so we won't need to keep in a distinct reference. All
     the other elements moved 1 level down the stack.
+    - Optimization - now caching $top->_dir_stack()->[-1] into 
+    $top->_current() as an accessor.
 
 0.1.5 - Sat Jan  3 17:17:31 IST 2009
     - Unified the two calls to stat() (and several calls to other file

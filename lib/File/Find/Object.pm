@@ -130,12 +130,13 @@ use Class::XSAccessor
         (map { $_ => $_ } 
         (qw(
             _curr_comps
+            _current
             _curr_path
             _def_actions
             _dir_stack
             item_obj
-            _targets
             _target_index
+            _targets
             _top_stat
             ), 
             @{__PACKAGE__->_get_options_ids()}
@@ -215,7 +216,7 @@ sub new {
     $tree->_calc_default_actions();
 
     push @{$tree->_dir_stack()},
-        File::Find::Object::TopPath->new($tree)
+        $tree->_current(File::Find::Object::TopPath->new($tree))
         ;
 
     $tree->_last_dir_scanned(undef);
@@ -228,13 +229,6 @@ sub new {
 #    print STDERR join(" ", caller)."\n";
 #    printf STDERR "destroy `%s'\n", $self->_dir_as_string || "--";
 #}
-
-sub _current
-{
-    my $self = shift;
-
-    return $self->_dir_stack->[-1];
-}
 
 =begin Removed
 
@@ -393,12 +387,14 @@ sub _become_default
     if ($father->idx == 0)
     {
         splice(@$st, 1);
+        $self->_current($st->[-1]);
         delete($self->{_st});
     }
     else
     {
         splice(@$st, $father->idx()+1);
         splice(@{$self->_curr_comps()}, $father->idx()+1);
+        $self->_current($st->[-1]);
         
         # If depth is false, then we no longer need the _curr_path
         # of the directories above the previously-set value, because we 
@@ -505,10 +501,12 @@ sub _recurse
         return "SKIP";
 
     push @{$self->_dir_stack()}, 
-        File::Find::Object::DeepPath->new(
-            $self,
-            $self->_current(),
-            scalar(@{$self->_dir_stack()})
+        $self->_current(
+            File::Find::Object::DeepPath->new(
+                $self,
+                $self->_current(),
+                scalar(@{$self->_dir_stack()})
+            )
         );
 
     $self->{_st} = 1;
