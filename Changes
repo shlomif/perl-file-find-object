@@ -1,3 +1,10 @@
+    - Fixed the check-for-link and for directory semantics on Windows
+    and other systems. Converted to "perldoc -f lstat" instead of 
+    "perldoc -f stat", and using stat only for symbolic links to check
+    if they are directories. Now added a test for that.
+        - Fixed t/01ffo.t to check for the warning.
+        - Also see: http://www.nntp.perl.org/group/perl.perl5.porters/2009/01/msg143399.html
+
 0.1.6 - Fri Jan  9 17:49:01 IST 2009
     - Converted the accessor generator to Class::XSAccessor instead
     of Class::Accessor. After consulting Devel::NYTProf, it seemed that

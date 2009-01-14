@@ -4,8 +4,9 @@
 
 use strict;
 use warnings;
-use Test::More tests => 3;
+use Test::More tests => 4;
 
+# TEST
 use_ok('File::Find::Object', "Can use main NBackup::Tree");
 
 mkdir('t/dir');
@@ -20,21 +21,36 @@ close($h);
 eval {
     symlink('.', 't/dir/link');
 };
+my $symlink_created = ($@ eq "");
 
 my (@res1, @res2);
 my $tree = File::Find::Object->new(
     {
         callback => sub {
             push(@res1, $_[0]);
-        }
+        },
+        followlink => 1,
     },
     't/dir'
 );
 
+my @warnings;
+
+local $SIG{__WARN__} = sub { my $w = shift; push @warnings, $w; };
+
+# TEST
 ok($tree, "Can get tree object");
 
 while (my $r = $tree->next()) {
     push(@res2, $r);
 }
 
+# TEST
 ok(scalar(@res1) == scalar(@res2), "Get same result from callback and next");
+
+# TEST
+ok (
+    ($symlink_created ? scalar($warnings[0] =~ m{Avoid loop}) : 1),
+    "Avoid loop warning",
+);
+

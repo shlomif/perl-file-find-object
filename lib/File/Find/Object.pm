@@ -137,6 +137,8 @@ use Class::XSAccessor
             item_obj
             _target_index
             _targets
+            _top_is_dir
+            _top_is_link
             _top_stat
             ), 
             @{__PACKAGE__->_get_options_ids()}
@@ -246,12 +248,8 @@ sub _is_top
 
 =cut
 
-sub _curr_mode {
-    return shift->_top_stat->[2];
-}
-
 sub _curr_not_a_dir {
-    return !S_ISDIR( shift->_curr_mode() );
+    return !shift->_top_is_dir();
 }
 
 # Calculates _curr_path from $self->_curr_comps().
@@ -432,7 +430,14 @@ sub _fill_actions {
 sub _mystat {
     my $self = shift;
 
-    $self->_top_stat([stat($self->_curr_path())]);
+    $self->_top_stat([lstat($self->_curr_path())]);
+
+    $self->_top_is_dir(scalar(-d _));
+
+    if ($self->_top_is_link(scalar(-l _))) {
+        stat($self->_curr_path());
+        $self->_top_is_dir(scalar(-d _));
+    }
 
     return "SKIP";
 }
@@ -568,11 +573,13 @@ sub _warn_about_loop
     # Don't pass strings directly to the format.
     # Instead - use %s
     # This was a security problem.
-    printf(STDERR
-        "Avoid loop %s => %s\n",
-            $ptr->_dir_as_string(),
-            $self->_curr_path()
-        );
+    warn(
+        sprintf(
+            "Avoid loop %s => %s\n",
+                $ptr->_dir_as_string(),
+                $self->_curr_path()
+        )
+    );
 
     return;
 }
@@ -580,7 +587,7 @@ sub _warn_about_loop
 sub _non_top__check_subdir_helper {
     my $self = shift;
 
-    if (S_ISLNK($self->_curr_mode()) && !$self->followlink())
+    if ($self->_top_is_link() && !$self->followlink())
     {
         return 0;
     }
