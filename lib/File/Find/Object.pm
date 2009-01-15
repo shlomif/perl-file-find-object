@@ -109,6 +109,7 @@ use base 'File::Find::Object::Base';
 use File::Find::Object::Result;
 
 use Fcntl ':mode';
+use List::Util ();
 
 sub _get_options_ids
 {
@@ -551,18 +552,10 @@ sub _top__check_subdir_helper {
 sub _find_ancestor_with_same_inode {
     my $self = shift;
 
-    my $ptr = $self->_current_father;
+    my $s = $self->_top_stat();
+    my $stack = $self->_dir_stack();
 
-    while($ptr) {
-        if ($ptr->_is_same_inode($self->_top_stat())) {
-            return $ptr;
-        }
-    }
-    continue {
-        $ptr = $self->_father($ptr);
-    }
-
-    return;
+    return List::Util::first { $_->_is_same_inode($s) } @{$stack}[0 .. $#$stack-1];
 }
 
 sub _warn_about_loop
