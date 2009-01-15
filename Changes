@@ -5,8 +5,10 @@
         - Fixed t/01ffo.t to check for the warning.
         - Also see: http://www.nntp.perl.org/group/perl.perl5.porters/2009/01/msg143399.html
     - Small optimization: converted a loop with:
-      while($ptr) { ... } continue { $ptr = $self->_father($ptr); }
-      to List::Util::first.
+    while($ptr) { ... } continue { $ptr = $self->_father($ptr); }
+    to List::Util::first.
+    - Added more dependencies to Build.PL / Makefile.PL including
+    List::Util.
 
 0.1.6 - Fri Jan  9 17:49:01 IST 2009
     - Converted the accessor generator to Class::XSAccessor instead
