@@ -1,3 +1,4 @@
+0.1.7 - Thu Jan 15 16:09:49 IST 2009
     - Fixed the check-for-link and for directory semantics on Windows
     and other systems. Converted to "perldoc -f lstat" instead of 
     "perldoc -f stat", and using stat only for symbolic links to check
