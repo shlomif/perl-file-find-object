@@ -279,7 +279,7 @@ sub _calc_current_item_obj {
         $ret->{basename} = pop(@comps);
     }
 
-    return File::Find::Object::Result->new($ret);
+    return bless $ret, "File::Find::Object::Result";
 }
 
 sub _calc_next_obj {
