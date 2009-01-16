@@ -128,6 +128,7 @@ use Class::XSAccessor
     accessors => {
         (map { $_ => $_ } 
         (qw(
+            _check_subdir_h
             _curr_comps
             _current
             _curr_path
@@ -182,7 +183,6 @@ sub _top_it
 }
 
 __PACKAGE__->_top_it([qw(
-    _check_subdir_helper
     _me_die
     )]
 );
@@ -213,6 +213,8 @@ sub new {
     {
         $tree->$opt($options->{$opt});
     }
+
+    $tree->_gen_check_subdir_helper();
 
     $tree->_targets(\@targets);
     $tree->_target_index(-1);
@@ -543,13 +545,10 @@ sub _check_subdir
     }
     else
     {
-        return $self->_check_subdir_helper();
+        return $self->_check_subdir_h()->($self);
     }
 }
 
-sub _check_subdir_helper_t {
-    return 1;
-}
 
 
 sub _warn_about_loop
@@ -586,6 +585,14 @@ sub _is_loop {
     }
 }
 
+=begin Removed
+
+This code was removed to be replaced with the eval ""-ed code.
+
+sub _check_subdir_helper_t {
+    return 1;
+}
+
 sub _check_subdir_helper_d {
     my $self = shift;
 
@@ -598,6 +605,44 @@ sub _check_subdir_helper_d {
         ($self->_is_loop())
      )
      ;
+}
+
+=end Removed
+
+=cut
+
+# We eval "" the helper of check_subdir because the conditions that
+# affect the checks are instance-wide and constant and so we can
+# determine how the code should look like.
+
+sub _gen_check_subdir_helper {
+    my $self = shift;
+
+    my @clauses;
+
+    if (!$self->followlink()) {
+        push @clauses, '$s->_top_is_link()';
+    }
+    
+    if ($self->nocrossfs()) {
+        push @clauses, '($s->_top_stat->[0] != $s->dev())';
+    }
+
+    push @clauses, '$s->_is_loop()';
+
+    $self->_check_subdir_h(
+        _context_less_eval(
+          'sub { my $s = shift; ' 
+        . 'return ((!exists($s->{_st})) || !('
+        . join("||", @clauses) . '));'
+        . '}'
+        )
+    );
+}
+
+sub _context_less_eval {
+    my $code = shift;
+    return eval $code;
 }
 
 sub _open_dir {
