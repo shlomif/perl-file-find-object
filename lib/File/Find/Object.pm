@@ -8,15 +8,13 @@ use base 'File::Find::Object::PathComp';
 use File::Spec;
 
 sub new {
-    my ($class, $top, $from, $index) = @_;
+    my ($class, $top, $from) = @_;
 
     my $self = {};
     bless $self, $class;
 
     $self->_dir([ @{$top->_curr_comps()} ]);
     $self->_stat_ret($top->_top_stat_copy());
-
-    $self->idx($index);
 
     $self->_last_dir_scanned(undef);
 
@@ -62,7 +60,6 @@ sub new {
     bless $self, $class;
 
     $top->_fill_actions($self);
-    $self->idx(0);
 
     return $self;
 }
@@ -513,8 +510,7 @@ sub _recurse
         $self->_current(
             File::Find::Object::DeepPath->new(
                 $self,
-                $self->_current(),
-                scalar(@{$self->_dir_stack()})
+                $self->_current()
             )
         );
 

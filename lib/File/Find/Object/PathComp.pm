@@ -17,7 +17,6 @@ use Class::XSAccessor
                 _curr_file
                 _dir
                 _files
-                idx
                 _last_dir_scanned
                 _open_dir_ret
                 _stat_ret
@@ -149,10 +148,6 @@ This is the base class for F::F::O's path components. It only defines some
 accessors, and is for File::Find::Object's internal use.
 
 =head1 METHODS
-
-=head2 $self->idx()
-
-For internal use.
 
 =head1 SEE ALSO
 
