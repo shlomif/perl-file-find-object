@@ -10,6 +10,7 @@ Makefile.PL
 MANIFEST			This list of files
 META.yml            Module meta-data (added by MakeMaker)
 README
+rejects/File/Find/Object.pm
 t/01ffo.t
 t/02tree-create.t
 t/03traverse.t

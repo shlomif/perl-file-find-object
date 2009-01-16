@@ -230,28 +230,6 @@ sub new {
     return $tree;
 }
 
-#sub DESTROY {
-#    my ($self) = @_;
-#    print STDERR join(" ", caller)."\n";
-#    printf STDERR "destroy `%s'\n", $self->_dir_as_string || "--";
-#}
-
-=begin Removed
-
-# We're removing this because it's no longer used, but may be used in the
-# future.
-
-sub _is_top
-{
-    my $self = shift;
-
-    return ! exists($self->{_st});
-}
-
-=end Removed
-
-=cut
-
 sub _curr_not_a_dir {
     return !shift->_top_is_dir();
 }
@@ -324,28 +302,6 @@ sub item {
 
     return $self->item_obj() ? $self->item_obj()->path() : undef;
 }
-
-=begin Removed
-
-This function is no longer used.
-
-sub _father
-{
-    my ($self, $level) = @_;
-
-    if ($level->idx() == 0)
-    {
-        return undef;
-    }
-    else
-    {
-        return $self->_dir_stack()->[$level->idx()-1];
-    }
-}
-
-=end Removed
-
-=cut
 
 sub _current_father {
     return shift->_dir_stack->[-2];
@@ -584,32 +540,6 @@ sub _is_loop {
         return;
     }
 }
-
-=begin Removed
-
-This code was removed to be replaced with the eval ""-ed code.
-
-sub _check_subdir_helper_t {
-    return 1;
-}
-
-sub _check_subdir_helper_d {
-    my $self = shift;
-
-    return
-    !(
-        (!$self->followlink() && $self->_top_is_link())
-            ||
-        ($self->nocrossfs() && $self->_top_stat->[0] != $self->_dev())
-            ||
-        ($self->_is_loop())
-     )
-     ;
-}
-
-=end Removed
-
-=cut
 
 # We eval "" the helper of check_subdir because the conditions that
 # affect the checks are instance-wide and constant and so we can
