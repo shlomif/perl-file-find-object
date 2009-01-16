@@ -9,6 +9,10 @@
     was no longer used and needed.
     - Optimization: instead of calling File::Find::Object::Result->new()
     just bless to it.
+    - Optimization: now caching the filesystem device at
+    the top for nocrossfs().
+        - Plus: rearranged the order of the checks in
+        _non_top__check_subdir_helper
 
 0.1.7 - Thu Jan 15 16:09:49 IST 2009
     - Fixed the check-for-link and for directory semantics on Windows

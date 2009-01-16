@@ -89,6 +89,7 @@ sub _move_next
             $top->_fill_actions($self);
             $top->_mystat();
             $self->_stat_ret($top->_top_stat_copy());
+            $top->_dev($self->_dev);
             return 1;
         }
     }
@@ -131,6 +132,7 @@ use Class::XSAccessor
             _current
             _curr_path
             _def_actions
+            _dev
             _dir_stack
             item_obj
             _target_index
@@ -578,13 +580,13 @@ sub _warn_about_loop
 sub _non_top__check_subdir_helper {
     my $self = shift;
 
-    if ($self->_top_is_link() && !$self->followlink())
+    if (!$self->followlink() && $self->_top_is_link())
     {
         return 0;
     }
 
-    if (   $self->_top_stat->[0] != $self->_current_father->_dev()
-        && $self->nocrossfs()
+    if ($self->nocrossfs() 
+        && $self->_top_stat->[0] != $self->_dev()
     )
     {
         return 0;
