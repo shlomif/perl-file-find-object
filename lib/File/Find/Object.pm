@@ -386,6 +386,7 @@ sub _become_default
 
     pop(@$st);
     $self->_current($st->[-1]);
+    pop(@{$self->_curr_comps()});
 
     if (@$st == 1)
     {
@@ -393,8 +394,6 @@ sub _become_default
     }
     else
     {
-        pop(@{$self->_curr_comps()});
-        
         # If depth is false, then we no longer need the _curr_path
         # of the directories above the previously-set value, because we 
         # already traversed them.
