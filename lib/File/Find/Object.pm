@@ -34,7 +34,7 @@ sub _move_next
     my ($self, $top) = @_;
 
     if (defined($self->_curr_file(
-            $top->_father($self)->_next_traverse_to()
+            $top->_current_father()->_next_traverse_to()
        )))
     {
         $top->_curr_comps()->[-1] = $self->_curr_file();
@@ -322,6 +322,10 @@ sub item {
     return $self->item_obj() ? $self->item_obj()->path() : undef;
 }
 
+=begin Removed
+
+This function is no longer used.
+
 sub _father
 {
     my ($self, $level) = @_;
@@ -336,10 +340,12 @@ sub _father
     }
 }
 
-sub _current_father {
-    my $self = shift;
+=end Removed
 
-    return $self->_father($self->_current);
+=cut
+
+sub _current_father {
+    return shift->_dir_stack->[-2];
 }
 
 sub _increment_target_index
