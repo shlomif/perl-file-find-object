@@ -152,6 +152,9 @@ use Class::XSAccessor
 # and the other if it's false.
 #
 # This has been a common pattern in the code and should be eliminated.
+#
+# _d is the deep method.
+# and _t is the top one.
 
 sub _top_it
 {
@@ -163,13 +166,13 @@ sub _top_it
         *{$pkg."::".$method} =
             do {
                 my $m = $method;
-                my $top = "_top_$m";
-                my $non = "_non_top_$m";
+                my $t = $m . "_t";
+                my $d = $m . "_d";
                 sub {
                     my $self = shift;
                     return exists($self->{_st})
-                        ? $self->$non(@_)
-                        : $self->$top(@_)
+                        ? $self->$d(@_)
+                        : $self->$t(@_)
                         ;
                 };
             };
@@ -180,7 +183,6 @@ sub _top_it
 
 __PACKAGE__->_top_it([qw(
     _check_subdir_helper
-    _father_components
     _me_die
     )]
 );
@@ -370,11 +372,11 @@ sub _master_move_to_next {
     return $self->_current()->_move_next($self);
 }
 
-sub _top__me_die {
+sub _me_die_t {
     return 1;
 }
 
-sub _non_top__me_die {
+sub _me_die_d {
     my $self = shift;
 
     return $self->_become_default();
@@ -545,7 +547,7 @@ sub _check_subdir
     }
 }
 
-sub _top__check_subdir_helper {
+sub _check_subdir_helper_t {
     return 1;
 }
 
@@ -577,7 +579,7 @@ sub _warn_about_loop
     return;
 }
 
-sub _non_top__check_subdir_helper {
+sub _check_subdir_helper_d {
     my $self = shift;
 
     if (!$self->followlink() && $self->_top_is_link())

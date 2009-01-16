@@ -13,6 +13,8 @@
     the top for nocrossfs().
         - Plus: rearranged the order of the checks in
         _non_top__check_subdir_helper
+    - Optimization/Refactoring: made the _top_it method names saner,
+    and removed an unused one.
 
 0.1.7 - Thu Jan 15 16:09:49 IST 2009
     - Fixed the check-for-link and for directory semantics on Windows
