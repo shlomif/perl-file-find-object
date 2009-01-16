@@ -385,21 +385,18 @@ sub _become_default
 {
     my $self = shift;
 
-    my $father = $self->_current_father;
-
     my $st = $self->_dir_stack();
 
-    if ($father->idx == 0)
+    pop(@$st);
+    $self->_current($st->[-1]);
+
+    if (@$st == 1)
     {
-        splice(@$st, 1);
-        $self->_current($st->[-1]);
         delete($self->{_st});
     }
     else
     {
-        splice(@$st, $father->idx()+1);
-        splice(@{$self->_curr_comps()}, $father->idx()+1);
-        $self->_current($st->[-1]);
+        pop(@{$self->_curr_comps()});
         
         # If depth is false, then we no longer need the _curr_path
         # of the directories above the previously-set value, because we 

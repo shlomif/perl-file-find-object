@@ -2,6 +2,9 @@
     - Optimization/Refactoring: replaced the last call to ->_father with a 
     call to _current_father(). Removed ->_father and optimized
     _current_father() .
+    - Optimization/Refactoring: refactored _become_default() to remove
+    the execessive use of $father and $father->idx(). Now ->idx() is
+    no longer needed and will be removed next.
 
 0.1.7 - Thu Jan 15 16:09:49 IST 2009
     - Fixed the check-for-link and for directory semantics on Windows
