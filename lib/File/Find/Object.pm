@@ -551,14 +551,6 @@ sub _check_subdir_helper_t {
     return 1;
 }
 
-sub _find_ancestor_with_same_inode {
-    my $self = shift;
-
-    my $s = $self->_top_stat();
-    my $stack = $self->_dir_stack();
-
-    return List::Util::first { $_->_is_same_inode($s) } @{$stack}[0 .. $#$stack-1];
-}
 
 sub _warn_about_loop
 {
@@ -579,27 +571,33 @@ sub _warn_about_loop
     return;
 }
 
+sub _is_loop {
+    my $self = shift;
+
+    my $s = $self->_top_stat();
+    my $stack = $self->_dir_stack();
+
+    if (defined(my $ptr = List::Util::first { $_->_is_same_inode($s) } @{$stack}[0 .. $#$stack-1])) {
+        $self->_warn_about_loop($ptr);
+        return 1;
+    }
+    else {
+        return;
+    }
+}
+
 sub _check_subdir_helper_d {
     my $self = shift;
 
-    if (!$self->followlink() && $self->_top_is_link())
-    {
-        return 0;
-    }
-
-    if ($self->nocrossfs() 
-        && $self->_top_stat->[0] != $self->_dev()
-    )
-    {
-        return 0;
-    }
-
-    if (my $ptr = $self->_find_ancestor_with_same_inode()) {
-        $self->_warn_about_loop($ptr);
-        return 0;
-    }
-
-    return 1;
+    return
+    !(
+        (!$self->followlink() && $self->_top_is_link())
+            ||
+        ($self->nocrossfs() && $self->_top_stat->[0] != $self->_dev())
+            ||
+        ($self->_is_loop())
+     )
+     ;
 }
 
 sub _open_dir {
