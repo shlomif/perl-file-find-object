@@ -266,27 +266,18 @@ sub _calc_current_item_obj {
     return bless $ret, "File::Find::Object::Result";
 }
 
-sub _calc_next_obj {
-    my ($self) = @_;
-    while (1) {
-        if ($self->_process_current())
-        {
-            return $self->item_obj();
-        }
-        if(!$self->_master_move_to_next) {
-            if ($self->_me_die())
-            {
-                $self->item_obj(undef());
-                return undef();
-            }
-        }
-    }
-}
-
 sub next_obj {
     my $self = shift;
 
-    return $self->_calc_next_obj();
+    until (     $self->_process_current 
+            || ((!$self->_master_move_to_next())
+               && $self->_me_die())
+            )
+    {
+        # Do nothing
+    }
+
+    return $self->item_obj();
 }
 
 sub next {
@@ -331,6 +322,8 @@ sub _master_move_to_next {
 }
 
 sub _me_die_t {
+    shift->item_obj(undef());
+
     return 1;
 }
 
