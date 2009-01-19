@@ -548,7 +548,7 @@ sub _gen_check_subdir_helper {
     }
     
     if ($self->nocrossfs()) {
-        push @clauses, '($s->_top_stat->[0] != $s->dev())';
+        push @clauses, '($s->_top_stat->[0] != $s->_dev())';
     }
 
     push @clauses, '$s->_is_loop()';
