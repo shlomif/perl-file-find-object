@@ -6,6 +6,8 @@ package File::Find::Object::Result;
 use strict;
 use warnings;
 
+use integer;
+
 use Class::XSAccessor
     accessors => {
         (map { $_ => $_ } (qw(

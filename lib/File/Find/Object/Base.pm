@@ -6,6 +6,8 @@ package File::Find::Object::Base;
 use strict;
 use warnings;
 
+use integer;
+
 # TODO :
 # _last_dir_scanned should be defined only for ::PathComp , but we should
 # add a regression test to test it.

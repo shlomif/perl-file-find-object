@@ -6,6 +6,8 @@ package File::Find::Object::PathComp;
 use strict;
 use warnings;
 
+use integer;
+
 use base 'File::Find::Object::Base';
 
 use Class::XSAccessor

@@ -3,6 +3,8 @@ package File::Find::Object::DeepPath;
 use strict;
 use warnings;
 
+use integer;
+
 use base 'File::Find::Object::PathComp';
 
 use File::Spec;
