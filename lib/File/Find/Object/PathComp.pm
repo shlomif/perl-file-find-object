@@ -25,7 +25,9 @@ use Class::XSAccessor
                 _traverse_to
             ))
         ) 
-    }
+    },
+    getters => { _inodes => '_inodes' },
+    setters => { _set_inodes => '_inodes' },
     ;
 
 use File::Spec;

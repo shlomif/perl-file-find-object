@@ -18,6 +18,21 @@ sub new {
     $self->_dir([ @{$top->_curr_comps()} ]);
     $self->_stat_ret($top->_top_stat_copy());
 
+    my $inode = $self->_inode();
+    $self->_set_inodes(
+        {
+            %{$from->_inodes()},
+            (
+                ($inode == 0)
+                ? () 
+                : (join(",", $self->_dev(), $inode) 
+                    => 
+                    scalar(@{$top->_dir_stack()})
+                  )
+            )
+        }
+    );
+
     $self->_last_dir_scanned(undef);
 
     $from->_dir($self->_dir_copy());
@@ -92,6 +107,17 @@ sub _move_next
             $top->_mystat();
             $self->_stat_ret($top->_top_stat_copy());
             $top->_dev($self->_dev);
+
+            my $inode = $self->_inode();
+            $self->_set_inodes(
+                ($inode == 0)
+                ? {}
+                :
+                {
+                    join(",", $self->_dev(), $inode) => 0,
+                },
+            );
+
             return 1;
         }
     }
@@ -524,11 +550,11 @@ sub _warn_about_loop
 sub _is_loop {
     my $self = shift;
 
-    my $s = $self->_top_stat();
-    my $stack = $self->_dir_stack();
+    my $key = join(",", @{$self->_top_stat()}[0,1]);
+    my $lookup = $self->_current->_inodes;
 
-    if (defined(my $ptr = List::Util::first { $_->_is_same_inode($s) } @{$stack}[0 .. $#$stack-1])) {
-        $self->_warn_about_loop($ptr);
+    if (exists($lookup->{$key})) {
+        $self->_warn_about_loop($self->_dir_stack->[$lookup->{$key}]);
         return 1;
     }
     else {
