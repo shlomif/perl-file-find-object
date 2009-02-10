@@ -18,20 +18,12 @@ sub new {
     $self->_dir([ @{$top->_curr_comps()} ]);
     $self->_stat_ret($top->_top_stat_copy());
 
-    my $inode = $self->_inode();
-    $self->_set_inodes(
-        {
-            %{$from->_inodes()},
-            (
-                ($inode == 0)
-                ? ()
-                : (join(",", $self->_dev(), $inode)
-                    =>
-                    scalar(@{$top->_dir_stack()})
-                  )
-            )
-        }
-    );
+    my $find = { %{$from->_inodes()} };
+    if (my $inode = $self->_inode) {
+        $find->{join(",", $self->_dev(), $inode)} =
+            scalar(@{$top->_dir_stack()});
+    }
+    $self->_set_inodes($find);
 
     $self->_last_dir_scanned(undef);
 
