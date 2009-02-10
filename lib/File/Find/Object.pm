@@ -24,9 +24,9 @@ sub new {
             %{$from->_inodes()},
             (
                 ($inode == 0)
-                ? () 
-                : (join(",", $self->_dev(), $inode) 
-                    => 
+                ? ()
+                : (join(",", $self->_dev(), $inode)
+                    =>
                     scalar(@{$top->_dir_stack()})
                   )
             )
