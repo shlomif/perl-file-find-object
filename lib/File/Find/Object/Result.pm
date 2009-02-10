@@ -1,6 +1,3 @@
-# This program is free software, distributed under the same terms as 
-# Parrot.
-
 package File::Find::Object::Result;
 
 use strict;
@@ -102,3 +99,21 @@ kept here for convenience and for internal use.
 =head1 SEE ALSO
 
 L<File::Find::Object>
+
+=head1 LICENSE
+
+Copyright (C) 2005, 2006 by Olivier Thauvin
+
+This package is free software; you can redistribute it and/or modify it under 
+the following terms:
+
+1. The GNU General Public License Version 2.0 - 
+http://www.opensource.org/licenses/gpl-license.php
+
+2. The Artistic License Version 2.0 -
+http://www.perlfoundation.org/legal/licenses/artistic-2_0.html
+
+3. At your option - any later version of either or both of these licenses.
+
+=cut
+
