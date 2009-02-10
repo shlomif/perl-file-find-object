@@ -4,6 +4,9 @@
     - Optimization: optimized the loop detection by having a hash lookup 
     of inodes in each path component, that are built incrementally and checked
     for every subsequent node.
+    - Optimization: replaced the _top_it() of _me_die() with a normal method
+    with a conditional, as it was the only place where _top_it() was still
+    used.
 
 0.1.8 - Mon Jan 19 18:36:51 IST 2009
     - Optimization/Refactoring: replaced the last call to ->_father with a 
