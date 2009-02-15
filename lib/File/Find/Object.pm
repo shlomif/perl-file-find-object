@@ -344,10 +344,19 @@ sub _become_default
 sub _calc_default_actions {
     my $self = shift;
 
-    my @actions = qw(_handle_callback _recurse);
+    my @calc_obj =
+        $self->callback()
+        ? (qw(_set_obj_skip _run_cb))
+        : (qw(_set_obj))
+        ;
+
+    my @rec = qw(_recurse);
 
     $self->_def_actions(
-        [($self->depth() ? reverse(@actions) : @actions)]
+        [$self->depth()
+            ? (@rec, @calc_obj)
+            : (@calc_obj, @rec)
+        ]
     );
 
     return;
@@ -403,15 +412,26 @@ sub _process_current {
     }
 }
 
-sub _handle_callback {
+sub _set_obj {
     my $self = shift;
 
-    # Calculate next_obj now so it will be ready for the callback.
     $self->item_obj($self->_calc_current_item_obj());
 
-    if ($self->callback()) {
-        $self->callback()->($self->_curr_path());
-    }
+    return 1;
+}
+
+sub _set_obj_skip {
+    my $self = shift;
+
+    $self->item_obj($self->_calc_current_item_obj());
+
+    return "SKIP";
+}
+
+sub _run_cb {
+    my $self = shift;
+
+    $self->callback()->($self->_curr_path());
 
     return 1;
 }
