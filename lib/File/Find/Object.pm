@@ -346,7 +346,7 @@ sub _calc_default_actions {
 
     my @calc_obj =
         $self->callback()
-        ? (qw(_set_obj_skip _run_cb))
+        ? (qw(_run_cb))
         : (qw(_set_obj))
         ;
 
@@ -420,16 +420,10 @@ sub _set_obj {
     return 1;
 }
 
-sub _set_obj_skip {
-    my $self = shift;
-
-    $self->item_obj($self->_calc_current_item_obj());
-
-    return "SKIP";
-}
-
 sub _run_cb {
     my $self = shift;
+
+    $self->_set_obj();
 
     $self->callback()->($self->_curr_path());
 

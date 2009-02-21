@@ -2,6 +2,8 @@
     every iteration, in case it doesn't exist. Instead, the default_actions
     is calculated according to its existence when the tree traverser
     is initialized.
+    - Refactoring/Optimization: avoided having two _set_obj() methds by
+    calling _set_obj() from _run_cb().
     
 0.1.9 - Tue Feb 10 16:54:00 IST 2009
     - Added use integer to the modules, because they don't make use
