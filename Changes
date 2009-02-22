@@ -1,3 +1,4 @@
+0.2.0 - Sun Feb 22 11:52:06 IST 2009
     - Optimization: now not checking for the existence of the callback() after 
     every iteration, in case it doesn't exist. Instead, the default_actions
     is calculated according to its existence when the tree traverser
