@@ -14,7 +14,6 @@ use Class::XSAccessor
             (qw(
                 _actions
                 _curr_file
-                _dir
                 _files
                 _last_dir_scanned
                 _open_dir_ret
@@ -30,7 +29,6 @@ use Class::XSAccessor
 use File::Spec;
 
 __PACKAGE__->_make_copy_methods([qw(
-        _dir
         _files
         _traverse_to
     )]
@@ -44,13 +42,6 @@ sub _dev
 sub _inode
 {
     return shift->_stat_ret->[1];
-}
-
-sub _dir_as_string
-{
-    my $self = shift;
-
-    return File::Spec->catdir(@{$self->_dir()});
 }
 
 sub _is_same_inode
@@ -73,9 +64,10 @@ sub _is_same_inode
 sub _should_scan_dir
 {
     my $self = shift;
+    my $dir_str = shift;
 
     if (defined($self->_last_dir_scanned()) &&
-        ($self->_last_dir_scanned() eq $self->_dir_as_string()
+        ($self->_last_dir_scanned() eq $dir_str
        )
     )
     {
@@ -83,7 +75,7 @@ sub _should_scan_dir
     }
     else
     {
-        $self->_last_dir_scanned($self->_dir_as_string());
+        $self->_last_dir_scanned($dir_str);
         return 1;
     }
 }
@@ -91,8 +83,9 @@ sub _should_scan_dir
 sub _set_up_dir
 {
     my $self = shift;
+    my $dir_str = shift;
 
-    $self->_files($self->_calc_dir_files());
+    $self->_files($self->_calc_dir_files($dir_str));
 
     $self->_traverse_to($self->_files_copy());
     
@@ -102,10 +95,11 @@ sub _set_up_dir
 sub _calc_dir_files
 {
     my $self = shift;
+    my $dir_str = shift;
 
     my $handle;
     my @files;
-    if (!opendir($handle, $self->_dir_as_string()))
+    if (!opendir($handle, $dir_str))
     {
         # Handle this error gracefully.
     }
@@ -121,13 +115,14 @@ sub _calc_dir_files
 sub _component_open_dir
 {
     my $self = shift;
+    my $dir_str = shift;
 
-    if (!$self->_should_scan_dir())
+    if (!$self->_should_scan_dir($dir_str))
     {
         return $self->_open_dir_ret();
     }
 
-    return $self->_set_up_dir();
+    return $self->_set_up_dir($dir_str);
 }
 
 sub _next_traverse_to

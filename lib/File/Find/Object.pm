@@ -15,7 +15,6 @@ sub new {
     my $self = {};
     bless $self, $class;
 
-    $self->_dir([ @{$top->_curr_comps()} ]);
     $self->_stat_ret($top->_top_stat_copy());
 
     my $find = { %{$from->_inodes()} };
@@ -26,8 +25,6 @@ sub new {
     $self->_set_inodes($find);
 
     $self->_last_dir_scanned(undef);
-
-    $from->_dir($self->_dir_copy());
 
     $top->_fill_actions($self);
 
@@ -497,7 +494,7 @@ sub _check_subdir
 sub _warn_about_loop
 {
     my $self = shift;
-    my $ptr = shift;
+    my $component_idx = shift;
 
     # Don't pass strings directly to the format.
     # Instead - use %s
@@ -505,8 +502,10 @@ sub _warn_about_loop
     warn(
         sprintf(
             "Avoid loop %s => %s\n",
-                $ptr->_dir_as_string(),
-                $self->_curr_path()
+                File::Spec->catdir(
+                    @{$self->_curr_comps()}[0 .. $component_idx]
+                ),
+                $self->_curr_path(),
         )
     );
 
@@ -520,7 +519,7 @@ sub _is_loop {
     my $lookup = $self->_current->_inodes;
 
     if (exists($lookup->{$key})) {
-        $self->_warn_about_loop($self->_dir_stack->[$lookup->{$key}]);
+        $self->_warn_about_loop($lookup->{$key});
         return 1;
     }
     else {
@@ -565,7 +564,9 @@ sub _context_less_eval {
 sub _open_dir {
     my $self = shift;
 
-    return $self->_current()->_component_open_dir();
+    return $self->_current()->_component_open_dir(
+        $self->_curr_path()
+    );
 }
 
 sub set_traverse_to
@@ -588,8 +589,6 @@ sub get_traverse_to
 sub get_current_node_files_list
 {
     my $self = shift;
-
-    $self->_current->_dir($self->_curr_comps());
 
     # _open_dir can return undef if $self->_current is not a directory.
     if ($self->_open_dir())
