@@ -10,6 +10,7 @@ use Class::XSAccessor
         (map { $_ => $_ } (qw(
         base
         basename
+        is_dir
         is_file
         path
         dir_components
@@ -28,11 +29,6 @@ sub new
     bless $self, $class;
 
     return $self;
-}
-
-sub is_dir
-{
-    return S_ISDIR(shift->stat_ret->[2]);
 }
 
 sub full_components
