@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 43;
+use Test::More tests => 44;
 
 BEGIN
 {
@@ -680,4 +680,64 @@ use File::Path;
     );
 
     rmtree($t->get_path("./t/sample-data/traverse-1"));
+}
+
+{
+    my $tree =
+    {
+        'name' => "traverse-1/",
+        'subs' =>
+        [
+            {
+                'name' => "b.doc",
+                'contents' => "This file was spotted in the wild.",
+            },            
+            {
+                'name' => "a/",
+            },
+            {
+                'name' => "foo/",
+                'subs' =>
+                [
+                    {
+                        'name' => "file.txt",
+                        'contents' => "A file that should come before yet/",
+                    },
+                    {
+                        'name' => "yet/",
+                    },
+                ],
+            },
+        ],
+    };
+
+    my $t = File::Find::Object::TreeCreate->new();
+    $t->create_tree("./t/sample-data/", $tree);
+    my $ff = 
+        File::Find::Object->new(
+            {},
+            $t->get_path("./t/sample-data/traverse-1")
+        );
+
+    my @results;
+
+    while (my $r = $ff->next_obj())
+    {
+        if ($r->is_file())
+        {
+            push @results, $r->path();
+        }
+    }
+
+    # TEST
+    is_deeply(
+        \@results,
+        [
+            map { $t->get_path("t/sample-data/traverse-1/$_") }
+            (qw(b.doc foo/file.txt))
+        ],
+        "Checking for regular, lexicographically sorted order",
+    );
+
+    rmtree($t->get_path("./t/sample-data/traverse-1"))
 }

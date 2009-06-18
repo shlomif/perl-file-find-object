@@ -3,6 +3,7 @@
     the $dir_str explicitly. This reduced the code considerably, and
     eliminated a similar symptom to this one:
         - http://en.wikipedia.org/wiki/Schlemiel_the_painter%27s_Algorithm
+    - Added the ->is_file() method to ::Result.
 
 0.2.0 - Sun Feb 22 11:52:06 IST 2009
     - Optimization: now not checking for the existence of the callback() after 

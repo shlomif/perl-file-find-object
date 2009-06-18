@@ -10,6 +10,7 @@ use Class::XSAccessor
         (map { $_ => $_ } (qw(
         base
         basename
+        is_file
         path
         dir_components
         stat_ret
@@ -74,6 +75,11 @@ is equivalent to C<< $ffo->next() >> .
 =head2 $result->is_dir()
 
 Returns true if the result refers to a directory.
+
+=head2 $result->is_file()
+
+Returns true if the result refers to a plain file (equivalent to the Perl
+C<-f> operator).
 
 =head2 $result->dir_components()
 

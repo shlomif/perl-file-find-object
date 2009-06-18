@@ -234,6 +234,7 @@ sub _calc_current_item_obj {
         dir_components => \@comps,
         base => shift(@comps),
         stat_ret => scalar($self->_top_stat_copy()),
+        is_file => scalar(-f _),
     };
 
     if ($self->_curr_not_a_dir())
