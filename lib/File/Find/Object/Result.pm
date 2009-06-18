@@ -12,6 +12,7 @@ use Class::XSAccessor
         basename
         is_dir
         is_file
+        is_link
         path
         dir_components
         stat_ret
@@ -76,6 +77,10 @@ Returns true if the result refers to a directory.
 
 Returns true if the result refers to a plain file (equivalent to the Perl
 C<-f> operator).
+
+=head2 $result->is_link()
+
+Returns true if the result is a symbolic link.
 
 =head2 $result->dir_components()
 

@@ -236,6 +236,7 @@ sub _calc_current_item_obj {
         stat_ret => scalar($self->_top_stat_copy()),
         is_file => scalar(-f _),
         is_dir => scalar(-d _),
+        is_link => $self->_top_is_link(),
     };
 
     if ($self->_curr_not_a_dir())

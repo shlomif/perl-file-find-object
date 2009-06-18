@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 44;
+use Test::More tests => 46;
 
 BEGIN
 {
@@ -363,6 +363,9 @@ use File::Path;
         ok ($r->is_dir(), "Is a directory");
 
         # TEST
+        ok (!$r->is_link(), "Not a link");
+
+        # TEST
         is_deeply ($r->full_components(), [], "Full components are empty");
     }
 
@@ -399,6 +402,9 @@ use File::Path;
 
         # TEST
         ok (!$r->is_dir(), "Not a directory");
+
+        # TEST
+        ok (!$r->is_link(), "Not a link");
 
         # TEST
         is_deeply ($r->full_components(), [qw(b.doc)], 
