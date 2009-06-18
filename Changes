@@ -1,3 +1,5 @@
+    - added some META.yml resources.
+
 0.2.1 - Thu Jun 18 18:01:24 IDT 2009
     - Optimization: removed the _dir field of File::Find::Object::PathComp
     and its _dir_copy copy-accessor, and replaced them all with passing
