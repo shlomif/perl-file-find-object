@@ -1,4 +1,5 @@
     - added some META.yml resources.
+        - added META.yml keywords.
 
 0.2.1 - Thu Jun 18 18:01:24 IDT 2009
     - Optimization: removed the _dir field of File::Find::Object::PathComp

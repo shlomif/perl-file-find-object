@@ -32,6 +32,29 @@ my $builder = Test::Run::Builder->new(
             license => "http://www.perlfoundation.org/artistic_license_2_0",
             Repository => "svn+ssh://nanardon.zarb.org/home/svn/File-Find-Object/trunk",
         },
+        keywords =>
+        [
+            "alternative-to-core",
+            "directories",
+            "directory",
+            "directory-traversal",
+            "directory-tree",
+            "directory-trees",
+            "file",
+            "file-find",
+            "find",
+            "instance",
+            "instantiated",
+            "instantiation",
+            "iterative",
+            "object",
+            "object-oriented",
+            "oop",
+            "prune",
+            "traversal",
+            "traverse",
+            "tree",
+        ]
     },
 );
 $builder->create_build_script;
