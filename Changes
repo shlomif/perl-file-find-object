@@ -13,22 +13,22 @@
     eliminated a similar symptom to this one:
         - http://en.wikipedia.org/wiki/Schlemiel_the_painter%27s_Algorithm
     - Added the ->is_file() method to ::Result.
-    - Converted ::Result->is_dir() to use -d _ 
+    - Converted ::Result->is_dir() to use -d _
     - Added ::Result->is_link().
 
 0.2.0 - Sun Feb 22 11:52:06 IST 2009
-    - Optimization: now not checking for the existence of the callback() after 
+    - Optimization: now not checking for the existence of the callback() after
     every iteration, in case it doesn't exist. Instead, the default_actions
     is calculated according to its existence when the tree traverser
     is initialized.
     - Refactoring/Optimization: avoided having two _set_obj() methds by
     calling _set_obj() from _run_cb().
-    
+
 0.1.9 - Tue Feb 10 16:54:00 IST 2009
     - Added use integer to the modules, because they don't make use
     of floating-point calculation. It may be a minor optimization, but then
     again it may be not.
-    - Optimization: optimized the loop detection by having a hash lookup 
+    - Optimization: optimized the loop detection by having a hash lookup
     of inodes in each path component, that are built incrementally and checked
     for every subsequent node.
     - Optimization: replaced the _top_it() of _me_die() with a normal method
@@ -38,7 +38,7 @@
     - Clarified the licensing blurbs of the .pm files.
 
 0.1.8 - Mon Jan 19 18:36:51 IST 2009
-    - Optimization/Refactoring: replaced the last call to ->_father with a 
+    - Optimization/Refactoring: replaced the last call to ->_father with a
     call to _current_father(). Removed ->_father and optimized
     _current_father() .
     - Optimization/Refactoring: refactored _become_default() to remove
@@ -67,7 +67,7 @@
 
 0.1.7 - Thu Jan 15 16:09:49 IST 2009
     - Fixed the check-for-link and for directory semantics on Windows
-    and other systems. Converted to "perldoc -f lstat" instead of 
+    and other systems. Converted to "perldoc -f lstat" instead of
     "perldoc -f stat", and using stat only for symbolic links to check
     if they are directories. Now added a test for that.
         - Fixed t/01ffo.t to check for the warning.
@@ -90,7 +90,7 @@
     - A small optimization - got rid of _current_components_copy() (which
     was useless because _current_components already returns a dynamic
     reference) and replaced all calls with calls to _current_components().
-    - A small optimization - ->dir() instead of ->_dir_copy() for 
+    - A small optimization - ->dir() instead of ->_dir_copy() for
     a function whose return value is dereferenced and flatted.
     - A small optimization - now caching the results of _current_components
     inside an accessor and updating it upon every change.
@@ -100,7 +100,7 @@
     - Optimization/Refactoring - changed the actions() handling so instead
     of having the indices, we calculate an array of master actions at
     start that correspond with the depth() parameter, and then assign it for
-    each PathComponent object in turn based on $top. This is instead of 
+    each PathComponent object in turn based on $top. This is instead of
     the indexes and explicit calculations etc., which was both messier
     and slower.
     - Optimization/Refactoring - renamed _current_components() to
@@ -112,7 +112,7 @@
     call. Now _mystat is not an action, but rather called explicitly.
     _is_top() is now PODded-out because it's not used.
     - Refactoring - made the top path component-handling object a separate
-    object (::PathTop) instead of $top/$tree . Hopefully, this will later 
+    object (::PathTop) instead of $top/$tree . Hopefully, this will later
     allow caching _current(), and having a unified directory stack.
     - Refactoring - created a base class for Path-Components (i.e: ::PathTop
     and ::PathComponent). Most of the methods out of ::Base belong there
@@ -123,7 +123,7 @@
     - Refactoring - made the first ::PathTop component the first element
     in _dir_stack() so we won't need to keep in a distinct reference. All
     the other elements moved 1 level down the stack.
-    - Optimization - now caching $top->_dir_stack()->[-1] into 
+    - Optimization - now caching $top->_dir_stack()->[-1] into
     $top->_current() as an accessor.
 
 0.1.5 - Sat Jan  3 17:17:31 IST 2009
@@ -178,10 +178,10 @@
     manner - just not traversing them further.
 
 0.0.9 - Fri Feb 22 20:04:03 IST 2008
-    - Now running canonpath() on the targets in the call to 
+    - Now running canonpath() on the targets in the call to
       File::Find::Object->new. That way, trailing slashes are omitted in
       the results.
-    - Allow File::Find::Object to properly accept paths to regular 
+    - Allow File::Find::Object to properly accept paths to regular
       files as input paths. Fixes:
         http://rt.cpan.org/Public/Bug/Display.html?id=33453
       Thanks to Sergey V Panteleev for reporting the bug.
@@ -191,7 +191,7 @@
         - Added a test for it in t/03traverse.t
 
 0.0.8 - Tue Jul 31 16:23:34 IDT 2007
-    - added the empty PL_FILES key to the Makefile.PL to avoid running 
+    - added the empty PL_FILES key to the Makefile.PL to avoid running
     Build.PL on older versions of EU::MM.
 
 0.0.7 - Fri Feb  2 19:03:29 IST 2007
@@ -231,10 +231,10 @@
     - Added the Changes file.
     - Changed the license to GPL/Artistic/Artistic-2.0
     - Placed the .pm files inside lib.
-    - Added the TreeCreate module under t/lib (with appropriate tests) to test 
+    - Added the TreeCreate module under t/lib (with appropriate tests) to test
     the main module.
-    - Made the default test order lexicographical, and predictable. In the 
-    process, eliminated keeping the directory handles, and possibly the fact 
+    - Made the default test order lexicographical, and predictable. In the
+    process, eliminated keeping the directory handles, and possibly the fact
     that they are kept open.
     - Fixed a bug where circular references prevented the module from being
     destroyed.
