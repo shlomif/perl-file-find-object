@@ -1,5 +1,7 @@
-blib
-_build
 Build
+META.json
+META.yml
 MYMETA.json
 MYMETA.yml
+_build
+blib
