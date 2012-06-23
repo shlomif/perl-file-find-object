@@ -30,8 +30,8 @@ my $builder = Test::Run::Builder->new(
         resources => {
             homepage => "http://www.shlomifish.org/open-source/projects/File-Find-Object/",
             license => "http://www.perlfoundation.org/artistic_license_2_0",
-            Repository => "svn+ssh://nanardon.zarb.org/home/svn/File-Find-Object/trunk",
-            repository => "svn://nanardon.zarb.org/File-Find-Object/trunk",
+            Repository => "https://bitbucket.org/shlomif/perl-file-find-object",
+            repository => "https://bitbucket.org/shlomif/perl-file-find-object",
         },
         keywords =>
         [
