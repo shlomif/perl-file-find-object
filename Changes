@@ -1,3 +1,9 @@
+    - Add the scripts/tag-release.pl script to tag a release in the
+    Mercurial repository.
+        - The problem is that I'm using different conventions for the
+        names of the tags in different repositories and wish to introduce
+        some consistency.
+
 0.2.4 - Thu Jul 12 15:44:16 IDT 2012
     - Update the link to the new repository at bitbucket.org.
     - Add cleanup for a temporary directory in the tests.
