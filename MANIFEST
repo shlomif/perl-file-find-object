@@ -22,4 +22,5 @@ t/lib/File/Find/Object/TreeCreate.pm
 t/pod-coverage.t
 t/pod.t
 t/sample-data/h.txt
+t/style-trailing-space.t
 META.json

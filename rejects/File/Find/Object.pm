@@ -47,7 +47,7 @@ sub _check_subdir_helper_d {
      ;
 }
 
-# This is a variation of the Conditional-to-Inheritance refactoring - 
+# This is a variation of the Conditional-to-Inheritance refactoring -
 # we have two methods - one if _is_top is true
 # and the other if it's false.
 #

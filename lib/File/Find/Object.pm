@@ -143,7 +143,7 @@ sub _get_options_ids
 
 use Class::XSAccessor
     accessors => {
-        (map { $_ => $_ } 
+        (map { $_ => $_ }
         (qw(
             _check_subdir_h
             _curr_comps
@@ -158,7 +158,7 @@ use Class::XSAccessor
             _top_is_dir
             _top_is_link
             _top_stat
-            ), 
+            ),
             @{__PACKAGE__->_get_options_ids()}
         )
         )
@@ -250,7 +250,7 @@ sub _calc_current_item_obj {
 sub next_obj {
     my $self = shift;
 
-    until (     $self->_process_current 
+    until (     $self->_process_current
             || ((!$self->_master_move_to_next())
                && $self->_me_die())
             )
@@ -330,7 +330,7 @@ sub _become_default
     else
     {
         # If depth is false, then we no longer need the _curr_path
-        # of the directories above the previously-set value, because we 
+        # of the directories above the previously-set value, because we
         # already traversed them.
         if ($self->depth())
         {
@@ -451,10 +451,10 @@ sub _recurse
 {
     my $self = shift;
 
-    $self->_check_subdir() or 
+    $self->_check_subdir() or
         return "SKIP";
 
-    push @{$self->_dir_stack()}, 
+    push @{$self->_dir_stack()},
         $self->_current(
             File::Find::Object::DeepPath->new(
                 $self,
@@ -475,7 +475,7 @@ sub _filter_wrapper {
         1;
 }
 
-sub _check_subdir 
+sub _check_subdir
 {
     my $self = shift;
 
@@ -542,7 +542,7 @@ sub _gen_check_subdir_helper {
     if (!$self->followlink()) {
         push @clauses, '$s->_top_is_link()';
     }
-    
+
     if ($self->nocrossfs()) {
         push @clauses, '($s->_top_stat->[0] != $s->_dev())';
     }
@@ -551,7 +551,7 @@ sub _gen_check_subdir_helper {
 
     $self->_check_subdir_h(
         _context_less_eval(
-          'sub { my $s = shift; ' 
+          'sub { my $s = shift; '
         . 'return ((!exists($s->{_st})) || !('
         . join("||", @clauses) . '));'
         . '}'
@@ -632,11 +632,11 @@ File::Find::Object - An object oriented File::Find replacement
 
 File::Find::Object does the same job as File::Find but works like an object
 and with an iterator. As File::Find is not object oriented, one cannot perform
-multiple searches in the same application. The second problem of File::Find 
-is its file processing: after starting its main loop, one cannot easily wait 
+multiple searches in the same application. The second problem of File::Find
+is its file processing: after starting its main loop, one cannot easily wait
 for another event and so get the next result.
 
-With File::Find::Object you can get the next file by calling the next() 
+With File::Find::Object you can get the next file by calling the next()
 function, but setting a callback is still possible.
 
 =head1 FUNCTIONS
@@ -645,7 +645,7 @@ function, but setting a callback is still possible.
 
     my $ffo = File::Find::Object->new( { options }, @targets);
 
-Create a new File::Find::Object object. C<@targets> is the list of 
+Create a new File::Find::Object object. C<@targets> is the list of
 directories or files which the object should explore.
 
 =head3 options
@@ -664,19 +664,19 @@ Boolean - doesn't continue on filesystems different than the parent.
 
 Boolean - follow symlinks when they point to a directory.
 
-You can safely set this option to true as File::Find::Object does not follow 
+You can safely set this option to true as File::Find::Object does not follow
 the link if it detects a loop.
 
 =item filter
 
-Function reference - should point to a function returning TRUE or FALSE. This 
-function is called with the filename to filter, if the function return FALSE, 
+Function reference - should point to a function returning TRUE or FALSE. This
+function is called with the filename to filter, if the function return FALSE,
 the file is skipped.
 
 =item callback
 
-Function reference - should point to a function, which would be called each 
-time a new file is returned. The function is called with the current filename 
+Function reference - should point to a function, which would be called each
+time a new file is returned. The function is called with the current filename
 as an argument.
 
 =back
@@ -693,13 +693,13 @@ last value returned by next().
 
 =head2 next_obj
 
-Like next() only returns the result as a convenient 
+Like next() only returns the result as a convenient
 L<File::Find::Object::Result> object. C<< $ff->next() >> is equivalent to
 C<< $ff->next_obj()->path() >>.
 
 =head2 item_obj
 
-Like item() only returns the result as a convenient 
+Like item() only returns the result as a convenient
 L<File::Find::Object::Result> object. C<< $ff->item() >> is equivalent to
 C<< $ff->item_obj()->path() >>.
 
@@ -741,10 +741,10 @@ L<File::FTS> are alternatives to this module.
 
 Copyright (C) 2005, 2006 by Olivier Thauvin
 
-This package is free software; you can redistribute it and/or modify it under 
+This package is free software; you can redistribute it and/or modify it under
 the following terms:
 
-1. The GNU General Public License Version 2.0 - 
+1. The GNU General Public License Version 2.0 -
 http://www.opensource.org/licenses/gpl-license.php
 
 2. The Artistic License Version 2.0 -

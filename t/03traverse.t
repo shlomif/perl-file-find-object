@@ -25,7 +25,7 @@ use File::Path;
             {
                 'name' => "b.doc",
                 'contents' => "This file was spotted in the wild.",
-            },            
+            },
             {
                 'name' => "a/",
             },
@@ -43,7 +43,7 @@ use File::Path;
 
     my $t = File::Find::Object::TreeCreate->new();
     $t->create_tree("./t/sample-data/", $tree);
-    my $ff = 
+    my $ff =
         File::Find::Object->new(
             {},
             $t->get_path("./t/sample-data/traverse-1")
@@ -78,7 +78,7 @@ use File::Path;
     {
         'name' => "$test_id/",
         'subs' =>
-        [   
+        [
             {
                 'name' => "a/",
                 subs =>
@@ -107,7 +107,7 @@ use File::Path;
 
     my $t = File::Find::Object::TreeCreate->new();
     $t->create_tree("./t/sample-data/", $tree);
-    my $ff = 
+    my $ff =
         File::Find::Object->new(
             {},
             $t->get_path("./$test_dir/a/b.doc"),
@@ -143,7 +143,7 @@ use File::Path;
     {
         'name' => "$test_id/",
         'subs' =>
-        [   
+        [
             {
                 'name' => "a/",
                 subs =>
@@ -164,7 +164,7 @@ use File::Path;
                     },
                 ],
             },
-            
+
             {
                 'name' => "foo/",
                 'subs' =>
@@ -195,7 +195,7 @@ use File::Path;
 
     my $t = File::Find::Object::TreeCreate->new();
     $t->create_tree("./t/sample-data/", $tree);
-    my $ff = 
+    my $ff =
         File::Find::Object->new(
             {},
             $t->get_path("./$test_dir/foo"),
@@ -236,7 +236,7 @@ use File::Path;
     {
         'name' => "$test_id/",
         'subs' =>
-        [   
+        [
             {
                 'name' => "a/",
                 subs =>
@@ -257,7 +257,7 @@ use File::Path;
                     },
                 ],
             },
-            
+
             {
                 'name' => "foo/",
                 'subs' =>
@@ -319,7 +319,7 @@ use File::Path;
             {
                 'name' => "b.doc",
                 'contents' => "This file was spotted in the wild.",
-            },            
+            },
             {
                 'name' => "a/",
             },
@@ -341,7 +341,7 @@ use File::Path;
 
     my $t = File::Find::Object::TreeCreate->new();
     $t->create_tree("./t/sample-data/", $tree);
-    my $ff = 
+    my $ff =
         File::Find::Object->new(
             {},
             $t->get_path("./t/sample-data/traverse-1")
@@ -407,7 +407,7 @@ use File::Path;
         ok (!$r->is_link(), "Not a link");
 
         # TEST
-        is_deeply ($r->full_components(), [qw(b.doc)], 
+        is_deeply ($r->full_components(), [qw(b.doc)],
             "Full components are 'b.doc'"
         );
 
@@ -425,7 +425,7 @@ use File::Path;
         is ($r->base(), $t->get_path("./t/sample-data/traverse-1"), "Base");
 
         # TEST
-        is_deeply ($r->dir_components(), [qw(foo)], 
+        is_deeply ($r->dir_components(), [qw(foo)],
             "Dir_Components are 'foo'"
         );
 
@@ -433,7 +433,7 @@ use File::Path;
         ok ($r->is_dir(), "Is a directory");
 
         # TEST
-        is_deeply ($r->full_components(), [qw(foo)], 
+        is_deeply ($r->full_components(), [qw(foo)],
             "Full components are 'foo'"
         );
     }
@@ -442,17 +442,17 @@ use File::Path;
         my $r = $ff->next_obj();
 
         # TEST
-        is ($r->path(), $t->get_path("t/sample-data/traverse-1/foo/file.txt"), 
+        is ($r->path(), $t->get_path("t/sample-data/traverse-1/foo/file.txt"),
             "Path",
         );
 
         # TEST
-        is ($r->base(), $t->get_path("./t/sample-data/traverse-1"), 
+        is ($r->base(), $t->get_path("./t/sample-data/traverse-1"),
             "Base"
         );
 
         # TEST
-        is_deeply ($r->dir_components(), [qw(foo)], 
+        is_deeply ($r->dir_components(), [qw(foo)],
             "Dir_Components are 'foo'"
         );
 
@@ -460,7 +460,7 @@ use File::Path;
         ok (!$r->is_dir(), "Not a directory");
 
         # TEST
-        is_deeply ($r->full_components(), [qw(foo file.txt)], 
+        is_deeply ($r->full_components(), [qw(foo file.txt)],
             "Full components are 'foo/file.txt'"
         );
 
@@ -472,7 +472,7 @@ use File::Path;
         my $r = $ff->next_obj();
 
         # TEST
-        is ($r->path(), $t->get_path("t/sample-data/traverse-1/foo/yet"), 
+        is ($r->path(), $t->get_path("t/sample-data/traverse-1/foo/yet"),
             "Path",
         );
 
@@ -480,7 +480,7 @@ use File::Path;
         is ($r->base(), $t->get_path("./t/sample-data/traverse-1"), "Base");
 
         # TEST
-        is_deeply ($r->dir_components(), [qw(foo yet)], 
+        is_deeply ($r->dir_components(), [qw(foo yet)],
             "Dir_Components are 'foo/yet'"
         );
 
@@ -488,7 +488,7 @@ use File::Path;
         ok ($r->is_dir(), "Is a directory");
 
         # TEST
-        is_deeply ($r->full_components(), [qw(foo yet)], 
+        is_deeply ($r->full_components(), [qw(foo yet)],
             "Full components are 'foo/yet'"
         );
     }
@@ -530,7 +530,7 @@ use File::Path;
                         'name' => "2",
                         'contents' => "Two file",
                     },
-                    
+
 
                 ],
             },
@@ -581,7 +581,7 @@ use File::Path;
             {
                 'name' => "b.doc",
                 'contents' => "This file was spotted in the wild.",
-            },            
+            },
             {
                 'name' => "a/",
             },
@@ -619,7 +619,7 @@ use File::Path;
         ok ($path_obj->is_dir(), "Path object is a directory");
     };
 
-    $ff = 
+    $ff =
         File::Find::Object->new(
             {callback => $callback},
             $t->get_path("./t/sample-data/traverse-1")
@@ -642,7 +642,7 @@ use File::Path;
             {
                 'name' => "b.doc",
                 'contents' => "This file was spotted in the wild.",
-            },            
+            },
             {
                 'name' => "a/",
             },
@@ -660,7 +660,7 @@ use File::Path;
 
     my $t = File::Find::Object::TreeCreate->new();
     $t->create_tree("./t/sample-data/", $tree);
-    my $ff = 
+    my $ff =
         File::Find::Object->new(
             {nocrossfs => 1,},
             $t->get_path("./t/sample-data/traverse-1")
@@ -697,7 +697,7 @@ use File::Path;
             {
                 'name' => "b.doc",
                 'contents' => "This file was spotted in the wild.",
-            },            
+            },
             {
                 'name' => "a/",
             },
@@ -719,7 +719,7 @@ use File::Path;
 
     my $t = File::Find::Object::TreeCreate->new();
     $t->create_tree("./t/sample-data/", $tree);
-    my $ff = 
+    my $ff =
         File::Find::Object->new(
             {},
             $t->get_path("./t/sample-data/traverse-1")

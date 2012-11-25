@@ -25,7 +25,7 @@ use File::Path;
             {
                 'name' => "b.doc",
                 'contents' => "This file was spotted in the wild.",
-            },            
+            },
             {
                 'name' => "a/",
             },
@@ -48,12 +48,12 @@ use File::Path;
                                         'name' => "dir2/",
                                     },
                                     {
-                                        'name' => 
+                                        'name' =>
                                             "if-we-get-this-its-wrong.txt",
                                         'content' => "Hi ho!",
                                     },
                                 ],
-                            },                        
+                            },
                             {
                                 'name' => "h.rnd",
                                 'contents' => "This file is empty.",
@@ -71,7 +71,7 @@ use File::Path;
 
     my $t = File::Find::Object::TreeCreate->new();
     $t->create_tree("./t/sample-data/", $tree);
-    my $ff = 
+    my $ff =
         File::Find::Object->new(
             {},
             $t->get_path("./t/sample-data/traverse-2")
@@ -83,14 +83,14 @@ use File::Path;
         # We're doing that because get_current_node_files_list() used to
         # call ->_recurse() which caused some subtle bugs.
         my $files_in_node = $ff->get_current_node_files_list();
-        
+
         if ($file eq
             $t->get_path("t/sample-data/traverse-2/foo/please-prune-me")
            )
         {
             $ff->set_traverse_to(
                 [
-                    grep { $_ !~ /non-reachable/ } 
+                    grep { $_ !~ /non-reachable/ }
                     @{$ff->get_current_node_files_list()}
                 ]
             );
@@ -106,7 +106,7 @@ use File::Path;
     is_deeply(
         \@results,
         [(map { $t->get_path("t/sample-data/traverse-2/$_") }
-            ("", 
+            ("",
             qw(
                 a
                 b.doc
@@ -131,7 +131,7 @@ use File::Path;
             {
                 'name' => "b.doc",
                 'contents' => "This file was spotted in the wild.",
-            },            
+            },
             {
                 'name' => "a/",
             },
@@ -154,12 +154,12 @@ use File::Path;
                                         'name' => "dir2/",
                                     },
                                     {
-                                        'name' => 
+                                        'name' =>
                                             "if-we-get-this-its-wrong.txt",
                                         'content' => "Hi ho!",
                                     },
                                 ],
-                            },                        
+                            },
                             {
                                 'name' => "h.rnd",
                                 'contents' => "This file is empty.",
@@ -198,7 +198,7 @@ use File::Path;
 
     my $t = File::Find::Object::TreeCreate->new();
     $t->create_tree("./t/sample-data/", $tree);
-    my $ff = 
+    my $ff =
         File::Find::Object->new(
             {},
             $t->get_path("./t/sample-data/traverse-2")
@@ -207,7 +207,7 @@ use File::Path;
     for my $i (1 .. 9)
     {
         my $file = $ff->next();
-        if ($file eq 
+        if ($file eq
             $t->get_path("t/sample-data/traverse-2/foo/please-prune-me")
            )
         {
@@ -223,7 +223,7 @@ use File::Path;
     is_deeply(
         \@results,
         [(map { $t->get_path("t/sample-data/traverse-2/$_") }
-            ("", 
+            ("",
             qw(
                 a
                 b.doc

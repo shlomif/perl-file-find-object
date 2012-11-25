@@ -17,7 +17,7 @@ use Class::XSAccessor
             (qw(
                 _last_dir_scanned
             ))
-        ) 
+        )
     }
     ;
 
@@ -66,10 +66,10 @@ L<File::Find::Object>
 
 Copyright (C) 2005, 2006 by Olivier Thauvin
 
-This package is free software; you can redistribute it and/or modify it under 
+This package is free software; you can redistribute it and/or modify it under
 the following terms:
 
-1. The GNU General Public License Version 2.0 - 
+1. The GNU General Public License Version 2.0 -
 http://www.opensource.org/licenses/gpl-license.php
 
 2. The Artistic License Version 2.0 -

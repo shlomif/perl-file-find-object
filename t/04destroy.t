@@ -45,7 +45,7 @@ sub my_destroy
             {
                 'name' => "b.doc",
                 'contents' => "This file was spotted in the wild.",
-            },            
+            },
             {
                 'name' => "a/",
             },
@@ -63,7 +63,7 @@ sub my_destroy
 
     my $t = File::Find::Object::TreeCreate->new();
     $t->create_tree("./t/sample-data/", $tree);
-    my $ff = 
+    my $ff =
         MyFFO->new(
             {},
             $t->get_path("./t/sample-data/traverse-1")

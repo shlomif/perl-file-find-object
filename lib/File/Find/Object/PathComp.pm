@@ -20,7 +20,7 @@ use Class::XSAccessor
                 _stat_ret
                 _traverse_to
             ))
-        ) 
+        )
     },
     getters => { _inodes => '_inodes' },
     setters => { _set_inodes => '_inodes' },
@@ -50,11 +50,11 @@ sub _is_same_inode
     # $st is an array ref with the return of perldoc -f stat .
     my $st = shift;
 
-    # On MS-Windows, all inodes in stat are returned as 0, so we need to 
-    # check that both inodes are not zero. This is why there's the 
+    # On MS-Windows, all inodes in stat are returned as 0, so we need to
+    # check that both inodes are not zero. This is why there's the
     # $self->_inode() != 0 check at the end.
     return
-    (   
+    (
         $self->_dev() == $st->[0]
      && $self->_inode() == $st->[1]
      && $self->_inode() != 0
@@ -88,7 +88,7 @@ sub _set_up_dir
     $self->_files($self->_calc_dir_files($dir_str));
 
     $self->_traverse_to($self->_files_copy());
-    
+
     return $self->_open_dir_ret(1);
 }
 
@@ -129,7 +129,7 @@ sub _next_traverse_to
 {
     my $self = shift;
 
-    return shift(@{$self->_traverse_to()}); 
+    return shift(@{$self->_traverse_to()});
 }
 
 1;
@@ -140,7 +140,7 @@ File::Find::Object::PathComp - base class for File::Find::Object's Path Componen
 
 =head1 DESCRIPTION
 
-This is the base class for F::F::O's path components. It only defines some 
+This is the base class for F::F::O's path components. It only defines some
 accessors, and is for File::Find::Object's internal use.
 
 =head1 METHODS
@@ -153,10 +153,10 @@ L<File::Find::Object>
 
 Copyright (C) 2005, 2006 by Olivier Thauvin
 
-This package is free software; you can redistribute it and/or modify it under 
+This package is free software; you can redistribute it and/or modify it under
 the following terms:
 
-1. The GNU General Public License Version 2.0 - 
+1. The GNU General Public License Version 2.0 -
 http://www.opensource.org/licenses/gpl-license.php
 
 2. The Artistic License Version 2.0 -

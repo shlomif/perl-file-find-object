@@ -37,7 +37,7 @@ sub full_components
     my $self = shift;
 
     return
-    [ 
+    [
         @{$self->dir_components()},
         ($self->is_dir() ? () : $self->basename()),
     ];
@@ -84,7 +84,7 @@ Returns true if the result is a symbolic link.
 
 =head2 $result->dir_components()
 
-The components of the directory part of the path starting from base() 
+The components of the directory part of the path starting from base()
 (also the full path if the result is a directory) as an array reference.
 
 =head2 $result->basename()
@@ -100,7 +100,7 @@ a file.
 =head2 $result->stat_ret()
 
 The return value of L<perlfunc/stat> for the result, placed
-inside an array reference. This is calculated by L<File::Find::Object> and 
+inside an array reference. This is calculated by L<File::Find::Object> and
 kept here for convenience and for internal use.
 
 =head1 SEE ALSO
@@ -111,10 +111,10 @@ L<File::Find::Object>
 
 Copyright (C) 2005, 2006 by Olivier Thauvin
 
-This package is free software; you can redistribute it and/or modify it under 
+This package is free software; you can redistribute it and/or modify it under
 the following terms:
 
-1. The GNU General Public License Version 2.0 - 
+1. The GNU General Public License Version 2.0 -
 http://www.opensource.org/licenses/gpl-license.php
 
 2. The Artistic License Version 2.0 -

@@ -41,7 +41,7 @@ use File::Find::Object::TreeCreate;
     ok ($t->exist("./MANIFEST"), "Checking the exist() method");
 
     # TEST
-    ok (!$t->exist("./BKLASDJASFDJODIJASDOJASODJ.wok"), 
+    ok (!$t->exist("./BKLASDJASFDJODIJASDOJASODJ.wok"),
         "Checking the exist() method");
 
     # TEST
@@ -55,7 +55,7 @@ use File::Find::Object::TreeCreate;
 
     # TEST
     ok ($t->is_dir ("./t"), "Checking the is_dir method - true");
-    
+
     # TEST
     is ($t->cat("./t/sample-data/h.txt"), "Hello.",
         "Checking the cat method");
@@ -88,7 +88,7 @@ use File::Find::Object::TreeCreate;
                 {
                     'name' => "b.doc",
                     'contents' => "This file was spotted in the wild.",
-                },            
+                },
                 {
                     'name' => "a/",
                 },
@@ -113,7 +113,7 @@ use File::Find::Object::TreeCreate;
         );
 
         # TEST
-        ok ($t->is_dir("./t/sample-data/tree-test-1/a"), 
+        ok ($t->is_dir("./t/sample-data/tree-test-1/a"),
             "a is a dir"
         );
 

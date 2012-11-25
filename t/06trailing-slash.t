@@ -16,7 +16,7 @@ use File::Find::Object;
 use File::Path;
 
 {
-    my $ff = 
+    my $ff =
         File::Find::Object->new(
             {},
             "t/",

@@ -1,6 +1,8 @@
+0.2.6 - Sun 25 Nov 09:50:22 IST 2012
     - Correct a typo:
         - see https://rt.cpan.org/Ticket/Display.html?id=81428
         - Thanks to Xavier Guimard for the report.
+    - Remove trailing space.
 
 0.2.5 - Thu Jul 12 15:51:56 IDT 2012
     - Add the scripts/tag-release.pl script to tag a release in the
