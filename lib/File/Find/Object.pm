@@ -630,10 +630,10 @@ File::Find::Object - An object oriented File::Find replacement
 
 =head1 DESCRIPTION
 
-File::Find::Object does same job as File::Find but works like an object and 
-with an iterator. As File::Find is not object oriented, one cannot perform
+File::Find::Object does the same job as File::Find but works like an object
+and with an iterator. As File::Find is not object oriented, one cannot perform
 multiple searches in the same application. The second problem of File::Find 
-is its file processing: after starting its main loop, one cannot easilly wait 
+is its file processing: after starting its main loop, one cannot easily wait 
 for another event and so get the next result.
 
 With File::Find::Object you can get the next file by calling the next() 
