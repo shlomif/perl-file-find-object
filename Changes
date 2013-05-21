@@ -1,29 +1,32 @@
-0.2.6 - Sun 25 Nov 09:50:22 IST 2012
+0.2.7   2013-05-21
+    - Convert this file to t/cpan-changes.t .
+
+0.2.6   2012-11-25
     - Correct a typo:
         - see https://rt.cpan.org/Ticket/Display.html?id=81428
         - Thanks to Xavier Guimard for the report.
     - Remove trailing space.
 
-0.2.5 - Thu Jul 12 15:51:56 IDT 2012
+0.2.5   2012-07-12
     - Add the scripts/tag-release.pl script to tag a release in the
     Mercurial repository.
         - The problem is that I'm using different conventions for the
         names of the tags in different repositories and wish to introduce
         some consistency.
 
-0.2.4 - Thu Jul 12 15:44:16 IDT 2012
+0.2.4   2012-07-12
     - Update the link to the new repository at bitbucket.org.
     - Add cleanup for a temporary directory in the tests.
 
-0.2.3 - Thu Jul 30 21:26:21 IDT 2009
+0.2.3   2009-07-30
     - 0.2.2 seems to have been deleted. Re-uploading.
         - thanks to lwpetre
 
-0.2.2 - Thu Jun 25 22:39:10 IDT 2009
+0.2.2   2009-06-25
     - added some META.yml resources.
         - added META.yml keywords.
 
-0.2.1 - Thu Jun 18 18:01:24 IDT 2009
+0.2.1   2009-06-18
     - Optimization: removed the _dir field of File::Find::Object::PathComp
     and its _dir_copy copy-accessor, and replaced them all with passing
     the $dir_str explicitly. This reduced the code considerably, and
@@ -33,7 +36,7 @@
     - Converted ::Result->is_dir() to use -d _
     - Added ::Result->is_link().
 
-0.2.0 - Sun Feb 22 11:52:06 IST 2009
+0.2.0   2009-02-22
     - Optimization: now not checking for the existence of the callback() after
     every iteration, in case it doesn't exist. Instead, the default_actions
     is calculated according to its existence when the tree traverser
@@ -41,7 +44,7 @@
     - Refactoring/Optimization: avoided having two _set_obj() methds by
     calling _set_obj() from _run_cb().
 
-0.1.9 - Tue Feb 10 16:54:00 IST 2009
+0.1.9   2009-02-10
     - Added use integer to the modules, because they don't make use
     of floating-point calculation. It may be a minor optimization, but then
     again it may be not.
@@ -54,7 +57,7 @@
     - Optimization/Cleanup: _set_inodes() in ::DeepPath.
     - Clarified the licensing blurbs of the .pm files.
 
-0.1.8 - Mon Jan 19 18:36:51 IST 2009
+0.1.8   2009-01-19
     - Optimization/Refactoring: replaced the last call to ->_father with a
     call to _current_father(). Removed ->_father and optimized
     _current_father() .
@@ -82,7 +85,7 @@
     - Bug fix: the nocrossfs option was fixed. Previously it used an undefined
     method.
 
-0.1.7 - Thu Jan 15 16:09:49 IST 2009
+0.1.7   2009-01-15
     - Fixed the check-for-link and for directory semantics on Windows
     and other systems. Converted to "perldoc -f lstat" instead of
     "perldoc -f stat", and using stat only for symbolic links to check
@@ -95,7 +98,7 @@
     - Added more dependencies to Build.PL / Makefile.PL including
     List::Util.
 
-0.1.6 - Fri Jan  9 17:49:01 IST 2009
+0.1.6   2009-01-09
     - Converted the accessor generator to Class::XSAccessor instead
     of Class::Accessor. After consulting Devel::NYTProf, it seemed that
     the majority of the time of a simple File-Find-Object scan was spent
@@ -143,18 +146,18 @@
     - Optimization - now caching $top->_dir_stack()->[-1] into
     $top->_current() as an accessor.
 
-0.1.5 - Sat Jan  3 17:17:31 IST 2009
+0.1.5   2009-01-03
     - Unified the two calls to stat() (and several calls to other file
     operators) in order to reduce the number of system calls/disk accesses
     issued by File::Find::Object.
     - Refactored the code from the last change and added
     File::Find::Object::Result->stat_ret() for the return value of stat().
 
-0.1.4 - Thu Dec 25 18:27:48 IST 2008
+0.1.4   2008-12-25
     - Bug fix: made sure ->item_obj() is available on the first call
     to the callback() and is properly synchronized with it.
 
-0.1.3 - Wed Nov 12 18:50:49 IST 2008
+0.1.3   2008-11-12
     - Refactoring: converted _movenext() from pseudo-conditionals
     to polymorphism by making it a method of ->_current().
     - Refactoring: extracted the _next_traverse_to() method.
@@ -162,13 +165,13 @@
         - now correctly handling files and directories whose filenames
         are false in Perl - most notable "0".
 
-0.1.2 - Sun Oct 26 12:57:55 IST 2008
+0.1.2   2008-10-26
     - Corrected the README.
     - Now checking for inodes that are 0, when checking for cyclical trees,
     as a fix for stat() calls on systems that do not support them. This should
     fix Win32 test failures (and bad behaviour in general) like the following:          - http://nntp.x.perl.org/group/perl.cpan.testers/2479582
 
-0.1.1 - Wed Oct 22 12:30:56 IST 2008
+0.1.1   2008-10-22
     - Potential Security Fix!!! No longer passing a filename directly to
     the format in <<printf (STDERR)>> when warning on a loop.
     - Bug fix - the check for a loop was broken.
@@ -190,11 +193,11 @@
         - ./Build distruntest
         - ./Build tags
 
-0.1.0 - Wed Mar  5 20:46:27 IST 2008
+0.1.0   2008-03-05
     - Now handling directories that cannot be opendir()'ed in a graceful
     manner - just not traversing them further.
 
-0.0.9 - Fri Feb 22 20:04:03 IST 2008
+0.0.9   2008-02-22
     - Now running canonpath() on the targets in the call to
       File::Find::Object->new. That way, trailing slashes are omitted in
       the results.
@@ -207,11 +210,11 @@
     - Now skipping non-existant files.
         - Added a test for it in t/03traverse.t
 
-0.0.8 - Tue Jul 31 16:23:34 IDT 2007
+0.0.8   2007-07-31
     - added the empty PL_FILES key to the Makefile.PL to avoid running
     Build.PL on older versions of EU::MM.
 
-0.0.7 - Fri Feb  2 19:03:29 IST 2007
+0.0.7   2007-02-02
     - moved the tree script under the examples directory.
     - added the LICENSE section to the POD.
     - added t/pod.t and t/pod-coverage.t and made sure the module
@@ -222,7 +225,7 @@
     - Added some links to the main POD documentation for similar modules
       and for the Perl Advent article.
 
-0.0.6 - Tue Nov 28 15:49:23 IST 2006
+0.0.6   2006-11-28
     - Added the following new interface methods:
         - set_traverse_to
         - get_traverse_to
@@ -230,20 +233,20 @@
         - prune
     - Some changes to the internals to accomodate for them.
 
-0.0.5 - Sun Sep  3 23:22:36 IDT 2006
+0.0.5   2006-09-03
     - Eliminated the F-F-O-internal isa F-F-O relationship.
     - Created accessors for everything - now based on Class::Accessor
     - F-F-O-internal is now named File::Find::Object::PathComponent
     - Some smaller refactorings.
 
-0.0.4 - Wed Aug 23 00:31:39 IDT 2006
+0.0.4   2006-08-23
     - Eliminated circular references. (Hopefully)
         - Still have an isa relationship between File::Find::Object and
         File::Find::Object::internal, which is what handles each recursed to
         directory.
     - Created some accessor functions instead of direct hash accesses.
 
-0.0.3 - Fri Jul 14 14:25:42 IDT 2006
+0.0.3   2006-07-14
     - Fixed some language problems in the POD.
     - Added the Changes file.
     - Changed the license to GPL/Artistic/Artistic-2.0

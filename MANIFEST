@@ -18,6 +18,7 @@ t/03traverse.t
 t/04destroy.t
 t/05prune.t
 t/06trailing-slash.t
+t/cpan-changes.t
 t/lib/File/Find/Object/TreeCreate.pm
 t/pod-coverage.t
 t/pod.t
