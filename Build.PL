@@ -25,6 +25,10 @@ my $builder = Test::Run::Builder->new(
         'strict' => 0,
         'warnings' => 0,
     },
+    configure_requires =>
+    {
+        'Module::Build' => 0.36,
+    },
     'license' => "perl",
     meta_merge => {
         resources => {
