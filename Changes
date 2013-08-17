@@ -1,3 +1,7 @@
+0.2.8   2013-08-17
+    - Fix https://rt.cpan.org/Ticket/Display.html?id=87901
+        - repository metadata duplication.
+
 0.2.7   2013-05-21
     - Convert this file to t/cpan-changes.t .
 
