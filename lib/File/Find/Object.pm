@@ -5,7 +5,7 @@ use warnings;
 
 use integer;
 
-use base 'File::Find::Object::PathComp';
+use parent 'File::Find::Object::PathComp';
 
 use File::Spec;
 
@@ -56,7 +56,7 @@ sub _move_next
 
 package File::Find::Object::TopPath;
 
-use base 'File::Find::Object::PathComp';
+use parent 'File::Find::Object::PathComp';
 
 sub new {
     my $class = shift;
@@ -119,7 +119,7 @@ package File::Find::Object;
 use strict;
 use warnings;
 
-use base 'File::Find::Object::Base';
+use parent 'File::Find::Object::Base';
 
 use File::Find::Object::Result;
 

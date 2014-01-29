@@ -5,7 +5,7 @@ use warnings;
 
 use integer;
 
-use base 'File::Find::Object::Base';
+use parent 'File::Find::Object::Base';
 
 use Class::XSAccessor
 	accessors => {

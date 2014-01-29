@@ -45,6 +45,8 @@ sub full_components
 
 1;
 
+__END__
+
 =head1 NAME
 
 File::Find::Object::Result - a result class for File::Find::Object

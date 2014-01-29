@@ -1,3 +1,6 @@
+0.2.9   2014-01-29
+    - Convert from "use base" to the more modern "use parent".
+
 0.2.8   2013-08-17
     - Fix https://rt.cpan.org/Ticket/Display.html?id=87901
         - repository metadata duplication.
