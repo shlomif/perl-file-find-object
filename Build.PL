@@ -30,7 +30,7 @@ my $builder = Test::Run::Builder->new(
     {
         'Module::Build' => 0.36,
     },
-    'license' => "perl",
+    'license' => "artistic_2",
     meta_merge => {
         resources => {
             homepage => "http://www.shlomifish.org/open-source/projects/File-Find-Object/",

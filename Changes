@@ -1,6 +1,7 @@
 0.2.9   2014-01-29
     - Convert from "use base" to the more modern "use parent".
     - Minimal version on perl-5.008 (CPANTS Kwalitee).
+    - Add the LICENSE file - CPANTS Kwalitee.
 
 0.2.8   2013-08-17
     - Fix https://rt.cpan.org/Ticket/Display.html?id=87901
