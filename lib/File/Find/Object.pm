@@ -400,7 +400,7 @@ sub _check_process_current {
     return (defined($self->_current->_curr_file()) && $self->_filter_wrapper());
 }
 
-# Return true if there is somthing next
+# Return true if there is something next
 sub _process_current {
     my $self = shift;
 
