@@ -3,6 +3,8 @@ package File::Find::Object::DeepPath;
 use strict;
 use warnings;
 
+our $VERSION = '0.2.10';
+
 use 5.008;
 
 use integer;
@@ -57,6 +59,8 @@ sub _move_next
 }
 
 package File::Find::Object::TopPath;
+
+our $VERSION = '0.2.10';
 
 use parent 'File::Find::Object::PathComp';
 
