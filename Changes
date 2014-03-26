@@ -1,3 +1,8 @@
+0.2.11  2014-03-26
+    - Add $VERSION globally to all packages in lib/.
+        - This was done to silence some warnings from PAUSE.
+    - Add scripts/bump-version-number.pl to update it.
+
 0.2.10  2014-03-26
     - Correct a misspelling reported by dsteinbrunner.
         - https://rt.cpan.org/Ticket/Display.html?id=94206
