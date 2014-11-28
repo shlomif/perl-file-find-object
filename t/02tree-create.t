@@ -63,13 +63,17 @@ use File::Find::Object::TreeCreate;
     {
         mkdir ($t->get_path("./t/sample-data/ls-test"));
         mkdir ($t->get_path("./t/sample-data/ls-test/a"));
-        open O, ">", $t->get_path("./t/sample-data/ls-test/b.txt");
-        print O "Yowza";
-        close(O);
+        {
+            open my $out_fh, ">", $t->get_path("./t/sample-data/ls-test/b.txt");
+            print {$out_fh} "Yowza";
+            close ($out_fh);
+        }
         mkdir ($t->get_path("./t/sample-data/ls-test/c"));
-        open O, ">", $t->get_path("./t/sample-data/ls-test/h.xls");
-        print O "FooBardom!\n";
-        close(O);
+        {
+            open my $out_fh, ">", $t->get_path("./t/sample-data/ls-test/h.xls");
+            print {$out_fh} "FooBardom!\n";
+            close ($out_fh);
+        }
         # TEST
         is_deeply ($t->ls("./t/sample-data/ls-test"),
             ["a","b.txt","c","h.xls"],
