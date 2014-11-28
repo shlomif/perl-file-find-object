@@ -3,7 +3,7 @@ package File::Find::Object::Base;
 use strict;
 use warnings;
 
-our $VERSION = '0.2.11';
+our $VERSION = '0.2.12';
 
 use integer;
 
