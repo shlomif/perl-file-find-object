@@ -39,7 +39,7 @@ sub my_destroy
 {
     my $tree =
     {
-        'name' => "traverse-1/",
+        'name' => "destroy--traverse-1/",
         'subs' =>
         [
             {
@@ -66,7 +66,7 @@ sub my_destroy
     my $ff =
         MyFFO->new(
             {},
-            $t->get_path("./t/sample-data/traverse-1")
+            $t->get_path("./t/sample-data/destroy--traverse-1")
         );
     $ff->{'**DESTROY**'} = \&my_destroy;
     my @results;
@@ -77,7 +77,7 @@ sub my_destroy
     # TEST
     is_deeply(
         \@results,
-        [(map { $t->get_path("t/sample-data/traverse-1/$_") }
+        [(map { $t->get_path("t/sample-data/destroy--traverse-1/$_") }
             ("", qw(
                 a
                 b.doc
@@ -89,7 +89,7 @@ sub my_destroy
         "Checking for regular, lexicographically sorted order",
     );
 
-    rmtree($t->get_path("./t/sample-data/traverse-1"))
+    rmtree($t->get_path("./t/sample-data/destroy--traverse-1"))
 }
 # TEST
 is ($destroy_counter, 1,

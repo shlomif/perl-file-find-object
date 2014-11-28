@@ -19,7 +19,7 @@ use File::Path;
 {
     my $tree =
     {
-        'name' => "traverse-2/",
+        'name' => "prune--traverse-2/",
         'subs' =>
         [
             {
@@ -74,7 +74,7 @@ use File::Path;
     my $ff =
         File::Find::Object->new(
             {},
-            $t->get_path("./t/sample-data/traverse-2")
+            $t->get_path("./t/sample-data/prune--traverse-2")
         );
     my @results;
     for my $i (1 .. 7)
@@ -85,7 +85,7 @@ use File::Path;
         my $files_in_node = $ff->get_current_node_files_list();
 
         if ($file eq
-            $t->get_path("t/sample-data/traverse-2/foo/please-prune-me")
+            $t->get_path("t/sample-data/prune--traverse-2/foo/please-prune-me")
            )
         {
             $ff->set_traverse_to(
@@ -105,7 +105,7 @@ use File::Path;
     # TEST
     is_deeply(
         \@results,
-        [(map { $t->get_path("t/sample-data/traverse-2/$_") }
+        [(map { $t->get_path("t/sample-data/prune--traverse-2/$_") }
             ("",
             qw(
                 a
@@ -119,13 +119,13 @@ use File::Path;
         "Checking for regular, lexicographically sorted order",
     );
 
-    rmtree($t->get_path("./t/sample-data/traverse-2"))
+    rmtree($t->get_path("./t/sample-data/prune--traverse-2"))
 }
 
 {
     my $tree =
     {
-        'name' => "traverse-2/",
+        'name' => "prune--traverse-2/",
         'subs' =>
         [
             {
@@ -201,14 +201,14 @@ use File::Path;
     my $ff =
         File::Find::Object->new(
             {},
-            $t->get_path("./t/sample-data/traverse-2")
+            $t->get_path("./t/sample-data/prune--traverse-2")
         );
     my @results;
     for my $i (1 .. 9)
     {
         my $file = $ff->next();
         if ($file eq
-            $t->get_path("t/sample-data/traverse-2/foo/please-prune-me")
+            $t->get_path("t/sample-data/prune--traverse-2/foo/please-prune-me")
            )
         {
             $ff->prune();
@@ -222,7 +222,7 @@ use File::Path;
     # TEST
     is_deeply(
         \@results,
-        [(map { $t->get_path("t/sample-data/traverse-2/$_") }
+        [(map { $t->get_path("t/sample-data/prune--traverse-2/$_") }
             ("",
             qw(
                 a
@@ -238,5 +238,5 @@ use File::Path;
         "Checking for regular, lexicographically sorted order",
     );
 
-    rmtree($t->get_path("./t/sample-data/traverse-2"))
+    rmtree($t->get_path("./t/sample-data/prune--traverse-2"))
 }

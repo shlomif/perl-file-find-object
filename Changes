@@ -1,3 +1,9 @@
+0.2.12  2014-11-28
+    - Made sure no two t/*.t test scripts share temp paths.
+        - This caused failure with HARNESS_OPTIONS="j9".
+        - Thanks to ETHER for the report:
+            - http://www.cpantesters.org/cpan/report/2711a2ec-7401-11e4-8c78-d7697441a48b
+
 0.2.11  2014-03-26
     - Add $VERSION globally to all packages in lib/.
         - This was done to silence some warnings from PAUSE.

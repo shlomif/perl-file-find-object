@@ -19,7 +19,7 @@ use File::Path;
 {
     my $tree =
     {
-        'name' => "traverse-1/",
+        'name' => "traverse--traverse-1/",
         'subs' =>
         [
             {
@@ -46,7 +46,7 @@ use File::Path;
     my $ff =
         File::Find::Object->new(
             {},
-            $t->get_path("./t/sample-data/traverse-1")
+            $t->get_path("./t/sample-data/traverse--traverse-1")
         );
     my @results;
     for my $i (1 .. 6)
@@ -56,7 +56,7 @@ use File::Path;
     # TEST
     is_deeply(
         \@results,
-        [(map { $t->get_path("t/sample-data/traverse-1/$_") }
+        [(map { $t->get_path("t/sample-data/traverse--traverse-1/$_") }
             ("", qw(
                 a
                 b.doc
@@ -68,11 +68,11 @@ use File::Path;
         "Checking for regular, lexicographically sorted order",
     );
 
-    rmtree($t->get_path("./t/sample-data/traverse-1"));
+    rmtree($t->get_path("./t/sample-data/traverse--traverse-1"));
 }
 
 {
-    my $test_id = "traverse-dirs-and-files";
+    my $test_id = "traverse--traverse-dirs-and-files";
     my $test_dir = "t/sample-data/$test_id";
     my $tree =
     {
@@ -137,7 +137,7 @@ use File::Path;
 }
 
 {
-    my $test_id = "dont-traverse-non-existing-files";
+    my $test_id = "traverse--dont-traverse-non-existing-files";
     my $test_dir = "t/sample-data/$test_id";
     my $tree =
     {
@@ -230,7 +230,7 @@ use File::Path;
 }
 
 {
-    my $test_id = "handle-non-accessible-dirs-gracefully";
+    my $test_id = "traverse--handle-non-accessible-dirs-gracefully";
     my $test_dir = "t/sample-data/$test_id";
     my $tree =
     {
@@ -313,7 +313,7 @@ use File::Path;
 {
     my $tree =
     {
-        'name' => "traverse-1/",
+        'name' => "traverse--traverse-1/",
         'subs' =>
         [
             {
@@ -344,17 +344,17 @@ use File::Path;
     my $ff =
         File::Find::Object->new(
             {},
-            $t->get_path("./t/sample-data/traverse-1")
+            $t->get_path("./t/sample-data/traverse--traverse-1")
         );
 
     {
         my $r = $ff->next_obj();
 
         # TEST
-        is ($r->path(), $t->get_path("t/sample-data/traverse-1/"), "Path");
+        is ($r->path(), $t->get_path("t/sample-data/traverse--traverse-1/"), "Path");
 
         # TEST
-        is ($r->base(), $t->get_path("./t/sample-data/traverse-1"), "Base");
+        is ($r->base(), $t->get_path("./t/sample-data/traverse--traverse-1"), "Base");
 
         # TEST
         is_deeply ($r->dir_components(), [], "Dir_Components are empty");
@@ -373,10 +373,10 @@ use File::Path;
         my $r = $ff->next_obj();
 
         # TEST
-        is ($r->path(), $t->get_path("t/sample-data/traverse-1/a"), "Path");
+        is ($r->path(), $t->get_path("t/sample-data/traverse--traverse-1/a"), "Path");
 
         # TEST
-        is ($r->base(), $t->get_path("./t/sample-data/traverse-1"), "Base");
+        is ($r->base(), $t->get_path("./t/sample-data/traverse--traverse-1"), "Base");
 
         # TEST
         is_deeply ($r->dir_components(), [qw(a)], "Dir_Components are 'a'");
@@ -392,10 +392,10 @@ use File::Path;
         my $r = $ff->next_obj();
 
         # TEST
-        is ($r->path(), $t->get_path("t/sample-data/traverse-1/b.doc"), "Path");
+        is ($r->path(), $t->get_path("t/sample-data/traverse--traverse-1/b.doc"), "Path");
 
         # TEST
-        is ($r->base(), $t->get_path("./t/sample-data/traverse-1"), "Base");
+        is ($r->base(), $t->get_path("./t/sample-data/traverse--traverse-1"), "Base");
 
         # TEST
         is_deeply ($r->dir_components(), [], "Dir_Components are empty");
@@ -419,10 +419,10 @@ use File::Path;
         my $r = $ff->next_obj();
 
         # TEST
-        is ($r->path(), $t->get_path("t/sample-data/traverse-1/foo"), "Path");
+        is ($r->path(), $t->get_path("t/sample-data/traverse--traverse-1/foo"), "Path");
 
         # TEST
-        is ($r->base(), $t->get_path("./t/sample-data/traverse-1"), "Base");
+        is ($r->base(), $t->get_path("./t/sample-data/traverse--traverse-1"), "Base");
 
         # TEST
         is_deeply ($r->dir_components(), [qw(foo)],
@@ -442,12 +442,12 @@ use File::Path;
         my $r = $ff->next_obj();
 
         # TEST
-        is ($r->path(), $t->get_path("t/sample-data/traverse-1/foo/file.txt"),
+        is ($r->path(), $t->get_path("t/sample-data/traverse--traverse-1/foo/file.txt"),
             "Path",
         );
 
         # TEST
-        is ($r->base(), $t->get_path("./t/sample-data/traverse-1"),
+        is ($r->base(), $t->get_path("./t/sample-data/traverse--traverse-1"),
             "Base"
         );
 
@@ -472,12 +472,12 @@ use File::Path;
         my $r = $ff->next_obj();
 
         # TEST
-        is ($r->path(), $t->get_path("t/sample-data/traverse-1/foo/yet"),
+        is ($r->path(), $t->get_path("t/sample-data/traverse--traverse-1/foo/yet"),
             "Path",
         );
 
         # TEST
-        is ($r->base(), $t->get_path("./t/sample-data/traverse-1"), "Base");
+        is ($r->base(), $t->get_path("./t/sample-data/traverse--traverse-1"), "Base");
 
         # TEST
         is_deeply ($r->dir_components(), [qw(foo yet)],
@@ -502,13 +502,13 @@ use File::Path;
 
     undef ($ff);
 
-    rmtree($t->get_path("./t/sample-data/traverse-1"))
+    rmtree($t->get_path("./t/sample-data/traverse--traverse-1"))
 }
 
 {
     my $tree =
     {
-        'name' => "traverse-1/",
+        'name' => "traverse--traverse-1/",
         'subs' =>
         [
             {
@@ -543,7 +543,7 @@ use File::Path;
     my $ff =
         File::Find::Object->new(
             {},
-            $t->get_path("./t/sample-data/traverse-1")
+            $t->get_path("./t/sample-data/traverse--traverse-1")
         );
 
     my @results;
@@ -555,7 +555,7 @@ use File::Path;
     # TEST
     is_deeply(
         \@results,
-        [(map { $t->get_path("t/sample-data/traverse-1/$_") }
+        [(map { $t->get_path("t/sample-data/traverse--traverse-1/$_") }
             sort {$a cmp $b }
             ("", qw(
                 0
@@ -569,13 +569,13 @@ use File::Path;
         "Checking that files named '0' are correctly scanned",
     );
 
-    rmtree($t->get_path("./t/sample-data/traverse-1"));
+    rmtree($t->get_path("./t/sample-data/traverse--traverse-1"));
 }
 
 {
     my $tree =
     {
-        'name' => "traverse-1/",
+        'name' => "traverse--traverse-1/",
         'subs' =>
         [
             {
@@ -622,7 +622,7 @@ use File::Path;
     $ff =
         File::Find::Object->new(
             {callback => $callback},
-            $t->get_path("./t/sample-data/traverse-1")
+            $t->get_path("./t/sample-data/traverse--traverse-1")
         );
 
     my @results;
@@ -630,13 +630,13 @@ use File::Path;
     # Call $ff->next() and do the tests in $callback .
     push @results, $ff->next();
 
-    rmtree($t->get_path("./t/sample-data/traverse-1"));
+    rmtree($t->get_path("./t/sample-data/traverse--traverse-1"));
 }
 
 {
     my $tree =
     {
-        'name' => "traverse-1/",
+        'name' => "traverse--traverse-1/",
         'subs' =>
         [
             {
@@ -663,7 +663,7 @@ use File::Path;
     my $ff =
         File::Find::Object->new(
             {nocrossfs => 1,},
-            $t->get_path("./t/sample-data/traverse-1")
+            $t->get_path("./t/sample-data/traverse--traverse-1")
         );
     my @results;
     for my $i (1 .. 6)
@@ -673,7 +673,7 @@ use File::Path;
     # TEST
     is_deeply(
         \@results,
-        [(map { $t->get_path("t/sample-data/traverse-1/$_") }
+        [(map { $t->get_path("t/sample-data/traverse--traverse-1/$_") }
             ("", qw(
                 a
                 b.doc
@@ -685,13 +685,13 @@ use File::Path;
         "Testing nocrossfs",
     );
 
-    rmtree($t->get_path("./t/sample-data/traverse-1"));
+    rmtree($t->get_path("./t/sample-data/traverse--traverse-1"));
 }
 
 {
     my $tree =
     {
-        'name' => "traverse-1/",
+        'name' => "traverse--traverse-1/",
         'subs' =>
         [
             {
@@ -722,7 +722,7 @@ use File::Path;
     my $ff =
         File::Find::Object->new(
             {},
-            $t->get_path("./t/sample-data/traverse-1")
+            $t->get_path("./t/sample-data/traverse--traverse-1")
         );
 
     my @results;
@@ -739,11 +739,11 @@ use File::Path;
     is_deeply(
         \@results,
         [
-            map { $t->get_path("t/sample-data/traverse-1/$_") }
+            map { $t->get_path("t/sample-data/traverse--traverse-1/$_") }
             (qw(b.doc foo/file.txt))
         ],
         "Checking for regular, lexicographically sorted order",
     );
 
-    rmtree($t->get_path("./t/sample-data/traverse-1"))
+    rmtree($t->get_path("./t/sample-data/traverse--traverse-1"))
 }

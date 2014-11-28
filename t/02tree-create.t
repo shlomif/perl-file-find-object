@@ -61,32 +61,32 @@ use File::Find::Object::TreeCreate;
         "Checking the cat method");
 
     {
-        mkdir ($t->get_path("./t/sample-data/ls-test"));
-        mkdir ($t->get_path("./t/sample-data/ls-test/a"));
+        mkdir ($t->get_path("./t/sample-data/tree-create-ls-test"));
+        mkdir ($t->get_path("./t/sample-data/tree-create-ls-test/a"));
         {
-            open my $out_fh, ">", $t->get_path("./t/sample-data/ls-test/b.txt");
+            open my $out_fh, ">", $t->get_path("./t/sample-data/tree-create-ls-test/b.txt");
             print {$out_fh} "Yowza";
             close ($out_fh);
         }
-        mkdir ($t->get_path("./t/sample-data/ls-test/c"));
+        mkdir ($t->get_path("./t/sample-data/tree-create-ls-test/c"));
         {
-            open my $out_fh, ">", $t->get_path("./t/sample-data/ls-test/h.xls");
+            open my $out_fh, ">", $t->get_path("./t/sample-data/tree-create-ls-test/h.xls");
             print {$out_fh} "FooBardom!\n";
             close ($out_fh);
         }
         # TEST
-        is_deeply ($t->ls("./t/sample-data/ls-test"),
+        is_deeply ($t->ls("./t/sample-data/tree-create-ls-test"),
             ["a","b.txt","c","h.xls"],
             "Testing the ls method",
             );
         # Cleanup
-        rmtree ($t->get_path("./t/sample-data/ls-test"));
+        rmtree ($t->get_path("./t/sample-data/tree-create-ls-test"));
     }
 
     {
         my $tree =
         {
-            'name' => "tree-test-1/",
+            'name' => "tree-create--tree-test-1/",
             'subs' =>
             [
                 {
@@ -111,52 +111,52 @@ use File::Find::Object::TreeCreate;
         $t->create_tree("./t/sample-data/", $tree);
 
         # TEST
-        is_deeply ($t->ls("./t/sample-data/tree-test-1"),
+        is_deeply ($t->ls("./t/sample-data/tree-create--tree-test-1"),
             ["a", "b.doc", "foo"],
             "Testing the contents of the root tree"
         );
 
         # TEST
-        ok ($t->is_dir("./t/sample-data/tree-test-1/a"),
+        ok ($t->is_dir("./t/sample-data/tree-create--tree-test-1/a"),
             "a is a dir"
         );
 
         # TEST
-        is_deeply ($t->ls("./t/sample-data/tree-test-1/a"),
+        is_deeply ($t->ls("./t/sample-data/tree-create--tree-test-1/a"),
             [],
             "Testing the contents of a"
         );
 
         # TEST
-        is_deeply ($t->ls("./t/sample-data/tree-test-1/foo"),
+        is_deeply ($t->ls("./t/sample-data/tree-create--tree-test-1/foo"),
             ["yet"],
             "Testing the contents of foo"
         );
 
         # TEST
-        ok ($t->is_dir("./t/sample-data/tree-test-1/foo/yet"),
+        ok ($t->is_dir("./t/sample-data/tree-create--tree-test-1/foo/yet"),
             "Testing that foo/yet is a dir"
         );
 
         # TEST
-        is_deeply ($t->ls("./t/sample-data/tree-test-1/foo/yet"),
+        is_deeply ($t->ls("./t/sample-data/tree-create--tree-test-1/foo/yet"),
             [],
             "Testing that foo/yet is a dir"
         );
 
         # TEST
-        ok ($t->is_file("./t/sample-data/tree-test-1/b.doc"),
+        ok ($t->is_file("./t/sample-data/tree-create--tree-test-1/b.doc"),
             "Checking that b.doc is a file"
         );
 
         # TEST
-        is ($t->cat("./t/sample-data/tree-test-1/b.doc"),
+        is ($t->cat("./t/sample-data/tree-create--tree-test-1/b.doc"),
             "This file was spotted in the wild.",
             "Checking for contents of b.doc"
         );
 
         # Cleanup
-        rmtree ($t->get_path("./t/sample-data/tree-test-1"));
+        rmtree ($t->get_path("./t/sample-data/tree-create--tree-test-1"));
     }
     {
         # TEST
