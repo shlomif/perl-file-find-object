@@ -714,19 +714,30 @@ C<< $ff->item_obj()->path() >>.
 Sets the children to traverse to from the current node. Useful for pruning
 items to traverse.
 
+Accepts a single array reference.
+
+Example:
+
+    $ff->set_traverse_to([ grep { ! /\A\./ } @{ $ff->get_traverse_to }]);
+
 =head2 $ff->prune()
 
 Prunes the current directory. Equivalent to $ff->set_traverse_to([]).
 
 =head2 [@children] = $ff->get_traverse_to()
 
-Retrieves the children that will be traversed to.
+Retrieves the children that will be traversed to. Returns a single array
+reference.
+
+(Example under C<set_traverse_to>).
 
 =head2 [@files] = $ff->get_current_node_files_list()
 
-Gets all the files that appear in the current directory. This value is
-constant for every node, and is useful to use as the basis of the argument
-for C<set_traverse_to()>.
+Gets all the files that appear in the current directory. This value remains
+constant for every node, even after traversal or calls to C<set_traverse_to()>
+and is useful to use as the basis of the argument for C<set_traverse_to()>.
+
+Returns a single array reference.
 
 =head1 BUGS
 

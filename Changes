@@ -1,3 +1,7 @@
+0.2.13  2015-04-07
+    - Clarified the documentation regarding the use/return of array
+    references.
+
 0.2.12  2014-11-28
     - Made sure no two t/*.t test scripts share temp paths.
         - This caused failure with HARNESS_OPTIONS="j9".

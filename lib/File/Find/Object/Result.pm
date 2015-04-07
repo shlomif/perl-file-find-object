@@ -101,6 +101,8 @@ Otherwise - undef().
 Returns the full components of the result with the basename if it is
 a file.
 
+Returns a single array reference.
+
 =head2 $result->stat_ret()
 
 The return value of L<perlfunc/stat> for the result, placed
