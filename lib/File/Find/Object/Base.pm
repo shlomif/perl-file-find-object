@@ -13,7 +13,7 @@ use integer;
 #
 
 use Class::XSAccessor
-	accessors => {
+    accessors => {
         (map
             { $_ => $_ }
             (qw(

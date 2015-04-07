@@ -3,20 +3,20 @@
 use ExtUtils::MakeMaker;
 
 sub MY::postamble {
-    <<MAKECHANGELOG;
+    <<"MAKECHANGELOG";
 .PHONY: ChangeLog
 
 ChangeLog:
-	cvs2cl -W 400 -I ChangeLog --accum -U ../common/username
-	rm -f *.bak
+\tcvs2cl -W 400 -I ChangeLog --accum -U ../common/username
+\trm -f *.bak
 
 MAKECHANGELOG
 }
 
 WriteMakefile(
-    NAME	 => 'File::Find::Object',
+    NAME         => 'File::Find::Object',
     VERSION_FROM => 'lib/File/Find/Object.pm',
-    PREREQ_PM =>
+    PREREQ_PM    =>
     {
         'base' => 0,
         'Carp' => 0,
@@ -28,5 +28,5 @@ WriteMakefile(
         'strict' => 0,
         'warnings' => 0,   'Test::More' => 0,
     },
-    PL_FILES => {},
+    PL_FILES     => {},
 );

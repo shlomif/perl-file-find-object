@@ -10,7 +10,7 @@ use integer;
 use parent 'File::Find::Object::Base';
 
 use Class::XSAccessor
-	accessors => {
+    accessors => {
         (map
             { $_ => $_ }
             (qw(
