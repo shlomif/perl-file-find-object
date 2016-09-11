@@ -3,7 +3,7 @@ package File::Find::Object::DeepPath;
 use strict;
 use warnings;
 
-our $VERSION = '0.2.13';
+our $VERSION = '0.3.0';
 
 use 5.008;
 
@@ -60,7 +60,7 @@ sub _move_next
 
 package File::Find::Object::TopPath;
 
-our $VERSION = '0.2.13';
+our $VERSION = '0.3.0';
 
 use parent 'File::Find::Object::PathComp';
 
@@ -178,7 +178,7 @@ __PACKAGE__->_make_copy_methods([qw(
 
 use Carp;
 
-our $VERSION = '0.2.13';
+our $VERSION = '0.3.0';
 
 sub new {
     my ($class, $options, @targets) = @_;
