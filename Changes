@@ -1,3 +1,10 @@
+0.3.0   2016-09-11
+    - Converted the build system to Dist-Zilla.
+        - Part of the impetus was removing the warning about
+        Test::TrailingSpace needed for the trailing whitespace tests
+        (which in turn requires this modules) which was reported to us as a
+        problem by someone (despite not being a real issue).
+
 0.2.13  2015-04-07
     - Clarified the documentation regarding the use/return of array
     references.
