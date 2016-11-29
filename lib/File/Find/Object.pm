@@ -3,7 +3,7 @@ package File::Find::Object::DeepPath;
 use strict;
 use warnings;
 
-our $VERSION = '0.3.0';
+our $VERSION = 'v0.3.0';
 
 use 5.008;
 
