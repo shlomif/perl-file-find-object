@@ -10,7 +10,7 @@ use Test::More tests => 4;
 use File::Path qw(rmtree);
 
 # TEST
-use_ok('File::Find::Object', "Can use main NBackup::Tree");
+use_ok('File::Find::Object', "Can use main File::Find::Object");
 
 mkdir('t/dir');
 mkdir('t/dir/a');
@@ -52,10 +52,15 @@ while (my $r = $tree->next()) {
 ok(scalar(@res1) == scalar(@res2), "Get same result from callback and next");
 
 # TEST
-ok (
-    ($symlink_created ? scalar($warnings[0] =~ m{Avoid loop}) : 1),
-    "Avoid loop warning",
-);
+if ($symlink_created)
+{
+    like($warnings[0], qr{\AAvoid loop (\S+) => \1\S+?link\r?\n?\z},
+    "Avoid loop warning");
+}
+else
+{
+    pass("No symlink.");
+}
 
 # Cleanup
 rmtree('t/dir', 0, 1);

@@ -1,3 +1,8 @@
+0.3.1   2017-01-09
+    - Fixed an issue with tracking the depth of the inodes when detecting
+    a symlink loop.
+        - Detected by several cygwin reports.
+
 0.3.0   2016-09-11
     - Converted the build system to Dist-Zilla.
         - Part of the impetus was removing the warning about

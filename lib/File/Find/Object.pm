@@ -24,7 +24,7 @@ sub new {
     my $find = { %{$from->_inodes()} };
     if (my $inode = $self->_inode) {
         $find->{join(",", $self->_dev(), $inode)} =
-            scalar(@{$top->_dir_stack()});
+            $#{$top->_dir_stack()};
     }
     $self->_set_inodes($find);
 
