@@ -1,3 +1,8 @@
+0.3.2   2017-01-13
+    - Made the version number consistent across the .pm files.
+        - https://bitbucket.org/shlomif/perl-file-find-object/issues/1/wrong-version-number
+        - Thanks to aer0 for the report.
+
 0.3.1   2017-01-09
     - Fixed an issue with tracking the depth of the inodes when detecting
     a symlink loop.
