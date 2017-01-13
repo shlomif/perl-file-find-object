@@ -3,7 +3,7 @@ package File::Find::Object::PathComp;
 use strict;
 use warnings;
 
-our $VERSION = '0.3.2';
+our $VERSION = 'v0.3.2';
 
 use integer;
 
