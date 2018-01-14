@@ -2,7 +2,7 @@ File::Find::Object is an object-oriented and iterative replacement for
 File::Find. I.e: it is a module for traversing a directory tree, and finding
 all the files contained within it programatically.
 
-INSTALLATION
+#. INSTALLATION
 
 To install this module type the following:
 
@@ -21,15 +21,15 @@ Or the newer CPANPLUS.pm module
 
     # perl -MCPANPLUS -e 'install File::Find::Object'
 
-DEPENDENCIES
+#. DEPENDENCIES
 
 This module's dependencies are:
 
 1. A Perl version that supports the "use warnings" pragma.
 
-2. The Class::Accessor module from CPAN.
+2. The Class::XSAccessor module from CPAN.
 
-COPYRIGHT AND LICENSE
+#. COPYRIGHT AND LICENSE
 
 Copyright (C) 2005, 2006 by Olivier Thauvin
 
@@ -43,4 +43,3 @@ http://www.opensource.org/licenses/gpl-license.php
 http://www.perlfoundation.org/legal/licenses/artistic-2_0.html
 
 3. At your option - any later version of either or both of these licenses.
-
