@@ -1,9 +1,12 @@
-package File::Find::Object::DeepPath;
+package File::Find::Object;
 
 use strict;
 use warnings;
 
-our $VERSION = 'v0.3.2';
+package File::Find::Object::DeepPath;
+
+use strict;
+use warnings;
 
 use 5.008;
 
@@ -11,20 +14,22 @@ use integer;
 
 use parent 'File::Find::Object::PathComp';
 
-use File::Spec;
+use File::Spec ();
 
-sub new {
-    my ($class, $top, $from) = @_;
+sub new
+{
+    my ( $class, $top, $from ) = @_;
 
     my $self = {};
     bless $self, $class;
 
-    $self->_stat_ret($top->_top_stat_copy());
+    $self->_stat_ret( $top->_top_stat_copy() );
 
-    my $find = { %{$from->_inodes()} };
-    if (my $inode = $self->_inode) {
-        $find->{join(",", $self->_dev(), $inode)} =
-            $#{$top->_dir_stack()};
+    my $find = { %{ $from->_inodes() } };
+    if ( my $inode = $self->_inode )
+    {
+        $find->{ join( ",", $self->_dev(), $inode ) } =
+            $#{ $top->_dir_stack() };
     }
     $self->_set_inodes($find);
 
@@ -32,18 +37,20 @@ sub new {
 
     $top->_fill_actions($self);
 
-    push @{$top->_curr_comps()}, "";
+    push @{ $top->_curr_comps() }, "";
 
     return $top->_open_dir() ? $self : undef;
 }
 
 sub _move_next
 {
-    my ($self, $top) = @_;
+    my ( $self, $top ) = @_;
 
-    if (defined($self->_curr_file(
-            $top->_current_father()->_next_traverse_to()
-       )))
+    if (
+        defined(
+            $self->_curr_file( $top->_current_father()->_next_traverse_to() )
+        )
+        )
     {
         $top->_curr_comps()->[-1] = $self->_curr_file();
         $top->_calc_curr_path();
@@ -53,20 +60,20 @@ sub _move_next
 
         return 1;
     }
-    else {
+    else
+    {
         return 0;
     }
 }
 
 package File::Find::Object::TopPath;
 
-our $VERSION = 'v0.3.2';
-
 use parent 'File::Find::Object::PathComp';
 
-sub new {
+sub new
+{
     my $class = shift;
-    my $top = shift;
+    my $top   = shift;
 
     my $self = {};
     bless $self, $class;
@@ -76,14 +83,13 @@ sub new {
     return $self;
 }
 
-
 sub _move_to_next_target
 {
     my $self = shift;
-    my $top = shift;
+    my $top  = shift;
 
-    my $target = $self->_curr_file($top->_calc_next_target());
-    @{$top->_curr_comps()} = ($target);
+    my $target = $self->_curr_file( $top->_calc_next_target() );
+    @{ $top->_curr_comps() } = ($target);
     $top->_calc_curr_path();
 
     return $target;
@@ -92,24 +98,23 @@ sub _move_to_next_target
 sub _move_next
 {
     my $self = shift;
-    my $top = shift;
+    my $top  = shift;
 
-    while ($top->_increment_target_index())
+    while ( $top->_increment_target_index() )
     {
-        if (-e $self->_move_to_next_target($top))
+        if ( -e $self->_move_to_next_target($top) )
         {
             $top->_fill_actions($self);
             $top->_mystat();
-            $self->_stat_ret($top->_top_stat_copy());
-            $top->_dev($self->_dev);
+            $self->_stat_ret( $top->_top_stat_copy() );
+            $top->_dev( $self->_dev );
 
             my $inode = $self->_inode();
             $self->_set_inodes(
-                ($inode == 0)
+                  ( $inode == 0 )
                 ? {}
-                :
-                {
-                    join(",", $self->_dev(), $inode) => 0,
+                : {
+                    join( ",", $self->_dev(), $inode ) => 0,
                 },
             );
 
@@ -127,7 +132,7 @@ use warnings;
 
 use parent 'File::Find::Object::Base';
 
-use File::Find::Object::Result;
+use File::Find::Object::Result ();
 
 use Fcntl ':mode';
 use List::Util ();
@@ -135,86 +140,89 @@ use List::Util ();
 sub _get_options_ids
 {
     my $class = shift;
-    return [qw(
-        callback
-        depth
-        filter
-        followlink
-        nocrossfs
-    )];
+    return [
+        qw(
+            callback
+            depth
+            filter
+            followlink
+            nocrossfs
+            )
+    ];
 }
 
 # _curr_comps are the components (comps) of the master object's current path.
 # _curr_path is the concatenated path itself.
 
-use Class::XSAccessor
-    accessors => {
-        (map { $_ => $_ }
-        (qw(
-            _check_subdir_h
-            _curr_comps
-            _current
-            _curr_path
-            _def_actions
-            _dev
-            _dir_stack
-            item_obj
-            _target_index
-            _targets
-            _top_is_dir
-            _top_is_link
-            _top_stat
-            ),
-            @{__PACKAGE__->_get_options_ids()}
+use Class::XSAccessor accessors => {
+    (
+        map { $_ => $_ } (
+            qw(
+                _check_subdir_h
+                _curr_comps
+                _current
+                _curr_path
+                _def_actions
+                _dev
+                _dir_stack
+                item_obj
+                _target_index
+                _targets
+                _top_is_dir
+                _top_is_link
+                _top_stat
+                ),
+            @{ __PACKAGE__->_get_options_ids() }
         )
-        )
-    }
-    ;
+    )
+};
 
-__PACKAGE__->_make_copy_methods([qw(
-    _top_stat
-    )]
+__PACKAGE__->_make_copy_methods(
+    [
+        qw(
+            _top_stat
+            )
+    ]
 );
 
 use Carp;
 
-our $VERSION = 'v0.3.2';
-
-sub new {
-    my ($class, $options, @targets) = @_;
+sub new
+{
+    my ( $class, $options, @targets ) = @_;
 
     # The *existence* of an _st key inside the struct
     # indicates that the stack is full.
     # So now it's empty.
     my $tree = {
-        _dir_stack => [],
+        _dir_stack  => [],
         _curr_comps => [],
     };
 
-    bless($tree, $class);
+    bless( $tree, $class );
 
-    foreach my $opt (@{$tree->_get_options_ids()})
+    foreach my $opt ( @{ $tree->_get_options_ids() } )
     {
-        $tree->$opt($options->{$opt});
+        $tree->$opt( $options->{$opt} );
     }
 
     $tree->_gen_check_subdir_helper();
 
-    $tree->_targets(\@targets);
+    $tree->_targets( \@targets );
     $tree->_target_index(-1);
 
     $tree->_calc_default_actions();
 
-    push @{$tree->_dir_stack()},
-        $tree->_current(File::Find::Object::TopPath->new($tree))
-        ;
+    push @{ $tree->_dir_stack() },
+        $tree->_current( File::Find::Object::TopPath->new($tree) );
 
     $tree->_last_dir_scanned(undef);
 
     return $tree;
 }
 
-sub _curr_not_a_dir {
+sub _curr_not_a_dir
+{
     return !shift->_top_is_dir();
 }
 
@@ -224,28 +232,28 @@ sub _calc_curr_path
 {
     my $self = shift;
 
-    $self->_curr_path(File::Spec->catfile(@{$self->_curr_comps()}));
+    $self->_curr_path( File::Spec->catfile( @{ $self->_curr_comps() } ) );
 
     return;
 }
 
-sub _calc_current_item_obj {
+sub _calc_current_item_obj
+{
     my $self = shift;
 
-    my @comps = @{$self->_curr_comps()};
+    my @comps = @{ $self->_curr_comps() };
 
-    my $ret =
-    {
-        path => scalar($self->_curr_path()),
+    my $ret = {
+        path           => scalar( $self->_curr_path() ),
         dir_components => \@comps,
-        base => shift(@comps),
-        stat_ret => scalar($self->_top_stat_copy()),
-        is_file => scalar(-f _),
-        is_dir => scalar(-d _),
-        is_link => $self->_top_is_link(),
+        base           => shift(@comps),
+        stat_ret       => scalar( $self->_top_stat_copy() ),
+        is_file        => scalar( -f _ ),
+        is_dir         => scalar( -d _ ),
+        is_link        => $self->_top_is_link(),
     };
 
-    if ($self->_curr_not_a_dir())
+    if ( $self->_curr_not_a_dir() )
     {
         $ret->{basename} = pop(@comps);
     }
@@ -253,13 +261,14 @@ sub _calc_current_item_obj {
     return bless $ret, "File::Find::Object::Result";
 }
 
-sub next_obj {
+sub next_obj
+{
     my $self = shift;
 
-    until (     $self->_process_current
-            || ((!$self->_master_move_to_next())
-               && $self->_me_die())
-            )
+    until (
+        $self->_process_current || ( ( !$self->_master_move_to_next() )
+            && $self->_me_die() )
+        )
     {
         # Do nothing
     }
@@ -267,7 +276,8 @@ sub next_obj {
     return $self->item_obj();
 }
 
-sub next {
+sub next
+{
     my $self = shift;
 
     $self->next_obj();
@@ -275,13 +285,15 @@ sub next {
     return $self->item();
 }
 
-sub item {
+sub item
+{
     my $self = shift;
 
     return $self->item_obj() ? $self->item_obj()->path() : undef;
 }
 
-sub _current_father {
+sub _current_father
+{
     return shift->_dir_stack->[-2];
 }
 
@@ -290,32 +302,35 @@ sub _increment_target_index
     my $self = shift;
     $self->_target_index( $self->_target_index() + 1 );
 
-    return ($self->_target_index() < scalar(@{$self->_targets()}));
+    return ( $self->_target_index() < scalar( @{ $self->_targets() } ) );
 }
 
 sub _calc_next_target
 {
     my $self = shift;
 
-    my $target = $self->_targets()->[$self->_target_index()];
+    my $target = $self->_targets()->[ $self->_target_index() ];
 
     return defined($target) ? File::Spec->canonpath($target) : undef;
 }
 
-sub _master_move_to_next {
+sub _master_move_to_next
+{
     my $self = shift;
 
     return $self->_current()->_move_next($self);
 }
 
-sub _me_die {
+sub _me_die
+{
     my $self = shift;
 
-    if (exists($self->{_st})) {
+    if ( exists( $self->{_st} ) )
+    {
         return $self->_become_default();
     }
 
-    $self->item_obj(undef());
+    $self->item_obj( undef() );
     return 1;
 }
 
@@ -326,19 +341,19 @@ sub _become_default
     my $st = $self->_dir_stack();
 
     pop(@$st);
-    $self->_current($st->[-1]);
-    pop(@{$self->_curr_comps()});
+    $self->_current( $st->[-1] );
+    pop( @{ $self->_curr_comps() } );
 
-    if (@$st == 1)
+    if ( @$st == 1 )
     {
-        delete($self->{_st});
+        delete( $self->{_st} );
     }
     else
     {
         # If depth is false, then we no longer need the _curr_path
         # of the directories above the previously-set value, because we
         # already traversed them.
-        if ($self->depth())
+        if ( $self->depth() )
         {
             $self->_calc_curr_path();
         }
@@ -347,68 +362,76 @@ sub _become_default
     return 0;
 }
 
-sub _calc_default_actions {
+sub _calc_default_actions
+{
     my $self = shift;
 
     my @calc_obj =
         $self->callback()
         ? (qw(_run_cb))
-        : (qw(_set_obj))
-        ;
+        : (qw(_set_obj));
 
     my @rec = qw(_recurse);
 
     $self->_def_actions(
-        [$self->depth()
-            ? (@rec, @calc_obj)
-            : (@calc_obj, @rec)
+        [
+            $self->depth()
+            ? ( @rec, @calc_obj )
+            : ( @calc_obj, @rec )
         ]
     );
 
     return;
 }
 
-sub _fill_actions {
-    my $self = shift;
+sub _fill_actions
+{
+    my $self  = shift;
     my $other = shift;
 
-    $other->_actions([ @{$self->_def_actions()} ]);
+    $other->_actions( [ @{ $self->_def_actions() } ] );
 
     return;
 }
 
-sub _mystat {
+sub _mystat
+{
     my $self = shift;
 
-    $self->_top_stat([lstat($self->_curr_path())]);
+    $self->_top_stat( [ lstat( $self->_curr_path() ) ] );
 
-    $self->_top_is_dir(scalar(-d _));
+    $self->_top_is_dir( scalar( -d _ ) );
 
-    if ($self->_top_is_link(scalar(-l _))) {
-        stat($self->_curr_path());
-        $self->_top_is_dir(scalar(-d _));
+    if ( $self->_top_is_link( scalar( -l _ ) ) )
+    {
+        stat( $self->_curr_path() );
+        $self->_top_is_dir( scalar( -d _ ) );
     }
 
     return "SKIP";
 }
 
-sub _next_action {
+sub _next_action
+{
     my $self = shift;
 
-    return shift(@{$self->_current->_actions()});
+    return shift( @{ $self->_current->_actions() } );
 }
 
-sub _check_process_current {
+sub _check_process_current
+{
     my $self = shift;
 
-    return (defined($self->_current->_curr_file()) && $self->_filter_wrapper());
+    return ( defined( $self->_current->_curr_file() )
+            && $self->_filter_wrapper() );
 }
 
 # Return true if there is something next
-sub _process_current {
+sub _process_current
+{
     my $self = shift;
 
-    if (!$self->_check_process_current())
+    if ( !$self->_check_process_current() )
     {
         return 0;
     }
@@ -418,20 +441,22 @@ sub _process_current {
     }
 }
 
-sub _set_obj {
+sub _set_obj
+{
     my $self = shift;
 
-    $self->item_obj($self->_calc_current_item_obj());
+    $self->item_obj( $self->_calc_current_item_obj() );
 
     return 1;
 }
 
-sub _run_cb {
+sub _run_cb
+{
     my $self = shift;
 
     $self->_set_obj();
 
-    $self->callback()->($self->_curr_path());
+    $self->callback()->( $self->_curr_path() );
 
     return 1;
 }
@@ -440,11 +465,11 @@ sub _process_current_actions
 {
     my $self = shift;
 
-    while (my $action = $self->_next_action())
+    while ( my $action = $self->_next_action() )
     {
         my $status = $self->$action();
 
-        if ($status ne "SKIP")
+        if ( $status ne "SKIP" )
         {
             return $status;
         }
@@ -457,28 +482,25 @@ sub _recurse
 {
     my $self = shift;
 
-    $self->_check_subdir() or
-        return "SKIP";
+    $self->_check_subdir()
+        or return "SKIP";
 
-    push @{$self->_dir_stack()},
+    push @{ $self->_dir_stack() },
         $self->_current(
-            File::Find::Object::DeepPath->new(
-                $self,
-                $self->_current()
-            )
-        );
+        File::Find::Object::DeepPath->new( $self, $self->_current() ) );
 
     $self->{_st} = 1;
 
     return 0;
 }
 
-sub _filter_wrapper {
+sub _filter_wrapper
+{
     my $self = shift;
 
-    return defined($self->filter()) ?
-        $self->filter()->($self->_curr_path()) :
-        1;
+    return defined( $self->filter() )
+        ? $self->filter()->( $self->_curr_path() )
+        : 1;
 }
 
 sub _check_subdir
@@ -488,7 +510,7 @@ sub _check_subdir
     # If current is not a directory always return 0, because we may
     # be asked to traverse single-files.
 
-    if ($self->_curr_not_a_dir())
+    if ( $self->_curr_not_a_dir() )
     {
         return 0;
     }
@@ -498,11 +520,9 @@ sub _check_subdir
     }
 }
 
-
-
 sub _warn_about_loop
 {
-    my $self = shift;
+    my $self          = shift;
     my $component_idx = shift;
 
     # Don't pass strings directly to the format.
@@ -511,27 +531,30 @@ sub _warn_about_loop
     warn(
         sprintf(
             "Avoid loop %s => %s\n",
-                File::Spec->catdir(
-                    @{$self->_curr_comps()}[0 .. $component_idx]
-                ),
-                $self->_curr_path(),
+            File::Spec->catdir(
+                @{ $self->_curr_comps() }[ 0 .. $component_idx ]
+            ),
+            $self->_curr_path(),
         )
     );
 
     return;
 }
 
-sub _is_loop {
+sub _is_loop
+{
     my $self = shift;
 
-    my $key = join(",", @{$self->_top_stat()}[0,1]);
+    my $key    = join( ",", @{ $self->_top_stat() }[ 0, 1 ] );
     my $lookup = $self->_current->_inodes;
 
-    if (exists($lookup->{$key})) {
-        $self->_warn_about_loop($lookup->{$key});
+    if ( exists( $lookup->{$key} ) )
+    {
+        $self->_warn_about_loop( $lookup->{$key} );
         return 1;
     }
-    else {
+    else
+    {
         return;
     }
 }
@@ -540,16 +563,19 @@ sub _is_loop {
 # affect the checks are instance-wide and constant and so we can
 # determine how the code should look like.
 
-sub _gen_check_subdir_helper {
+sub _gen_check_subdir_helper
+{
     my $self = shift;
 
     my @clauses;
 
-    if (!$self->followlink()) {
+    if ( !$self->followlink() )
+    {
         push @clauses, '$s->_top_is_link()';
     }
 
-    if ($self->nocrossfs()) {
+    if ( $self->nocrossfs() )
+    {
         push @clauses, '($s->_top_stat->[0] != $s->_dev())';
     }
 
@@ -557,35 +583,36 @@ sub _gen_check_subdir_helper {
 
     $self->_check_subdir_h(
         _context_less_eval(
-          'sub { my $s = shift; '
-        . 'return ((!exists($s->{_st})) || !('
-        . join("||", @clauses) . '));'
-        . '}'
+                  'sub { my $s = shift; '
+                . 'return ((!exists($s->{_st})) || !('
+                . join( "||", @clauses ) . '));' . '}'
         )
     );
 }
 
-sub _context_less_eval {
+sub _context_less_eval
+{
+## no critic
     my $code = shift;
     return eval $code;
+## use critic
 }
 
-sub _open_dir {
+sub _open_dir
+{
     my $self = shift;
 
-    return $self->_current()->_component_open_dir(
-        $self->_curr_path()
-    );
+    return $self->_current()->_component_open_dir( $self->_curr_path() );
 }
 
 sub set_traverse_to
 {
-    my ($self, $children) = @_;
+    my ( $self, $children ) = @_;
 
     # Make sure we scan the current directory for sub-items first.
     $self->get_current_node_files_list();
 
-    $self->_current->_traverse_to([@$children]);
+    $self->_current->_traverse_to( [@$children] );
 }
 
 sub get_traverse_to
@@ -600,7 +627,7 @@ sub get_current_node_files_list
     my $self = shift;
 
     # _open_dir can return undef if $self->_current is not a directory.
-    if ($self->_open_dir())
+    if ( $self->_open_dir() )
     {
         return $self->_current->_files_copy();
     }
@@ -614,7 +641,7 @@ sub prune
 {
     my $self = shift;
 
-    return $self->set_traverse_to([]);
+    return $self->set_traverse_to( [] );
 }
 
 1;

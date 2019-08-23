@@ -2,32 +2,31 @@ package File::Find::Object::Result;
 
 use strict;
 use warnings;
-
-our $VERSION = 'v0.3.2';
-
 use integer;
 
-use Class::XSAccessor
-    accessors => {
-        (map { $_ => $_ } (qw(
-        base
-        basename
-        is_dir
-        is_file
-        is_link
-        path
-        dir_components
-        stat_ret
-        )))
-    }
-    ;
+use Class::XSAccessor accessors => {
+    (
+        map { $_ => $_ } (
+            qw(
+                base
+                basename
+                is_dir
+                is_file
+                is_link
+                path
+                dir_components
+                stat_ret
+                )
+        )
+    )
+};
 
 use Fcntl qw(:mode);
 
 sub new
 {
     my $class = shift;
-    my $self = shift;
+    my $self  = shift;
 
     bless $self, $class;
 
@@ -38,10 +37,9 @@ sub full_components
 {
     my $self = shift;
 
-    return
-    [
-        @{$self->dir_components()},
-        ($self->is_dir() ? () : $self->basename()),
+    return [
+        @{ $self->dir_components() },
+        ( $self->is_dir() ? () : $self->basename() ),
     ];
 }
 

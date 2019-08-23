@@ -3,17 +3,14 @@ package File::Find::Object::PathComp;
 use strict;
 use warnings;
 
-our $VERSION = 'v0.3.2';
-
 use integer;
 
 use parent 'File::Find::Object::Base';
 
-use Class::XSAccessor
-    accessors => {
-        (map
-            { $_ => $_ }
-            (qw(
+use Class::XSAccessor accessors => {
+    (
+        map { $_ => $_ } (
+            qw(
                 _actions
                 _curr_file
                 _files
@@ -21,19 +18,23 @@ use Class::XSAccessor
                 _open_dir_ret
                 _stat_ret
                 _traverse_to
-            ))
+                )
         )
+    )
     },
-    getters => { _inodes => '_inodes' },
+    getters => { _inodes     => '_inodes' },
     setters => { _set_inodes => '_inodes' },
     ;
 
 use File::Spec;
 
-__PACKAGE__->_make_copy_methods([qw(
-        _files
-        _traverse_to
-    )]
+__PACKAGE__->_make_copy_methods(
+    [
+        qw(
+            _files
+            _traverse_to
+            )
+    ]
 );
 
 sub _dev
@@ -49,29 +50,25 @@ sub _inode
 sub _is_same_inode
 {
     my $self = shift;
+
     # $st is an array ref with the return of perldoc -f stat .
     my $st = shift;
 
     # On MS-Windows, all inodes in stat are returned as 0, so we need to
     # check that both inodes are not zero. This is why there's the
     # $self->_inode() != 0 check at the end.
-    return
-    (
-        $self->_dev() == $st->[0]
-     && $self->_inode() == $st->[1]
-     && $self->_inode() != 0
-    );
+    return (   $self->_dev() == $st->[0]
+            && $self->_inode() == $st->[1]
+            && $self->_inode() != 0 );
 }
 
 sub _should_scan_dir
 {
-    my $self = shift;
+    my $self    = shift;
     my $dir_str = shift;
 
-    if (defined($self->_last_dir_scanned()) &&
-        ($self->_last_dir_scanned() eq $dir_str
-       )
-    )
+    if ( defined( $self->_last_dir_scanned() )
+        && ( $self->_last_dir_scanned() eq $dir_str ) )
     {
         return;
     }
@@ -84,30 +81,31 @@ sub _should_scan_dir
 
 sub _set_up_dir
 {
-    my $self = shift;
+    my $self    = shift;
     my $dir_str = shift;
 
-    $self->_files($self->_calc_dir_files($dir_str));
+    $self->_files( $self->_calc_dir_files($dir_str) );
 
-    $self->_traverse_to($self->_files_copy());
+    $self->_traverse_to( $self->_files_copy() );
 
     return $self->_open_dir_ret(1);
 }
 
 sub _calc_dir_files
 {
-    my $self = shift;
+    my $self    = shift;
     my $dir_str = shift;
 
     my $handle;
     my @files;
-    if (!opendir($handle, $dir_str))
+    if ( !opendir( $handle, $dir_str ) )
     {
         # Handle this error gracefully.
     }
     else
     {
-        @files = (sort { $a cmp $b } File::Spec->no_upwards(readdir($handle)));
+        @files =
+            ( sort { $a cmp $b } File::Spec->no_upwards( readdir($handle) ) );
         closedir($handle);
     }
 
@@ -116,10 +114,10 @@ sub _calc_dir_files
 
 sub _component_open_dir
 {
-    my $self = shift;
+    my $self    = shift;
     my $dir_str = shift;
 
-    if (!$self->_should_scan_dir($dir_str))
+    if ( !$self->_should_scan_dir($dir_str) )
     {
         return $self->_open_dir_ret();
     }
@@ -131,7 +129,7 @@ sub _next_traverse_to
 {
     my $self = shift;
 
-    return shift(@{$self->_traverse_to()});
+    return shift( @{ $self->_traverse_to() } );
 }
 
 1;

@@ -3,8 +3,6 @@ package File::Find::Object::Base;
 use strict;
 use warnings;
 
-our $VERSION = 'v0.3.2';
-
 use integer;
 
 # TODO :
@@ -12,16 +10,15 @@ use integer;
 # add a regression test to test it.
 #
 
-use Class::XSAccessor
-    accessors => {
-        (map
-            { $_ => $_ }
-            (qw(
+use Class::XSAccessor accessors => {
+    (
+        map { $_ => $_ } (
+            qw(
                 _last_dir_scanned
-            ))
+                )
         )
-    }
-    ;
+    )
+};
 
 use File::Spec;
 
@@ -30,20 +27,22 @@ use File::Spec;
 
 sub _make_copy_methods
 {
-    my ($pkg, $methods) = @_;
+    my ( $pkg, $methods ) = @_;
 
+    ## no critic
     no strict 'refs';
     foreach my $method (@$methods)
     {
-        *{$pkg."::".$method."_copy"} =
-            do {
-                my $m = $method;
-                sub {
-                    my $self = shift;
-                    return [ @{$self->$m(@_)} ];
-                };
+        *{ $pkg . "::" . $method . "_copy" } = do
+        {
+            my $m = $method;
+            sub {
+                my $self = shift;
+                return [ @{ $self->$m(@_) } ];
             };
+        };
     }
+    ## use critic
     return;
 }
 
