@@ -1,3 +1,7 @@
+0.3.3   2019-08-23
+    - Now at https://github.com/shlomif/perl-file-find-object
+    - tidyall .
+
 0.3.2   2017-01-13
     - Made the version number consistent across the .pm files.
         - https://bitbucket.org/shlomif/perl-file-find-object/issues/1/wrong-version-number
