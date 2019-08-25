@@ -1,3 +1,8 @@
+0.3.4   2019-08-25
+    - Add *~ files to MANIFEST.SKIP.
+        - https://github.com/shlomif/perl-file-find-object/issues/1
+        - Thanks to @perlpunk and SUSE.
+
 0.3.3   2019-08-23
     - Now at https://github.com/shlomif/perl-file-find-object
     - tidyall .
