@@ -5,14 +5,8 @@ use warnings;
 
 use Test::More tests => 46;
 
-BEGIN
-{
-    use File::Spec;
-    use lib File::Spec->catdir( File::Spec->curdir(), "t", "lib" );
-}
-
-use File::Find::Object::TreeCreate;
-use File::Find::Object;
+use File::TreeCreate   ();
+use File::Find::Object ();
 
 use File::Path;
 
@@ -38,7 +32,7 @@ use File::Path;
         ],
     };
 
-    my $t = File::Find::Object::TreeCreate->new();
+    my $t = File::TreeCreate->new();
     $t->create_tree( "./t/sample-data/", $tree );
     my $ff =
         File::Find::Object->new( {},
@@ -60,7 +54,7 @@ use File::Path;
                         b.doc
                         foo
                         foo/yet
-                        )
+                    )
                 )
             ),
             undef
@@ -101,7 +95,7 @@ use File::Path;
         ],
     };
 
-    my $t = File::Find::Object::TreeCreate->new();
+    my $t = File::TreeCreate->new();
     $t->create_tree( "./t/sample-data/", $tree );
     my $ff = File::Find::Object->new(
         {},
@@ -125,7 +119,7 @@ use File::Path;
                         foo
                         foo/t.door.txt
                         foo/yet
-                        )
+                    )
                 )
             ),
             undef
@@ -187,7 +181,7 @@ use File::Path;
         ],
     };
 
-    my $t = File::Find::Object::TreeCreate->new();
+    my $t = File::TreeCreate->new();
     $t->create_tree( "./t/sample-data/", $tree );
     my $ff = File::Find::Object->new(
         {},
@@ -216,7 +210,7 @@ use File::Path;
                         bar/myfile.txt
                         bar/zamda
                         daps
-                        )
+                    )
                 )
             ),
             undef
@@ -278,7 +272,7 @@ use File::Path;
         ],
     };
 
-    my $t = File::Find::Object::TreeCreate->new();
+    my $t = File::TreeCreate->new();
     $t->create_tree( "./t/sample-data/", $tree );
     chmod( 0000, $t->get_path("$test_dir/bar") );
     eval {
@@ -328,7 +322,7 @@ use File::Path;
         ],
     };
 
-    my $t = File::Find::Object::TreeCreate->new();
+    my $t = File::TreeCreate->new();
     $t->create_tree( "./t/sample-data/", $tree );
     my $ff =
         File::Find::Object->new( {},
@@ -521,7 +515,7 @@ use File::Path;
         ],
     };
 
-    my $t = File::Find::Object::TreeCreate->new();
+    my $t = File::TreeCreate->new();
     $t->create_tree( "./t/sample-data/", $tree );
 
     my $ff =
@@ -547,7 +541,7 @@ use File::Path;
                         foo/0
                         foo/1
                         foo/2
-                        )
+                    )
                     )
             ),
             undef
@@ -580,7 +574,7 @@ use File::Path;
         ],
     };
 
-    my $t = File::Find::Object::TreeCreate->new();
+    my $t = File::TreeCreate->new();
     $t->create_tree( "./t/sample-data/", $tree );
 
     my $ff;
@@ -632,7 +626,7 @@ use File::Path;
         ],
     };
 
-    my $t = File::Find::Object::TreeCreate->new();
+    my $t = File::TreeCreate->new();
     $t->create_tree( "./t/sample-data/", $tree );
     my $ff = File::Find::Object->new( { nocrossfs => 1, },
         $t->get_path("./t/sample-data/traverse--traverse-1") );
@@ -653,7 +647,7 @@ use File::Path;
                         b.doc
                         foo
                         foo/yet
-                        )
+                    )
                 )
             ),
             undef
@@ -690,7 +684,7 @@ use File::Path;
         ],
     };
 
-    my $t = File::Find::Object::TreeCreate->new();
+    my $t = File::TreeCreate->new();
     $t->create_tree( "./t/sample-data/", $tree );
     my $ff =
         File::Find::Object->new( {},

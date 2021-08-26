@@ -5,18 +5,12 @@ use warnings;
 
 use Test::More tests => 22;
 
-BEGIN
-{
-    use File::Spec;
-    use lib File::Spec->catdir( File::Spec->curdir(), "t", "lib" );
-}
-
 use File::Path;
 
-use File::Find::Object::TreeCreate;
+use File::TreeCreate ();
 
 {
-    my $t = File::Find::Object::TreeCreate->new();
+    my $t = File::TreeCreate->new();
 
     # TEST
     ok( $t, "TreeCreate object was initialized" );
@@ -47,7 +41,7 @@ use File::Find::Object::TreeCreate;
 }
 
 {
-    my $t = File::Find::Object::TreeCreate->new();
+    my $t = File::TreeCreate->new();
 
     # TEST
     ok( $t->exist("./MANIFEST"), "Checking the exist() method" );

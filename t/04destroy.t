@@ -5,14 +5,8 @@ use warnings;
 
 use Test::More tests => 2;
 
-BEGIN
-{
-    use File::Spec;
-    use lib File::Spec->catdir( File::Spec->curdir(), "t", "lib" );
-}
-
-use File::Find::Object::TreeCreate;
-use File::Find::Object;
+use File::TreeCreate   ();
+use File::Find::Object ();
 
 use File::Path;
 
@@ -59,7 +53,7 @@ sub my_destroy
         ],
     };
 
-    my $t = File::Find::Object::TreeCreate->new();
+    my $t = File::TreeCreate->new();
     $t->create_tree( "./t/sample-data/", $tree );
     my $ff =
         MyFFO->new( {}, $t->get_path("./t/sample-data/destroy--traverse-1") );
@@ -81,7 +75,7 @@ sub my_destroy
                         b.doc
                         foo
                         foo/yet
-                        )
+                    )
                 )
             ),
             undef
@@ -95,4 +89,3 @@ sub my_destroy
 # TEST
 is( $destroy_counter, 1,
     "Check that the object was destroyed when it goes out of scope." );
-

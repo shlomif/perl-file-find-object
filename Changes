@@ -1,5 +1,8 @@
 Revision history for File-Find-Object
 
+0.3.6       2021-08-26
+    - Extract https://metacpan.org/pod/File::TreeCreate .
+
 0.3.5       2020-01-28
     - Rebuild for order of 'NAME' and 'VERSION' sections in the generated
     POD documentation (see:

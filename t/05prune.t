@@ -5,14 +5,8 @@ use warnings;
 
 use Test::More tests => 4;
 
-BEGIN
-{
-    use File::Spec;
-    use lib File::Spec->catdir( File::Spec->curdir(), "t", "lib" );
-}
-
-use File::Find::Object::TreeCreate;
-use File::Find::Object;
+use File::TreeCreate   ();
+use File::Find::Object ();
 
 use File::Path;
 
@@ -64,7 +58,7 @@ use File::Path;
         ],
     };
 
-    my $t = File::Find::Object::TreeCreate->new();
+    my $t = File::TreeCreate->new();
     $t->create_tree( "./t/sample-data/", $tree );
     my $ff =
         File::Find::Object->new( {},
@@ -113,7 +107,7 @@ use File::Path;
                         foo/please-prune-me
                         foo/please-prune-me/h.rnd
                         foo/please-prune-me/lambda.calculus
-                        )
+                    )
                 )
             )
         ],
@@ -190,7 +184,7 @@ use File::Path;
         ],
     };
 
-    my $t = File::Find::Object::TreeCreate->new();
+    my $t = File::TreeCreate->new();
     $t->create_tree( "./t/sample-data/", $tree );
     my $ff =
         File::Find::Object->new( {},
@@ -227,7 +221,7 @@ use File::Path;
                         foo/zardoz/p.txt
                         zardoz
                         zardoz/p.txt
-                        )
+                    )
                 )
             )
         ],
