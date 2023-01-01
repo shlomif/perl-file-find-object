@@ -18,7 +18,7 @@ use Class::XSAccessor accessors => {
                 _open_dir_ret
                 _stat_ret
                 _traverse_to
-                )
+            )
         )
     )
     },
@@ -33,7 +33,7 @@ __PACKAGE__->_make_copy_methods(
         qw(
             _files
             _traverse_to
-            )
+        )
     ]
 );
 

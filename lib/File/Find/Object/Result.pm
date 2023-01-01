@@ -16,7 +16,7 @@ use Class::XSAccessor accessors => {
                 path
                 dir_components
                 stat_ret
-                )
+            )
         )
     )
 };

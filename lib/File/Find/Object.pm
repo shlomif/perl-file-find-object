@@ -147,7 +147,7 @@ sub _get_options_ids
             filter
             followlink
             nocrossfs
-            )
+        )
     ];
 }
 
@@ -171,7 +171,7 @@ use Class::XSAccessor accessors => {
                 _top_is_dir
                 _top_is_link
                 _top_stat
-                ),
+            ),
             @{ __PACKAGE__->_get_options_ids() }
         )
     )
@@ -181,7 +181,7 @@ __PACKAGE__->_make_copy_methods(
     [
         qw(
             _top_stat
-            )
+        )
     ]
 );
 

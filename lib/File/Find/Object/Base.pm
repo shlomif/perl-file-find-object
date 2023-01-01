@@ -15,7 +15,7 @@ use Class::XSAccessor accessors => {
         map { $_ => $_ } (
             qw(
                 _last_dir_scanned
-                )
+            )
         )
     )
 };
