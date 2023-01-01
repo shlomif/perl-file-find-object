@@ -1,5 +1,10 @@
 Revision history for File-Find-Object
 
+0.3.7       2023-01-01
+    - Fix test failures on mswin
+        - https://github.com/shlomif/perl-file-find-object/issues/2
+        - thanks to @jddurand
+
 0.3.6       2021-08-26
     - Extract https://metacpan.org/pod/File::TreeCreate .
 

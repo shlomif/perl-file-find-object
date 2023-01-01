@@ -9,6 +9,8 @@ use Test::More tests => 4;
 
 use File::Path qw(rmtree);
 
+use Test::File 1.993 ();
+
 # TEST
 use_ok( 'File::Find::Object', "Can use main File::Find::Object" );
 
@@ -22,7 +24,7 @@ close($h);
 # symlink does not exists everywhere (windows)
 # if it failed, this does not matter
 eval { symlink( '.', 't/dir/link' ); };
-my $symlink_created = ( $@ eq "" );
+my $has_symlinks = Test::File->has_symlinks();
 
 my ( @res1, @res2 );
 my $tree = File::Find::Object->new(
@@ -51,7 +53,7 @@ while ( my $r = $tree->next() )
 ok( scalar(@res1) == scalar(@res2), "Get same result from callback and next" );
 
 # TEST
-if ($symlink_created)
+if ($has_symlinks)
 {
     like(
         $warnings[0],
