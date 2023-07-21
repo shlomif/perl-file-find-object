@@ -12,7 +12,7 @@ use File::Path qw(rmtree);
 use Test::File 1.993 ();
 
 # TEST
-use_ok( 'File::Find::Object', "Can use main File::Find::Object" );
+use_ok('File::Find::Object');
 
 mkdir('t/dir');
 mkdir('t/dir/a');
