@@ -1,5 +1,10 @@
 Revision history for File-Find-Object
 
+0.3.8       2023-07-22
+    - Fix use_ok() call.
+        - https://github.com/shlomif/perl-file-find-object/pull/3
+        - Thanks to @haarg .
+
 0.3.7       2023-01-01
     - Fix test failures on mswin
         - https://github.com/shlomif/perl-file-find-object/issues/2
