@@ -7,10 +7,8 @@ package File::Find::Object::DeepPath;
 
 use strict;
 use warnings;
-
-use 5.008;
-
 use integer;
+use 5.008;
 
 use parent 'File::Find::Object::PathComp';
 
@@ -797,4 +795,3 @@ http://www.perlfoundation.org/legal/licenses/artistic-2_0.html
 3. At your option - any later version of either or both of these licenses.
 
 =cut
-

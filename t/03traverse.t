@@ -8,7 +8,7 @@ use Test::More tests => 46;
 use File::TreeCreate   ();
 use File::Find::Object ();
 
-use File::Path;
+use File::Path qw( rmtree );
 
 {
     my $tree = {

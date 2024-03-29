@@ -2,7 +2,6 @@ package File::Find::Object::PathComp;
 
 use strict;
 use warnings;
-
 use integer;
 
 use parent 'File::Find::Object::Base';
@@ -26,7 +25,7 @@ use Class::XSAccessor accessors => {
     setters => { _set_inodes => '_inodes' },
     ;
 
-use File::Spec;
+use File::Spec ();
 
 __PACKAGE__->_make_copy_methods(
     [
