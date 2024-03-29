@@ -533,8 +533,8 @@ use File::Path;
         \@results,
         [
             (
-                map { $t->get_path("t/sample-data/traverse--traverse-1/$_") }
-                    sort { $a cmp $b } (
+                map  { $t->get_path("t/sample-data/traverse--traverse-1/$_") }
+                sort { $a cmp $b } (
                     "", qw(
                         0
                         foo
@@ -542,7 +542,7 @@ use File::Path;
                         foo/1
                         foo/2
                     )
-                    )
+                )
             ),
             undef
         ],
