@@ -1,5 +1,9 @@
 Revision history for File-Find-Object
 
+0.3.9       2024-12-11
+    - Avoid implicit symbol imports.
+        - https://perl-begin.org/tutorials/bad-elements/#non_explicitly_imported_symbols
+
 0.3.8       2023-07-22
     - Fix use_ok() call.
         - https://github.com/shlomif/perl-file-find-object/pull/3
